@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EkiHub — みんなの中心駅を探す</title>
+    <meta name="description" content="複数人の最寄駅から、全員が集まりやすい中心駅を提案するWebアプリ" />
+
+    <!-- Leaflet 地図ライブラリ -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- 背景の装飾グラデーション -->
+    <div class="aurora" aria-hidden="true"></div>
+
+    <main class="app">
+      <!-- ヘッダー -->
+      <header class="hero">
+        <div class="hero__badge">EkiHub</div>
+        <h1 class="hero__title">みんなの<span class="accent">中心駅</span>を探す</h1>
+        <p class="hero__lead">
+          複数人の最寄駅を入力すると、全員が集まりやすい駅をAIロジックが提案します。
+        </p>
+      </header>
+
+      <div class="layout">
+        <!-- 左: 入力パネル -->
+        <section class="panel" aria-label="入力フォーム">
+          <h2 class="panel__title">最寄駅を入力</h2>
+
+          <form id="stationForm" class="form" autocomplete="off">
+            <div id="stationInputs" class="inputs">
+              <!-- 駅入力行はJSで動的生成 -->
+            </div>
+
+            <button type="button" id="addStationBtn" class="btn btn--ghost">
+              ＋ 駅を追加
+            </button>
+
+            <!-- モード切替トグル -->
+            <div class="mode">
+              <div class="mode__head">
+                <span class="mode__label">候補の絞り込み</span>
+              </div>
+              <div class="toggle" id="modeToggle" role="tablist">
+                <button type="button" class="toggle__btn is-active" data-mode="A" role="tab">
+                  <span class="toggle__main">主要駅限定</span>
+                  <span class="toggle__sub">新宿・渋谷など大規模駅</span>
+                </button>
+                <button type="button" class="toggle__btn" data-mode="B" role="tab">
+                  <span class="toggle__main">規模不問</span>
+                  <span class="toggle__sub">純粋に地理・時間の中心</span>
+                </button>
+                <span class="toggle__slider" id="toggleSlider"></span>
+              </div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn btn--primary">
+              <span class="btn__label">中心駅を算出する</span>
+              <span class="btn__spinner" aria-hidden="true"></span>
+            </button>
+
+            <p id="formError" class="form__error" role="alert"></p>
+          </form>
+        </section>
+
+        <!-- 右: 結果と地図 -->
+        <section class="result" aria-label="結果表示">
+          <!-- 中心駅カード -->
+          <div id="resultCard" class="result-card is-empty">
+            <div class="result-card__empty">
+              <div class="result-card__icon">🗾</div>
+              <p>最寄駅を2駅以上入力して<br />「算出する」を押してください。</p>
+            </div>
+
+            <div class="result-card__content" hidden>
+              <span class="result-card__eyebrow">提案された中心駅</span>
+              <h3 id="bestName" class="result-card__name"></h3>
+              <p id="bestKana" class="result-card__kana"></p>
+              <ul id="bestLines" class="chips"></ul>
+
+              <div class="metrics">
+                <div class="metric">
+                  <span class="metric__value" id="bestAvg">—</span>
+                  <span class="metric__label">平均所要時間(分)</span>
+                </div>
+                <div class="metric">
+                  <span class="metric__value" id="bestFairness">—</span>
+                  <span class="metric__label">時間のばらつき</span>
+                </div>
+                <div class="metric">
+                  <span class="metric__value" id="bestDist">—</span>
+                  <span class="metric__label">重心までの距離(km)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 地図 -->
+          <div id="map" class="map" aria-label="位置関係マップ"></div>
+
+          <!-- 各駅からの所要時間リスト -->
+          <div id="travelList" class="travel-list" hidden>
+            <h4 class="travel-list__title">各最寄駅からの所要時間（推定）</h4>
+            <ul id="travelItems"></ul>
+          </div>
+
+          <!-- 次点候補 -->
+          <div id="rankingBox" class="ranking" hidden>
+            <h4 class="ranking__title">候補駅ランキング（クリックで詳細を表示）</h4>
+            <ul id="rankingItems"></ul>
+          </div>
+        </section>
+      </div>
+
+      <footer class="foot">
+        <p>EkiHub — 重心＋移動時間補正アルゴリズムによる中心駅提案 / 地図データ © OpenStreetMap contributors</p>
+      </footer>
+    </main>
+
+    <!-- Leaflet 本体 -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="app.js"></script>
+  </body>
+</html>

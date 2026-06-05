@@ -1,0 +1,17 @@
+{
+  "name": "ekihub",
+  "version": "1.0.0",
+  "description": "複数人の最寄駅から全員が集まりやすい中心駅を提案するWebアプリ",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
