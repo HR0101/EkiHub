@@ -173,13 +173,16 @@ app.get("/api/stations", async (_req, res) => {
 // リクエストボディ: { origins: ["新宿","横浜",...], mode: "A" | "B" }
 app.post("/api/center", async (req, res) => {
   try {
-    const { origins, mode } = req.body || {};
+    const { origins, mode, weight } = req.body || {};
 
     // 入力バリデーション
     if (!Array.isArray(origins) || origins.length < 2) {
       return res.status(400).json({ error: "最寄駅を2駅以上入力してください." });
     }
     const safeMode = mode === "A" ? "A" : "B";
+    // 重視ポイント(公平さ重み 0〜1)。未指定や不正値は既定にフォールバック.
+    const fairnessWeight =
+      typeof weight === "number" && weight >= 0 && weight <= 1 ? weight : 0.6;
 
     const allStations = await loadStations();
     const stationByName = new Map(allStations.map((s) => [s.name, s]));
@@ -212,7 +215,8 @@ app.post("/api/center", async (req, res) => {
       allStations,
       mode: safeMode,
       routeProvider: makeRouteProvider(),
-      topN: 5
+      topN: 5,
+      fairnessWeight
     });
 
     res.json({

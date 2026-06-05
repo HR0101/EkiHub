@@ -28,6 +28,8 @@
   const errorBox = document.getElementById("formError");
   const modeToggle = document.getElementById("modeToggle");
   const toggleSlider = document.getElementById("toggleSlider");
+  const weightSlider = document.getElementById("weightSlider");
+  const weightHint = document.getElementById("weightHint");
 
   // ====================================================================
   // 初期化
@@ -77,8 +79,16 @@
 
     // モードトグル
     modeToggle.querySelectorAll(".toggle__btn").forEach((btn) => {
-      btn.addEventListener("click", () => setMode(btn.dataset.mode));
+      btn.addEventListener("click", () => {
+        setMode(btn.dataset.mode);
+        rerunIfPossible();
+      });
     });
+
+    // 重視ポイント スライダー
+    weightSlider.addEventListener("input", updateWeightHint); // ドラッグ中はラベルのみ更新
+    weightSlider.addEventListener("change", rerunIfPossible); // 離した時に再計算
+    updateWeightHint();
 
     // 入力欄外クリックで候補を閉じる
     document.addEventListener("click", (e) => {
@@ -262,6 +272,31 @@
     toggleSlider.classList.toggle("is-right", currentMode === "B");
   }
 
+  // スライダー値(0-100)を公平さ重み(0.0-1.0)へ変換する
+  function getFairnessWeight() {
+    return Number(weightSlider.value) / 100;
+  }
+
+  // スライダー位置に応じてヒント文言を更新する
+  function updateWeightHint() {
+    const v = Number(weightSlider.value);
+    let label;
+    if (v <= 20) label = "近さ最優先";
+    else if (v <= 40) label = "やや近さ重視";
+    else if (v < 60) label = "バランス";
+    else if (v === 60) label = "バランス";
+    else if (v <= 80) label = "やや公平さ重視";
+    else label = "公平さ最優先";
+    weightHint.textContent = label;
+  }
+
+  // 既に結果が表示されている場合、現在の入力で自動的に再計算する
+  // （設定を触ると裏で再実行され、結果へ即反映される自然な操作感）
+  function rerunIfPossible() {
+    if (!lastData) return;
+    onSubmit(new Event("submit"));
+  }
+
   // ====================================================================
   // 送信・算出
   // ====================================================================
@@ -289,7 +324,7 @@
       const res = await fetch("/api/center", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ origins, mode: currentMode })
+        body: JSON.stringify({ origins, mode: currentMode, weight: getFairnessWeight() })
       });
       const data = await res.json();
       if (!res.ok) {

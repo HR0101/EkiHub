@@ -66,6 +66,28 @@
               </div>
             </div>
 
+            <!-- 重視ポイント（AI出力を微調整する標準コントロール） -->
+            <div class="weight">
+              <div class="weight__head">
+                <span class="mode__label">重視ポイント</span>
+                <span class="weight__hint" id="weightHint">バランス</span>
+              </div>
+              <input
+                type="range"
+                id="weightSlider"
+                class="slider"
+                min="0"
+                max="100"
+                value="60"
+                step="5"
+                aria-label="重視ポイント（全員の公平さと近さのバランス）"
+              />
+              <div class="weight__labels">
+                <span>近さ重視</span>
+                <span>公平さ重視</span>
+              </div>
+            </div>
+
             <button type="submit" id="submitBtn" class="btn btn--primary">
               <span class="btn__label">中心駅を算出する</span>
               <span class="btn__spinner" aria-hidden="true"></span>
@@ -116,7 +138,7 @@
             <ul id="travelItems"></ul>
           </div>
 
-          <!-- 次点候補 -->
+          <!-- 候補ランキング -->
           <div id="rankingBox" class="ranking" hidden>
             <h4 class="ranking__title">候補駅ランキング（クリックで詳細を表示）</h4>
             <ul id="rankingItems"></ul>
