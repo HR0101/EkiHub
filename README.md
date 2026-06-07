@@ -16,6 +16,24 @@
 - **結果の可視化**：中心駅カード，各最寄駅からの所要時間バー，地図上の経路線・重心表示．
 - **候補ランキング**：候補駅をクリックすると，その駅基準でカード・所要時間・地図が切り替わる．
 
+### 拡張機能（機能モジュール）
+
+コア（`app.js`）が公開するイベントバス `window.EkiHub` を介して，以下の機能を独立モジュールとして追加しています（`public/js/features/`）．
+
+| 機能 | 概要 |
+|---|---|
+| メンバー名・人数 | 各駅にメンバー名と人数を設定．人数で重心・平均を重み付け． |
+| 重視ポイント | 「近さ ⇄ 公平さ」スライダーに加え，**運賃の重視度**スライダーを追加． |
+| 運賃概算・直通可能性 | 距離から普通運賃を概算し表示．同一路線なら「直通」を表示． |
+| 現在地から最寄駅 | Geolocationで現在地を取得し，最寄駅を入力欄へ自動挿入． |
+| 共有URL・QR | 入力・条件をURL化してコピー／Web共有／QRコード表示．開くと自動復元． |
+| 結果コピー | 集合駅と各メンバーの所要時間・運賃をテキストでコピー． |
+| 集合時刻・出発逆算・カレンダー | 集合時刻から各メンバーの出発時刻を逆算．`.ics`でカレンダー登録． |
+| 周辺スポット | 集合駅周辺のカフェ・居酒屋・カラオケ等をOSMから取得し地図表示． |
+| 履歴・お気に入り | 検索履歴を保存・再実行．駅の組合せをお気に入り登録． |
+| テーマ・言語 | ダーク／ライト／自動テーマ，日本語／英語の切替（永続化）． |
+| 印刷 | 結果を印刷用レイアウトで出力． |
+
 ---
 
 ## 技術スタック
@@ -28,6 +46,13 @@
 | 駅データ | OpenStreetMap（Overpass API） | キー不要で関東圏全駅の位置情報を一括取得． |
 | 乗降客数 | 国土数値情報 S12（駅別乗降客数） | 国土交通省の公式オープンデータ．主要駅判定に利用． |
 | 経路（任意） | 経路検索API（差し替え式） | `routeProvider` 実装で実所要時間に置換可能．未設定時は距離推定． |
+| 周辺スポット | OpenStreetMap（Overpass API） | 集合駅周辺の店舗・施設をキー不要で取得． |
+| QRコード | qrcodejs（CDN） | 共有URLのQRをクライアント側で生成． |
+
+### アーキテクチャ（拡張の仕組み）
+
+- **コア（`public/app.js`）** … 入力・算出・地図描画と，拡張用API `window.EkiHub`（イベントバス＋アクセサ＋ヘルパー）を提供．
+- **機能モジュール（`public/js/features/*.js`）** … 各機能が独立した即時関数ファイル．`window.EkiHub` の `on("ready"/"result"/"select")` 等を購読し，所定の拡張枠（`#toolbar` / `#feature-controls` / `#hero-actions` / `#feature-panels`）へ自身のUIを差し込む．相互に独立しているため，1つが失敗しても他に波及しない．
 
 ---
 
@@ -42,14 +67,29 @@ EkiHub/
 │   ├── stations-osm.json      # 関東圏全駅（OSMから生成・コミット対象）
 │   └── ridership.json         # 駅名→乗降客数マップ（S12から生成・コミット対象）
 ├── lib/
-│   └── centerLogic.js         # 中心駅算出ロジック（重心＋時間補正・モードA/B）
+│   ├── centerLogic.js         # 中心駅算出（重心・時間・運賃・人数重み・モードA/B）
+│   ├── fareEstimate.js        # 距離からの運賃概算
+│   └── poiService.js          # 周辺スポット取得（Overpass・キャッシュつき）
 ├── scripts/
 │   ├── fetchKantoStations.js  # OSMから関東圏の駅を取得
-│   └── buildRidership.js      # S12のGeoJSONから乗降客数マップを生成
+│   ├── buildRidership.js      # S12のGeoJSONから乗降客数マップを生成
+│   └── smokeTest.js           # ブラウザ起動スモークテスト（puppeteer）
 └── public/
-    ├── index.html             # 画面構造
-    ├── style.css              # ダークモードUI
-    └── app.js                 # フォーム・地図・候補切替の制御
+    ├── index.html             # 画面構造（拡張枠つき）
+    ├── style.css              # ダーク/ライトモードUI
+    ├── app.js                 # コア：フォーム・地図・算出・拡張API(window.EkiHub)
+    └── js/features/           # 機能モジュール（各機能が独立した1ファイル）
+        ├── themeToggle.js     # テーマ切替（ダーク/ライト/自動）
+        ├── i18n.js            # 日本語/英語 切替
+        ├── geolocation.js     # 現在地から最寄駅
+        ├── fareWeight.js      # 運賃の重視度スライダー
+        ├── shareLink.js       # 共有URLのコピー/共有
+        ├── qrShare.js         # 共有URLのQRコード
+        ├── clipboardSummary.js# 結果サマリーのコピー
+        ├── meetingTools.js    # 集合時刻・出発逆算・カレンダー(.ics)
+        ├── nearbySpots.js     # 周辺スポット取得・地図表示
+        ├── historyFavorites.js# 履歴・お気に入り
+        └── printExport.js     # 印刷用出力
 ```
 
 ---
@@ -120,11 +160,15 @@ node scripts/buildRidership.js /path/to/S12-23_NumberOfPassengers.geojson
 
 ## 環境変数（任意）
 
+`.env.example` を `.env` にコピーして設定できます（`.env` はコミットされません）．
+
 | 変数 | 用途 |
 |---|---|
 | `PORT` | 待受ポート（既定：3000） |
 | `ODPT_TOKEN` | 公共交通オープンデータ(ODPT)で駅データをさらに拡張する場合に設定 |
-| `ROUTING_API_KEY` | 経路検索APIで移動時間を実値化する場合に設定（`server.js` の `makeRouteProvider` を実装） |
+| `ROUTING_PROVIDER` | 経路APIの種別．現在は `otp`（OpenTripPlanner）に対応 |
+| `ROUTING_OTP_URL` | OTP2 の GraphQL エンドポイント |
+| `ROUTING_TIMEOUT_MS` | 経路APIのタイムアウト（既定：8000） |
 
 設定例：
 
@@ -134,10 +178,45 @@ PORT=8080 ODPT_TOKEN=xxxxx npm start
 
 ---
 
+## 経路APIで所要時間・運賃を精緻化する（任意・無料）
+
+既定では所要時間・運賃を距離から概算します．より正確にしたい場合は，**無料・キー不要**の
+[OpenTripPlanner (OTP)](https://www.opentripplanner.org/) を自前で立て，日本のオープンGTFS
+（[GTFS-JP](https://www.gtfs.jp/) / 公共交通オープンデータ）を読み込ませて連携できます．
+
+### 仕組み（2段階方式）
+
+候補は最大約2,000駅あるため，**全候補を経路APIで叩くことはしません**．
+
+1. **絞り込み**：まず距離からの概算で全候補をスコアリングし，上位8駅に絞る．
+2. **精緻化**：上位8駅についてのみ，各メンバーから経路APIで実所要時間・運賃・乗換回数を取得し，再ランキングする．
+
+これにより経路APIの呼び出しは「8駅 × メンバー数」程度に抑えられます．経路APIが未設定・到達不可・タイムアウトの場合は，自動的に距離概算へフォールバックします（結果には「実経路データ／距離からの概算」の別が表示されます）．
+
+### OTPの起動例
+
+```bash
+# 1) Java 17+ と OTP2 の jar を用意
+# 2) 関東圏のGTFS（GTFS-JP）と OSM(.pbf) を graphs/kanto/ に配置
+java -Xmx4G -jar otp-2.x.jar --build --serve graphs/kanto
+# -> http://localhost:8080 で起動
+
+# 3) EkiHub から接続
+ROUTING_PROVIDER=otp \
+ROUTING_OTP_URL=http://localhost:8080/otp/routers/default/index/graphql \
+npm start
+```
+
+> 運賃は GTFS に運賃情報（`fare_attributes` / `fare_rules`）が含まれる場合に実値化されます．含まれない場合は所要時間・乗換のみが実データ化され，運賃は概算のままになります．
+> 将来 駅すぱあと(Ekispert) 等へ差し替える場合は，`lib/routeProvider.js` の `makeProviderFromEnv` に分岐を追加してください（プロバイダは `{ minutes, fareYen, transfers }` を返す共通インターフェースです）．
+
+---
+
 ## 調整ポイント
 
 - **主要駅の閾値**：`server.js` の `MAJOR_THRESHOLD`（既定20万人/日）を変更すると，モードAの候補数を増減できます（15万→約107駅，30万→約42駅）．
-- **スコアの重み**：`lib/centerLogic.js` の `WEIGHT_FAIRNESS` / `WEIGHT_PROXIMITY` で「時間の均等さ」と「地理的中心」のバランスを調整できます．
+- **スコアの重み**：`lib/centerLogic.js` の `DEFAULT_WEIGHT_FAIRNESS`（「近さ＝平均所要時間」と「公平さ＝時間のばらつき」の配分）と，UIの運賃重視スライダーでバランスを調整できます．
+- **精緻化する駅数**：`server.js` の `computeCenterStation({ refineCount })`（既定8）で，経路APIで精緻化する上位候補数を変更できます．
 
 ---
 

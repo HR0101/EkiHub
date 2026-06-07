@@ -15,6 +15,8 @@ import { readFileSync, existsSync } from "fs";
 
 import { stations as embeddedStations } from "./data/stations.js";
 import { computeCenterStation } from "./lib/centerLogic.js";
+import { fetchNearbySpots, CATEGORY_LABELS } from "./lib/poiService.js";
+import { makeProviderFromEnv } from "./lib/routeProvider.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -70,7 +72,9 @@ function applyRidership(stations) {
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ODPT_TOKEN = process.env.ODPT_TOKEN || null;
-const ROUTING_API_KEY = process.env.ROUTING_API_KEY || null;
+// 経路プロバイダ（環境変数で選択。未設定なら null = 距離概算へフォールバック）
+const routeProvider = makeProviderFromEnv();
+const ROUTING_ENABLED = Boolean(routeProvider);
 
 app.use(express.json());
 app.use(express.static(join(__dirname, "public")));
@@ -140,16 +144,6 @@ async function loadStations() {
   }
 }
 
-// 経路検索APIによる所要時間取得（雛形）。
-// ROUTING_API_KEY 未設定時は null を返し、centerLogic 側が距離推定へフォールバックする.
-function makeRouteProvider() {
-  if (!ROUTING_API_KEY) return null;
-  // 実APIを使う場合はここで origin->candidate の所要時間(分)を返す実装を行う.
-  // 例: Google Directions API / 駅すぱあとAPI / NAVITIME など.
-  // 雛形では未実装のため null を返し、フォールバックさせる.
-  return async (_origin, _candidate) => null;
-}
-
 // 駅一覧API: フロントの入力補完・候補表示に利用
 app.get("/api/stations", async (_req, res) => {
   try {
@@ -173,7 +167,7 @@ app.get("/api/stations", async (_req, res) => {
 // リクエストボディ: { origins: ["新宿","横浜",...], mode: "A" | "B" }
 app.post("/api/center", async (req, res) => {
   try {
-    const { origins, mode, weight } = req.body || {};
+    const { origins, mode, weight, fareWeight, peopleCounts } = req.body || {};
 
     // 入力バリデーション
     if (!Array.isArray(origins) || origins.length < 2) {
@@ -183,22 +177,28 @@ app.post("/api/center", async (req, res) => {
     // 重視ポイント(公平さ重み 0〜1)。未指定や不正値は既定にフォールバック.
     const fairnessWeight =
       typeof weight === "number" && weight >= 0 && weight <= 1 ? weight : 0.6;
+    // 運賃重視の重み(0〜1)。未指定は0(運賃を考慮しない).
+    const safeFareWeight =
+      typeof fareWeight === "number" && fareWeight >= 0 && fareWeight <= 1 ? fareWeight : 0;
 
     const allStations = await loadStations();
     const stationByName = new Map(allStations.map((s) => [s.name, s]));
 
-    // 入力された駅名を実データへ解決する
+    // 入力された駅名を実データへ解決する（人数重みも付与）
     const originStations = [];
     const unknown = [];
-    for (const name of origins) {
+    origins.forEach((name, index) => {
       const trimmed = typeof name === "string" ? name.trim() : "";
       const found = stationByName.get(trimmed);
       if (found) {
-        originStations.push(found);
+        // 駅マスタを汚さないよう複製し、人数(重み)を付与する
+        const peopleRaw = Array.isArray(peopleCounts) ? Number(peopleCounts[index]) : 1;
+        const people = Number.isFinite(peopleRaw) && peopleRaw > 0 ? Math.floor(peopleRaw) : 1;
+        originStations.push({ ...found, people });
       } else if (trimmed.length > 0) {
         unknown.push(trimmed);
       }
-    }
+    });
 
     if (unknown.length > 0) {
       return res.status(400).json({
@@ -214,9 +214,11 @@ app.post("/api/center", async (req, res) => {
       originStations,
       allStations,
       mode: safeMode,
-      routeProvider: makeRouteProvider(),
-      topN: 5,
-      fairnessWeight
+      routeProvider,
+      topN: 8,
+      fairnessWeight,
+      fareWeight: safeFareWeight,
+      refineCount: 8
     });
 
     res.json({
@@ -225,21 +227,54 @@ app.post("/api/center", async (req, res) => {
         name: s.name,
         kana: s.kana,
         lat: s.lat,
-        lng: s.lng
+        lng: s.lng,
+        people: s.people
       })),
-      routingUsed: Boolean(ROUTING_API_KEY)
+      routingUsed: ROUTING_ENABLED
     });
   } catch (error) {
     res.status(500).json({ error: "算出に失敗しました: " + error.message });
   }
 });
 
-// ヘルスチェック
+// 周辺スポットAPI: 集合駅周辺の集まれる場所(カフェ・居酒屋等)を返す
+// クエリ: ?lat=&lng=&category=&radius=
+app.get("/api/spots", async (req, res) => {
+  try {
+    const lat = Number(req.query.lat);
+    const lng = Number(req.query.lng);
+    const category = String(req.query.category || "cafe");
+    const radius = Math.min(1000, Math.max(100, Number(req.query.radius) || 400));
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+      return res.status(400).json({ error: "緯度経度を指定してください." });
+    }
+    const spots = await fetchNearbySpots({ lat, lng, category, radius });
+    res.json({ count: spots.length, category, radius, spots });
+  } catch (error) {
+    res.status(500).json({ error: "周辺スポットの取得に失敗しました: " + error.message });
+  }
+});
+
+// 周辺スポットのカテゴリ一覧
+app.get("/api/spot-categories", (_req, res) => {
+  res.json({ categories: CATEGORY_LABELS });
+});
+
+// ヘルスチェック（有効な機能の一覧つき）
 app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok", odptEnabled: Boolean(ODPT_TOKEN) });
+  res.json({
+    status: "ok",
+    odptEnabled: Boolean(ODPT_TOKEN),
+    routingEnabled: ROUTING_ENABLED,
+    routingProvider: ROUTING_ENABLED ? (process.env.ROUTING_PROVIDER || "custom") : null,
+    features: ["center", "fare", "people-weight", "spots", "routing"]
+  });
 });
 
 app.listen(PORT, () => {
   console.log(`EkiHub サーバー起動: http://localhost:${PORT}`);
   console.log(`ODPT拡張: ${ODPT_TOKEN ? "有効" : "無効（埋め込みデータで動作）"}`);
+  console.log(
+    `経路API: ${ROUTING_ENABLED ? `有効（${process.env.ROUTING_PROVIDER}）` : "無効（距離概算で動作）"}`
+  );
 });

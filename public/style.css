@@ -780,6 +780,171 @@ body {
   font-size: 0.76rem;
 }
 
+/* ===== 入力行: 人数 ===== */
+.input-row {
+  flex-wrap: wrap;
+}
+
+/* 候補リストを開いている行を最前面にし、下の行の入力欄と重ならないようにする */
+.input-row:focus-within {
+  z-index: 60;
+}
+
+.input-row__people {
+  flex: 0 0 52px;
+  padding: 12px 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  font-family: inherit;
+  text-align: center;
+}
+
+.input-row__people:focus {
+  outline: none;
+  border-color: var(--border-focus);
+}
+
+/* ===== メトリクス: 4枚に対応 ===== */
+.metrics {
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+}
+
+.result-card__range {
+  margin-top: 14px;
+  font-size: 0.86rem;
+  color: var(--text-sub);
+}
+
+/* ===== バッジ・運賃 ===== */
+.badge {
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.badge--direct {
+  background: rgba(70, 224, 200, 0.16);
+  color: var(--accent-3);
+  border: 1px solid rgba(70, 224, 200, 0.4);
+}
+
+.badge--transfer {
+  background: rgba(94, 123, 255, 0.16);
+  color: #b6c4ff;
+  border: 1px solid rgba(94, 123, 255, 0.4);
+}
+
+.travel-item__fare {
+  flex: 0 0 auto;
+  font-size: 0.78rem;
+  color: var(--text-sub);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== 拡張枠（機能モジュールが内容を差し込む） ===== */
+.toolbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .toolbar {
+    position: static;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+}
+
+.hero {
+  position: relative;
+}
+
+#feature-controls:not(:empty) {
+  margin-top: 4px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+#feature-panels:not(:empty) {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* 機能モジュールが使う共通のセカンダリボタン */
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  color: var(--text-sub);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition), background var(--transition);
+}
+
+.tool-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* 機能モジュールが使う共通パネル */
+.fpanel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-lg);
+}
+
+.fpanel__title {
+  font-size: 0.92rem;
+  color: var(--text-sub);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* ===== ライトテーマ（themeToggleモジュールが data-theme=light を付与） ===== */
+[data-theme="light"] {
+  --bg-base: #eef1f8;
+  --bg-panel: rgba(255, 255, 255, 0.82);
+  --bg-panel-solid: #ffffff;
+  --bg-input: rgba(255, 255, 255, 0.92);
+  --border-soft: rgba(40, 60, 120, 0.16);
+  --border-focus: rgba(60, 110, 220, 0.7);
+  --text-main: #1a2235;
+  --text-sub: #4a5878;
+  --text-faint: #8a96b4;
+  --shadow-lg: 0 18px 44px rgba(40, 60, 120, 0.16);
+}
+
+[data-theme="light"] .aurora {
+  opacity: 0.5;
+}
+
+[data-theme="light"] .leaflet-container {
+  background: #dfe5f0;
+}
+
 /* ===== 共通アニメーション ===== */
 @keyframes fadeUp {
   from {

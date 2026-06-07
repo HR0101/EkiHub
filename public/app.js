@@ -1,24 +1,134 @@
-// ===== EkiHub フロントエンド制御 =====
-// 役割: 駅入力フォーム / オートコンプリート / モード切替 / API呼び出し / 地図描画
+// ===== EkiHub フロントエンド コア =====
+// 役割: 駅入力フォーム / オートコンプリート / モード・重み / API呼び出し / 地図描画
+//       および 機能モジュール用の拡張API (window.EkiHub)
+//
+// 機能モジュール(public/js/features/*.js)は window.EkiHub を介して
+// 状態の購読・DOM拡張・地図操作を行う. コアは既存UIの描画に専念する.
 
 (() => {
   "use strict";
 
-  // ----- 定数 -----
-  const MIN_INPUTS = 2; // 最低入力駅数
-  const DEFAULT_CENTER = [35.681382, 139.766084]; // 初期表示中心（東京駅）
-  const TILE_URL = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"; // ダーク地図タイル
+  // ====================================================================
+  // 拡張API: window.EkiHub（イベントバス＋アクセサ＋ヘルパー）
+  // ====================================================================
+  const subscribers = {}; // event -> [fn]
+  const injectedStyles = new Set();
+
+  const EkiHub = {
+    version: "2.0",
+
+    // ----- 状態（読み取り用。書き換えは専用メソッド経由） -----
+    state: {
+      lastData: null,
+      selectedName: null,
+      currentMode: "A",
+      fairnessWeight: 0.6, // 0..1
+      fareWeight: 0, // 0..1
+      meetingTime: null // "YYYY-MM-DDTHH:mm" など
+    },
+
+    // ----- pub/sub -----
+    on(event, fn) {
+      (subscribers[event] ||= []).push(fn);
+      return () => EkiHub.off(event, fn);
+    },
+    off(event, fn) {
+      const list = subscribers[event];
+      if (list) subscribers[event] = list.filter((f) => f !== fn);
+    },
+    emit(event, payload) {
+      (subscribers[event] || []).forEach((fn) => {
+        try {
+          fn(payload);
+        } catch (error) {
+          console.error(`[EkiHub] ${event} ハンドラでエラー:`, error);
+        }
+      });
+    },
+
+    // ----- アクセサ -----
+    getStations: () => allStations,
+    getState: () => ({ ...EkiHub.state }),
+    getResult: () => EkiHub.state.lastData,
+    getSelected: () => {
+      const d = EkiHub.state.lastData;
+      if (!d) return null;
+      return d.ranking.find((r) => r.name === EkiHub.state.selectedName) || d.best;
+    },
+    getInputs: () => readInputRows(),
+    getOrigins: () => readInputRows().map((r) => r.name).filter(Boolean),
+    getMeetingTime: () => EkiHub.state.meetingTime,
+
+    // ----- 状態変更（再計算をともなう操作） -----
+    setOrigins: (list, options = {}) => setOrigins(list, options),
+    setFareWeight: (v) => {
+      EkiHub.state.fareWeight = Math.min(1, Math.max(0, Number(v) || 0));
+      EkiHub.emit("fareweight-change", EkiHub.state.fareWeight);
+      if (EkiHub.state.lastData) rerunIfPossible();
+    },
+    setMeetingTime: (str) => {
+      EkiHub.state.meetingTime = str || null;
+      EkiHub.emit("meeting-change", EkiHub.state.meetingTime);
+    },
+    compute: () => onSubmit(new Event("submit")),
+    selectByName: (name) => {
+      const d = EkiHub.state.lastData;
+      if (!d) return;
+      const r = d.ranking.find((x) => x.name === name);
+      if (r) selectCandidate(r);
+    },
+
+    // ----- 地図 -----
+    get map() {
+      return map;
+    },
+    get featureLayer() {
+      return featureLayer;
+    },
+    flyTo: (lat, lng, zoom = 14) => {
+      if (map) map.flyTo([lat, lng], zoom, { duration: 0.7 });
+    },
+
+    // ----- ヘルパー -----
+    haversine: haversineMeters,
+    nearestStation: (lat, lng) => nearestStation(lat, lng),
+    escapeHtml,
+    formatYen: (n) => (n > 0 ? "¥" + Number(n).toLocaleString("ja-JP") : "—"),
+    formatMinutes: (n) => `${n}分`,
+    injectStyle: (id, css) => {
+      if (injectedStyles.has(id)) return;
+      injectedStyles.add(id);
+      const style = document.createElement("style");
+      style.dataset.feature = id;
+      style.textContent = css;
+      document.head.appendChild(style);
+    },
+    // i18n: 既定は日本語をそのまま返す。i18nモジュールが差し替える.
+    t: (_key, fallback) => fallback
+  };
+  window.EkiHub = EkiHub;
+
+  // ====================================================================
+  // 定数
+  // ====================================================================
+  const MIN_INPUTS = 2;
+  const DEFAULT_CENTER = [35.681382, 139.766084];
+  const TILE_URL = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
   const TILE_ATTR =
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  const EARTH_RADIUS_M = 6371000;
 
-  // ----- 状態 -----
-  let allStations = []; // 駅マスタ（オートコンプリート用）
-  let currentMode = "A"; // 既定は主要駅限定
+  // ====================================================================
+  // 状態
+  // ====================================================================
+  let allStations = [];
+  let currentMode = "A";
   let map = null;
-  let markerLayer = null; // マーカー・線をまとめて消すためのレイヤ
-  let inputCounter = 0;
-  let lastData = null; // 直近の算出結果（候補切替で再利用）
-  let selectedName = null; // 現在カードに表示中の駅名
+  let markerLayer = null; // コアの描画用（毎回クリア）
+  let featureLayer = null; // 機能モジュール用（各自管理）
+  let lastData = null;
+  let selectedName = null;
+  let labelByStation = {}; // 駅名 -> メンバー名ラベル
 
   // ----- DOM参照 -----
   const inputsBox = document.getElementById("stationInputs");
@@ -37,13 +147,15 @@
   async function init() {
     initMap();
     bindEvents();
-    // 初期は2行（最低入力数）を生成
     addInputRow();
     addInputRow();
     await loadStationMaster();
+    // 駅マスタ取得完了を通知（機能モジュールはここから動き出す）
+    EkiHub.emit("ready", { stations: allStations });
+    // URL共有パラメータがあれば反映して自動算出
+    applyShareParams();
   }
 
-  // 地図を初期化する
   function initMap() {
     map = L.map("map", {
       center: DEFAULT_CENTER,
@@ -56,10 +168,28 @@
       subdomains: "abcd",
       maxZoom: 19
     }).addTo(map);
+
+    // 鉄道路線オーバーレイ（OpenRailwayMap）。線路・路線がマップ上に表示される。
+    // 無料・キー不要。ベース地図の上に重ねて、駅間の経路が線路として見えるようにする。
+    const railLayer = L.tileLayer(
+      "https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png",
+      {
+        attribution: '鉄道: <a href="https://www.openrailwaymap.org/">OpenRailwayMap</a>',
+        subdomains: "abc",
+        maxZoom: 19,
+        opacity: 0.85
+      }
+    ).addTo(map); // 既定で表示
+
+    // レイヤ切替（鉄道路線のオン/オフ）
+    L.control
+      .layers(null, { "鉄道路線": railLayer }, { collapsed: false })
+      .addTo(map);
+
     markerLayer = L.layerGroup().addTo(map);
+    featureLayer = L.layerGroup().addTo(map);
   }
 
-  // 駅マスタを取得する（オートコンプリートに利用）
   async function loadStationMaster() {
     try {
       const res = await fetch("/api/stations");
@@ -67,17 +197,14 @@
       const data = await res.json();
       allStations = data.stations || [];
     } catch (error) {
-      // 取得失敗してもフォーム自体は動作させる（サーバー側で名前検証する）
       console.error(error);
     }
   }
 
-  // イベント登録
   function bindEvents() {
     addBtn.addEventListener("click", () => addInputRow(true));
     form.addEventListener("submit", onSubmit);
 
-    // モードトグル
     modeToggle.querySelectorAll(".toggle__btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         setMode(btn.dataset.mode);
@@ -85,43 +212,47 @@
       });
     });
 
-    // 重視ポイント スライダー
-    weightSlider.addEventListener("input", updateWeightHint); // ドラッグ中はラベルのみ更新
-    weightSlider.addEventListener("change", rerunIfPossible); // 離した時に再計算
+    weightSlider.addEventListener("input", updateWeightHint);
+    weightSlider.addEventListener("change", rerunIfPossible);
     updateWeightHint();
 
-    // 入力欄外クリックで候補を閉じる
     document.addEventListener("click", (e) => {
-      if (!e.target.closest(".input-row__field")) {
-        closeAllSuggests();
-      }
+      if (!e.target.closest(".input-row__field")) closeAllSuggests();
     });
   }
 
   // ====================================================================
-  // 入力行の管理
+  // 入力行（メンバー名ラベル＋人数つき）
   // ====================================================================
-  function addInputRow(focus = false) {
-    inputCounter += 1;
+  function addInputRow(focus = false, preset = null) {
     const row = document.createElement("div");
     row.className = "input-row";
 
     const indexBadge = document.createElement("span");
     indexBadge.className = "input-row__index";
 
+    // 駅名フィールド＋オートコンプリート
     const field = document.createElement("div");
     field.className = "input-row__field";
-
     const input = document.createElement("input");
     input.type = "text";
+    input.className = "js-station";
     input.placeholder = "例）新宿、横浜、大宮…";
     input.setAttribute("aria-label", "最寄駅");
-
     const suggest = document.createElement("div");
     suggest.className = "suggest";
-
     field.appendChild(input);
     field.appendChild(suggest);
+
+    // 人数（重み）
+    const peopleInput = document.createElement("input");
+    peopleInput.type = "number";
+    peopleInput.className = "input-row__people js-people";
+    peopleInput.min = "1";
+    peopleInput.max = "99";
+    peopleInput.value = "1";
+    peopleInput.title = "この駅から来る人数";
+    peopleInput.setAttribute("aria-label", "人数");
 
     const removeBtn = document.createElement("button");
     removeBtn.type = "button";
@@ -132,14 +263,25 @@
 
     row.appendChild(indexBadge);
     row.appendChild(field);
+    row.appendChild(peopleInput);
     row.appendChild(removeBtn);
     inputsBox.appendChild(row);
 
-    // オートコンプリート挙動を付与
     attachAutocomplete(input, suggest);
+    // 入力変化を通知（共有URL等が追従）
+    [input, peopleInput].forEach((el) =>
+      el.addEventListener("change", () => EkiHub.emit("inputs-change", readInputRows()))
+    );
+
+    if (preset) {
+      if (preset.name) input.value = preset.name;
+      if (preset.people) peopleInput.value = String(preset.people);
+      validateInput(input);
+    }
 
     renumberRows();
     if (focus) input.focus();
+    return row;
   }
 
   function removeInputRow(row) {
@@ -153,14 +295,39 @@
     setTimeout(() => {
       row.remove();
       renumberRows();
+      EkiHub.emit("inputs-change", readInputRows());
     }, 180);
   }
 
-  // 行番号を振り直す
   function renumberRows() {
     inputsBox.querySelectorAll(".input-row").forEach((row, i) => {
       row.querySelector(".input-row__index").textContent = String(i + 1);
     });
+  }
+
+  // 現在の入力行を読み取る
+  function readInputRows() {
+    return Array.from(inputsBox.querySelectorAll(".input-row")).map((row) => {
+      const name = row.querySelector(".js-station").value.trim();
+      const label = ""; // メンバー名ラベルは廃止（下流互換のため空文字を返す）
+      const peopleRaw = parseInt(row.querySelector(".js-people").value, 10);
+      const people = Number.isFinite(peopleRaw) && peopleRaw > 0 ? peopleRaw : 1;
+      return { name, label, people };
+    });
+  }
+
+  // 入力行を指定リストで置き換える
+  function setOrigins(list, options = {}) {
+    if (!Array.isArray(list) || list.length === 0) return;
+    inputsBox.innerHTML = "";
+    list.forEach((item) => {
+      const preset =
+        typeof item === "string" ? { name: item } : { name: item.name, label: item.label, people: item.people };
+      addInputRow(false, preset);
+    });
+    while (inputsBox.querySelectorAll(".input-row").length < MIN_INPUTS) addInputRow();
+    EkiHub.emit("inputs-change", readInputRows());
+    if (options.compute) onSubmit(new Event("submit"));
   }
 
   // ====================================================================
@@ -181,11 +348,9 @@
       renderSuggest(suggest, matches, input);
     });
 
-    // キーボード操作（上下選択・Enter確定）
     input.addEventListener("keydown", (e) => {
       const items = suggest.querySelectorAll(".suggest__item");
       if (!suggest.classList.contains("is-open") || items.length === 0) return;
-
       if (e.key === "ArrowDown") {
         e.preventDefault();
         activeIndex = (activeIndex + 1) % items.length;
@@ -204,13 +369,11 @@
       }
     });
 
-    // フォーカス喪失時に妥当性を確認
     input.addEventListener("blur", () => {
       setTimeout(() => validateInput(input), 150);
     });
   }
 
-  // 部分一致で駅を検索する（駅名・読みの両方）
   function searchStations(query) {
     const q = query.toLowerCase();
     return allStations.filter(
@@ -228,11 +391,12 @@
       const item = document.createElement("div");
       item.className = "suggest__item";
       const tag = s.isMajor ? " ★" : "";
-      item.innerHTML = `<span>${s.name}${tag}</span><span class="suggest__kana">${s.kana || ""}</span>`;
+      item.innerHTML = `<span>${escapeHtml(s.name)}${tag}</span><span class="suggest__kana">${escapeHtml(s.kana || "")}</span>`;
       item.addEventListener("click", () => {
         input.value = s.name;
         suggest.classList.remove("is-open");
         validateInput(input);
+        EkiHub.emit("inputs-change", readInputRows());
       });
       suggest.appendChild(item);
     });
@@ -248,7 +412,6 @@
     document.querySelectorAll(".suggest").forEach((s) => s.classList.remove("is-open"));
   }
 
-  // 入力が実在駅かを検証して見た目に反映する
   function validateInput(input) {
     const v = input.value.trim();
     if (v.length === 0) {
@@ -262,36 +425,33 @@
   }
 
   // ====================================================================
-  // モード切替
+  // モード・重み
   // ====================================================================
   function setMode(mode) {
     currentMode = mode === "A" ? "A" : "B";
+    EkiHub.state.currentMode = currentMode;
     modeToggle.querySelectorAll(".toggle__btn").forEach((btn) => {
       btn.classList.toggle("is-active", btn.dataset.mode === currentMode);
     });
     toggleSlider.classList.toggle("is-right", currentMode === "B");
   }
 
-  // スライダー値(0-100)を公平さ重み(0.0-1.0)へ変換する
   function getFairnessWeight() {
     return Number(weightSlider.value) / 100;
   }
 
-  // スライダー位置に応じてヒント文言を更新する
   function updateWeightHint() {
     const v = Number(weightSlider.value);
     let label;
     if (v <= 20) label = "近さ最優先";
     else if (v <= 40) label = "やや近さ重視";
-    else if (v < 60) label = "バランス";
-    else if (v === 60) label = "バランス";
+    else if (v <= 60) label = "バランス";
     else if (v <= 80) label = "やや公平さ重視";
     else label = "公平さ最優先";
     weightHint.textContent = label;
+    EkiHub.state.fairnessWeight = getFairnessWeight();
   }
 
-  // 既に結果が表示されている場合、現在の入力で自動的に再計算する
-  // （設定を触ると裏で再実行され、結果へ即反映される自然な操作感）
   function rerunIfPossible() {
     if (!lastData) return;
     onSubmit(new Event("submit"));
@@ -301,36 +461,51 @@
   // 送信・算出
   // ====================================================================
   async function onSubmit(e) {
-    e.preventDefault();
+    if (e && typeof e.preventDefault === "function") e.preventDefault();
     clearError();
 
-    // 入力値を収集
-    const inputs = Array.from(inputsBox.querySelectorAll("input"));
-    const origins = inputs.map((i) => i.value.trim()).filter((v) => v.length > 0);
+    const rows = readInputRows();
+    const origins = rows.map((r) => r.name).filter((v) => v.length > 0);
 
     if (origins.length < MIN_INPUTS) {
       flashError(`最寄駅を${MIN_INPUTS}駅以上入力してください.`);
       return;
     }
-    // 重複チェック
     const unique = new Set(origins);
     if (unique.size < origins.length) {
       flashError("同じ駅が重複しています.");
       return;
     }
 
+    // 駅名→ラベル のマップ（結果表示・共有で使用）
+    labelByStation = {};
+    const peopleCounts = [];
+    rows.forEach((r) => {
+      if (r.name) {
+        if (r.label) labelByStation[r.name] = r.label;
+        peopleCounts.push(r.people);
+      }
+    });
+
     setLoading(true);
     try {
       const res = await fetch("/api/center", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ origins, mode: currentMode, weight: getFairnessWeight() })
+        body: JSON.stringify({
+          origins,
+          mode: currentMode,
+          weight: getFairnessWeight(),
+          fareWeight: EkiHub.state.fareWeight,
+          peopleCounts
+        })
       });
       const data = await res.json();
       if (!res.ok) {
         flashError(data.error || "算出に失敗しました.");
         return;
       }
+      data.labels = labelByStation; // ラベルを結果へ添付
       renderResult(data);
     } catch (error) {
       flashError("通信エラーが発生しました: " + error.message);
@@ -342,9 +517,10 @@
   function setLoading(isLoading) {
     submitBtn.disabled = isLoading;
     submitBtn.classList.toggle("is-loading", isLoading);
-    submitBtn.querySelector(".btn__label").textContent = isLoading
-      ? "算出中…"
-      : "中心駅を算出する";
+    // i18nモジュールがあれば現在言語のラベルを尊重する
+    const idleLabel = EkiHub.t("compute", "中心駅を算出する");
+    const busyLabel = EkiHub.t("computing", "算出中…");
+    submitBtn.querySelector(".btn__label").textContent = isLoading ? busyLabel : idleLabel;
   }
 
   // ====================================================================
@@ -352,23 +528,27 @@
   // ====================================================================
   function renderResult(data) {
     lastData = data;
-    // 初期表示は最良候補（ランキング1位）を選択状態にする
+    EkiHub.state.lastData = data;
     selectCandidate(data.best, false);
-    // 結果へスムーズスクロール（モバイル配慮）
     document.getElementById("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    EkiHub.emit("result", data);
   }
 
-  // 指定した候補駅をカード・所要時間・地図へ反映する（ランキングからの切替にも使用）
+  // 駅名に対する表示名（メンバー名があれば併記）
+  function displayFrom(stationName) {
+    const label = (lastData && lastData.labels && lastData.labels[stationName]) || labelByStation[stationName];
+    return label ? `${escapeHtml(label)}（${escapeHtml(stationName)}）` : escapeHtml(stationName);
+  }
+
   function selectCandidate(station, doScroll = true) {
     if (!station || !lastData) return;
     selectedName = station.name;
+    EkiHub.state.selectedName = station.name;
 
-    // 中心駅カード
     const card = document.getElementById("resultCard");
     card.classList.remove("is-empty");
     card.querySelector(".result-card__content").hidden = false;
 
-    // 1位かどうかで見出しを出し分ける
     const isTop = lastData.best && lastData.best.name === station.name;
     document.querySelector(".result-card__eyebrow").textContent = isTop
       ? "提案された中心駅"
@@ -388,22 +568,35 @@
       linesBox.appendChild(li);
     });
 
+    // メトリクス（平均所要・ばらつき・重心距離・平均運賃）
     document.getElementById("bestAvg").textContent = station.averageMinutes;
     document.getElementById("bestFairness").textContent = "±" + station.fairness;
     document.getElementById("bestDist").textContent = station.distanceToCentroidKm;
+    const fareEl = document.getElementById("bestFare");
+    if (fareEl) fareEl.textContent = station.averageFareYen ? "¥" + station.averageFareYen.toLocaleString("ja-JP") : "—";
 
-    // 各駅からの所要時間バー（選択駅基準）
+    // 所要時間の範囲（公平性の直感的表示）＋データ出典
+    const rangeEl = document.getElementById("bestRange");
+    if (rangeEl) {
+      const source =
+        lastData.routingRefined || station.routed
+          ? "（実経路データ）"
+          : "（距離からの概算）";
+      const transfers =
+        typeof station.averageTransfers === "number"
+          ? ` ・平均乗換 ${station.averageTransfers}回`
+          : "";
+      rangeEl.textContent = `各メンバー ${station.minMinutes}〜${station.maxMinutes}分${transfers} ${source}`;
+    }
+
     renderTravelList(station.travelTimes);
-
-    // ランキング（選択中をハイライト）
     renderRanking(lastData.ranking);
-
-    // 地図描画（選択駅を中心マーカーにする）
     renderMap(lastData, station);
 
     if (doScroll) {
       document.getElementById("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
     }
+    EkiHub.emit("select", station);
   }
 
   function renderTravelList(travelTimes) {
@@ -417,12 +610,24 @@
       const li = document.createElement("li");
       li.className = "travel-item";
       li.style.animationDelay = `${i * 0.05}s`;
+      // 乗換回数（実経路データがある場合のみ表示）
+      const transfer =
+        typeof t.transfers === "number"
+          ? `<span class="badge badge--transfer">乗換${t.transfers}回</span>`
+          : "";
+      const direct =
+        t.directPossible && typeof t.transfers !== "number"
+          ? '<span class="badge badge--direct">直通</span>'
+          : "";
+      const fare = t.fareYen ? `<span class="travel-item__fare">¥${t.fareYen.toLocaleString("ja-JP")}</span>` : "";
       li.innerHTML = `
-        <span class="travel-item__name">${t.from}</span>
+        <span class="travel-item__name">${displayFrom(t.from)}</span>
         <span class="travel-item__bar"><span class="travel-item__fill"></span></span>
+        ${fare}
+        ${transfer}
+        ${direct}
         <span class="travel-item__min">${t.minutes}分</span>`;
       list.appendChild(li);
-      // バー幅をアニメーションさせる
       const fill = li.querySelector(".travel-item__fill");
       requestAnimationFrame(() => {
         fill.style.width = `${(t.minutes / maxMin) * 100}%`;
@@ -439,29 +644,25 @@
       return;
     }
     box.hidden = false;
-    // 全候補を順位つきで表示し、選択中の駅をハイライトする
     ranking.forEach((r, i) => {
       const li = document.createElement("li");
       li.className = "ranking-item";
       if (r.name === selectedName) li.classList.add("is-selected");
+      const fare = r.averageFareYen ? ` / ¥${r.averageFareYen.toLocaleString("ja-JP")}` : "";
       li.innerHTML = `
         <span class="ranking-item__rank">${i + 1}</span>
-        <span class="ranking-item__name">${r.name}</span>
-        <span class="ranking-item__meta">平均${r.averageMinutes}分 / ±${r.fairness} / ${r.distanceToCentroidKm}km</span>`;
-      // クリックでこの候補の詳細へ切り替える
+        <span class="ranking-item__name">${escapeHtml(r.name)}</span>
+        <span class="ranking-item__meta">平均${r.averageMinutes}分 / ±${r.fairness}${fare}</span>`;
       li.addEventListener("click", () => selectCandidate(r));
       list.appendChild(li);
     });
   }
 
-  // 地図に入力駅・中心駅・関係線を描画する
-  // selected: 中心マーカーとして強調する駅（未指定時は最良候補）
   function renderMap(data, selected) {
     const center = selected || data.best;
     markerLayer.clearLayers();
     const bounds = [];
 
-    // 入力駅マーカー
     data.origins.forEach((o, i) => {
       const icon = L.divIcon({
         className: "",
@@ -469,12 +670,12 @@
         iconSize: [26, 26],
         iconAnchor: [13, 13]
       });
+      const labelText = (data.labels && data.labels[o.name]) ? `${data.labels[o.name]}（${o.name}）` : o.name;
       L.marker([o.lat, o.lng], { icon })
         .addTo(markerLayer)
-        .bindPopup(`<b>${o.name}</b><br>最寄駅 ${i + 1}`);
+        .bindPopup(`<b>${escapeHtml(labelText)}</b><br>最寄駅 ${i + 1}${o.people > 1 ? " ・" + o.people + "人" : ""}`);
       bounds.push([o.lat, o.lng]);
 
-      // 選択駅への関係線
       L.polyline(
         [
           [o.lat, o.lng],
@@ -484,7 +685,6 @@
       ).addTo(markerLayer);
     });
 
-    // 中心（選択）駅マーカー
     const isTop = data.best && data.best.name === center.name;
     const centerIcon = L.divIcon({
       className: "",
@@ -494,11 +694,10 @@
     });
     L.marker([center.lat, center.lng], { icon: centerIcon })
       .addTo(markerLayer)
-      .bindPopup(`<b>${center.name}</b><br>${isTop ? "提案された中心駅" : "選択中の候補駅"}`)
+      .bindPopup(`<b>${escapeHtml(center.name)}</b><br>${isTop ? "提案された中心駅" : "選択中の候補駅"}`)
       .openPopup();
     bounds.push([center.lat, center.lng]);
 
-    // 重心位置（参考の小マーカー）
     L.circleMarker([data.centroid.lat, data.centroid.lng], {
       radius: 5,
       color: "#9d6bff",
@@ -510,13 +709,78 @@
       .bindPopup("入力駅の地理的重心");
     bounds.push([data.centroid.lat, data.centroid.lng]);
 
-    // 全マーカーが収まるよう地図をフィット
     map.flyToBounds(bounds, { padding: [50, 50], duration: 0.9, maxZoom: 14 });
   }
 
   // ====================================================================
-  // エラー表示ユーティリティ
+  // URL共有パラメータの反映
+  //   ?o=新宿,横浜  &mode=A/B  &w=0-100  &fw=0-100
+  //   &names=太郎,花子  &people=2,1  &t=2026-06-10T19:00
   // ====================================================================
+  function applyShareParams() {
+    const params = new URLSearchParams(location.search);
+    const o = params.get("o");
+    if (!o) return;
+    const names = (o.split(",").map((s) => s.trim()).filter(Boolean));
+    if (names.length < MIN_INPUTS) return;
+
+    const labels = (params.get("names") || "").split(",");
+    const peoples = (params.get("people") || "").split(",");
+    const list = names.map((name, i) => ({
+      name,
+      label: (labels[i] || "").trim(),
+      people: parseInt(peoples[i], 10) || 1
+    }));
+
+    const mode = params.get("mode");
+    if (mode === "A" || mode === "B") setMode(mode);
+    const w = parseInt(params.get("w"), 10);
+    if (Number.isFinite(w)) {
+      weightSlider.value = String(Math.min(100, Math.max(0, w)));
+      updateWeightHint();
+    }
+    const fw = parseInt(params.get("fw"), 10);
+    if (Number.isFinite(fw)) EkiHub.state.fareWeight = Math.min(1, Math.max(0, fw / 100));
+    const t = params.get("t");
+    if (t) EkiHub.setMeetingTime(t);
+
+    setOrigins(list, { compute: true });
+  }
+
+  // ====================================================================
+  // ヘルパー
+  // ====================================================================
+  function haversineMeters(lat1, lng1, lat2, lng2) {
+    const toRad = (d) => (d * Math.PI) / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+    return EARTH_RADIUS_M * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function nearestStation(lat, lng) {
+    let best = null;
+    let bestDist = Infinity;
+    for (const s of allStations) {
+      const d = haversineMeters(lat, lng, s.lat, s.lng);
+      if (d < bestDist) {
+        bestDist = d;
+        best = s;
+      }
+    }
+    return best ? { ...best, distanceM: Math.round(bestDist) } : null;
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
   function flashError(message) {
     errorBox.textContent = message;
   }

@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EkiHub — みんなの中心駅を探す</title>
     <meta name="description" content="複数人の最寄駅から、全員が集まりやすい中心駅を提案するWebアプリ" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0e1a'/%3E%3Ccircle cx='32' cy='28' r='13' fill='none' stroke='%2346e0c8' stroke-width='5'/%3E%3Cpath d='M32 41 L32 56' stroke='%235e7bff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
 
     <!-- Leaflet 地図ライブラリ -->
     <link
@@ -27,9 +31,11 @@
     <main class="app">
       <!-- ヘッダー -->
       <header class="hero">
+        <!-- 機能モジュール用ツールバー（テーマ/言語/履歴など） -->
+        <div id="toolbar" class="toolbar"></div>
         <div class="hero__badge">EkiHub</div>
-        <h1 class="hero__title">みんなの<span class="accent">中心駅</span>を探す</h1>
-        <p class="hero__lead">
+        <h1 class="hero__title" data-i18n="title">みんなの<span class="accent">中心駅</span>を探す</h1>
+        <p class="hero__lead" data-i18n="lead">
           複数人の最寄駅を入力すると、全員が集まりやすい駅をAIロジックが提案します。
         </p>
       </header>
@@ -88,8 +94,11 @@
               </div>
             </div>
 
+            <!-- 機能モジュール用コントロール枠（運賃重視・集合時刻など） -->
+            <div id="feature-controls"></div>
+
             <button type="submit" id="submitBtn" class="btn btn--primary">
-              <span class="btn__label">中心駅を算出する</span>
+              <span class="btn__label" data-i18n="compute">中心駅を算出する</span>
               <span class="btn__spinner" aria-hidden="true"></span>
             </button>
 
@@ -122,10 +131,19 @@
                   <span class="metric__label">時間のばらつき</span>
                 </div>
                 <div class="metric">
+                  <span class="metric__value" id="bestFare">—</span>
+                  <span class="metric__label">平均運賃(概算)</span>
+                </div>
+                <div class="metric">
                   <span class="metric__value" id="bestDist">—</span>
                   <span class="metric__label">重心までの距離(km)</span>
                 </div>
               </div>
+
+              <p id="bestRange" class="result-card__range"></p>
+
+              <!-- 機能モジュール用アクション枠（共有/QR/カレンダー/印刷など） -->
+              <div id="hero-actions" class="hero-actions"></div>
             </div>
           </div>
 
@@ -143,6 +161,9 @@
             <h4 class="ranking__title">候補駅ランキング（クリックで詳細を表示）</h4>
             <ul id="rankingItems"></ul>
           </div>
+
+          <!-- 機能モジュール用パネル枠（周辺スポット・出発時刻など） -->
+          <div id="feature-panels"></div>
         </section>
       </div>
 
@@ -157,6 +178,23 @@
       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
       crossorigin=""
     ></script>
+    <!-- QRコード生成ライブラリ（共有用） -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+    <!-- コア -->
     <script src="app.js"></script>
+
+    <!-- 機能モジュール（window.EkiHub を介して接続。順不同・独立） -->
+    <script defer src="js/features/themeToggle.js"></script>
+    <script defer src="js/features/i18n.js"></script>
+    <script defer src="js/features/geolocation.js"></script>
+    <script defer src="js/features/fareWeight.js"></script>
+    <script defer src="js/features/shareLink.js"></script>
+    <script defer src="js/features/qrShare.js"></script>
+    <script defer src="js/features/clipboardSummary.js"></script>
+    <script defer src="js/features/meetingTools.js"></script>
+    <script defer src="js/features/nearbySpots.js"></script>
+    <script defer src="js/features/historyFavorites.js"></script>
+    <script defer src="js/features/printExport.js"></script>
   </body>
 </html>
