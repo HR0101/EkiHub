@@ -514,6 +514,11 @@
     }
   }
 
+  // ローディング表示の最小時間(ms)。一瞬で終わっても点滅させずに見せる.
+  const LOADING_MIN_MS = 550;
+  let loadingShownAt = 0;
+  let loadingHideTimer = null;
+
   function setLoading(isLoading) {
     submitBtn.disabled = isLoading;
     submitBtn.classList.toggle("is-loading", isLoading);
@@ -521,6 +526,27 @@
     const idleLabel = EkiHub.t("compute", "中心駅を算出する");
     const busyLabel = EkiHub.t("computing", "算出中…");
     submitBtn.querySelector(".btn__label").textContent = isLoading ? busyLabel : idleLabel;
+
+    // 可愛いローディングオーバーレイの表示制御
+    const overlay = document.getElementById("loadingOverlay");
+    if (!overlay) return;
+    if (isLoading) {
+      if (loadingHideTimer) {
+        clearTimeout(loadingHideTimer);
+        loadingHideTimer = null;
+      }
+      loadingShownAt = performance.now();
+      overlay.hidden = false;
+    } else {
+      // 最小表示時間を満たすまで隠さない（一瞬の点滅を防ぐ）
+      const elapsed = performance.now() - loadingShownAt;
+      const remaining = Math.max(0, LOADING_MIN_MS - elapsed);
+      if (loadingHideTimer) clearTimeout(loadingHideTimer);
+      loadingHideTimer = setTimeout(() => {
+        overlay.hidden = true;
+        loadingHideTimer = null;
+      }, remaining);
+    }
   }
 
   // ====================================================================

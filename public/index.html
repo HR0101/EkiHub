@@ -164,6 +164,26 @@
 
           <!-- 機能モジュール用パネル枠（周辺スポット・出発時刻など） -->
           <div id="feature-panels"></div>
+
+          <!-- 算出中のローディング（小さな電車がコトコト走る） -->
+          <div id="loadingOverlay" class="loading" hidden aria-live="polite" role="status">
+            <div class="loading__box">
+              <div class="loading__scene">
+                <div class="loading__train" aria-hidden="true">
+                  <span class="train__smoke"></span>
+                  <span class="train__body"></span>
+                  <span class="train__window"></span>
+                  <span class="train__light"></span>
+                  <span class="train__wheel train__wheel--a"></span>
+                  <span class="train__wheel train__wheel--b"></span>
+                </div>
+                <div class="loading__rail" aria-hidden="true"></div>
+              </div>
+              <p class="loading__text">
+                ちょうどいい駅をさがしています<span class="loading__dots"><i>.</i><i>.</i><i>.</i></span>
+              </p>
+            </div>
+          </div>
         </section>
       </div>
 
