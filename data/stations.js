@@ -85,7 +85,7 @@ export const stations = [
   { name: "船橋",       kana: "ふなばし",       lat: 35.701736, lng: 139.985281, lines: ["JR総武線", "東武野田線", "京成本線"], ridership: 280000, isMajor: true },
   { name: "千葉",       kana: "ちば",           lat: 35.613165, lng: 140.113287, lines: ["JR各線", "千葉都市モノレール"], ridership: 200000, isMajor: true },
   { name: "柏",         kana: "かしわ",         lat: 35.862096, lng: 139.970917, lines: ["JR常磐線", "東武野田線"], ridership: 240000, isMajor: true },
-  { name: "町田",       kana: "まちだ",         lat: 35.541056, lng: 139.446658, lines: ["JR横浜線", "小田急"], ridership: 290000, isMajor: true },
+  { name: "町田",       kana: "まちだ",         lat: 35.544046, lng: 139.445125, lines: ["JR横浜線", "小田急"], ridership: 290000, isMajor: true },
 
   // ─── その他主要 ───────────────────────────────────────────
   { name: "表参道",     kana: "おもてさんどう", lat: 35.665247, lng: 139.71245,  lines: ["銀座線", "半蔵門線", "千代田線"], ridership: 230000, isMajor: true },
@@ -94,31 +94,31 @@ export const stations = [
   { name: "銀座",       kana: "ぎんざ",         lat: 35.671989, lng: 139.76506,  lines: ["銀座線", "丸ノ内線", "日比谷線"], ridership: 250000, isMajor: true },
 
   // ─── 千葉エリア（拡張） ───────────────────────────────────
-  { name: "海浜幕張",   kana: "かいひんまくはり", lat: 35.648434, lng: 140.034717, lines: ["JR京葉線"], ridership: 120000, isMajor: false },
-  { name: "幕張",       kana: "まくはり",       lat: 35.661911, lng: 140.060947, lines: ["JR総武線"], ridership: 30000, isMajor: false },
-  { name: "幕張本郷",   kana: "まくはりほんごう", lat: 35.66805,  lng: 140.045438, lines: ["JR総武線", "京成千葉線"], ridership: 60000, isMajor: false },
-  { name: "津田沼",     kana: "つだぬま",       lat: 35.688149, lng: 140.019547, lines: ["JR総武線", "JR総武快速線"], ridership: 200000, isMajor: true },
-  { name: "稲毛",       kana: "いなげ",         lat: 35.635214, lng: 140.082966, lines: ["JR総武線"], ridership: 90000, isMajor: false },
-  { name: "新浦安",     kana: "しんうらやす",   lat: 35.659542, lng: 139.916123, lines: ["JR京葉線"], ridership: 100000, isMajor: false },
+  { name: "海浜幕張",   kana: "かいひんまくはり", lat: 35.648423, lng: 140.041921, lines: ["JR京葉線"], ridership: 120000, isMajor: false },
+  { name: "幕張",       kana: "まくはり",       lat: 35.659323, lng: 140.057986, lines: ["JR総武線"], ridership: 30000, isMajor: false },
+  { name: "幕張本郷",   kana: "まくはりほんごう", lat: 35.672696,  lng: 140.042296, lines: ["JR総武線", "京成千葉線"], ridership: 60000, isMajor: false },
+  { name: "津田沼",     kana: "つだぬま",       lat: 35.691389, lng: 140.02019, lines: ["JR総武線", "JR総武快速線"], ridership: 200000, isMajor: true },
+  { name: "稲毛",       kana: "いなげ",         lat: 35.637085, lng: 140.092567, lines: ["JR総武線"], ridership: 90000, isMajor: false },
+  { name: "新浦安",     kana: "しんうらやす",   lat: 35.649534, lng: 139.912495, lines: ["JR京葉線"], ridership: 100000, isMajor: false },
   { name: "舞浜",       kana: "まいはま",       lat: 35.635805, lng: 139.880975, lines: ["JR京葉線"], ridership: 120000, isMajor: false },
   { name: "市川",       kana: "いちかわ",       lat: 35.731088, lng: 139.907235, lines: ["JR総武線", "JR総武快速線"], ridership: 140000, isMajor: false },
   { name: "本八幡",     kana: "もとやわた",     lat: 35.721635, lng: 139.928944, lines: ["JR総武線", "都営新宿線", "京成八幡"], ridership: 130000, isMajor: false },
   { name: "松戸",       kana: "まつど",         lat: 35.78564,  lng: 139.901089, lines: ["JR常磐線", "新京成線"], ridership: 220000, isMajor: true },
 
   // ─── 埼玉エリア（拡張） ───────────────────────────────────
-  { name: "川口",       kana: "かわぐち",       lat: 35.80747,  lng: 139.720729, lines: ["JR京浜東北線"], ridership: 170000, isMajor: false },
-  { name: "南浦和",     kana: "みなみうらわ",   lat: 35.839748, lng: 139.66946,  lines: ["JR京浜東北線", "JR武蔵野線"], ridership: 140000, isMajor: false },
-  { name: "武蔵浦和",   kana: "むさしうらわ",   lat: 35.846543, lng: 139.643021, lines: ["JR埼京線", "JR武蔵野線"], ridership: 120000, isMajor: false },
-  { name: "和光市",     kana: "わこうし",       lat: 35.78468,  lng: 139.605163, lines: ["東武東上線", "有楽町線", "副都心線"], ridership: 170000, isMajor: false },
-  { name: "所沢",       kana: "ところざわ",     lat: 35.799396, lng: 139.469075, lines: ["西武池袋線", "西武新宿線"], ridership: 230000, isMajor: true },
-  { name: "越谷",       kana: "こしがや",       lat: 35.891239, lng: 139.790698, lines: ["東武スカイツリーライン"], ridership: 90000, isMajor: false },
-  { name: "春日部",     kana: "かすかべ",       lat: 35.975205, lng: 139.752073, lines: ["東武スカイツリーライン", "東武野田線"], ridership: 120000, isMajor: false },
+  { name: "川口",       kana: "かわぐち",       lat: 35.801926,  lng: 139.717512, lines: ["JR京浜東北線"], ridership: 170000, isMajor: false },
+  { name: "南浦和",     kana: "みなみうらわ",   lat: 35.847732, lng: 139.669144,  lines: ["JR京浜東北線", "JR武蔵野線"], ridership: 140000, isMajor: false },
+  { name: "武蔵浦和",   kana: "むさしうらわ",   lat: 35.845969, lng: 139.647066, lines: ["JR埼京線", "JR武蔵野線"], ridership: 120000, isMajor: false },
+  { name: "和光市",     kana: "わこうし",       lat: 35.78841,  lng: 139.612673, lines: ["東武東上線", "有楽町線", "副都心線"], ridership: 170000, isMajor: false },
+  { name: "所沢",       kana: "ところざわ",     lat: 35.786791, lng: 139.47331, lines: ["西武池袋線", "西武新宿線"], ridership: 230000, isMajor: true },
+  { name: "越谷",       kana: "こしがや",       lat: 35.888299, lng: 139.785955, lines: ["東武スカイツリーライン"], ridership: 90000, isMajor: false },
+  { name: "春日部",     kana: "かすかべ",       lat: 35.980074, lng: 139.752079, lines: ["東武スカイツリーライン", "東武野田線"], ridership: 120000, isMajor: false },
 
   // ─── 神奈川エリア（拡張） ─────────────────────────────────
   { name: "新横浜",     kana: "しんよこはま",   lat: 35.50745,  lng: 139.617056, lines: ["JR横浜線", "東海道新幹線", "横浜市営地下鉄", "東急新横浜線"], ridership: 320000, isMajor: true },
   { name: "鶴見",       kana: "つるみ",         lat: 35.507665, lng: 139.676863, lines: ["JR京浜東北線", "JR鶴見線"], ridership: 170000, isMajor: false },
   { name: "戸塚",       kana: "とつか",         lat: 35.40058,  lng: 139.53413,  lines: ["JR東海道線", "JR横須賀線", "横浜市営地下鉄"], ridership: 280000, isMajor: true },
-  { name: "大船",       kana: "おおふな",       lat: 35.351399, lng: 139.531884, lines: ["JR東海道線", "JR横須賀線", "湘南モノレール"], ridership: 230000, isMajor: true },
+  { name: "大船",       kana: "おおふな",       lat: 35.354309, lng: 139.531433, lines: ["JR東海道線", "JR横須賀線", "湘南モノレール"], ridership: 230000, isMajor: true },
   { name: "藤沢",       kana: "ふじさわ",       lat: 35.338637, lng: 139.487759, lines: ["JR東海道線", "小田急江ノ島線", "江ノ電"], ridership: 280000, isMajor: true },
   { name: "鎌倉",       kana: "かまくら",       lat: 35.319042, lng: 139.55008,  lines: ["JR横須賀線", "江ノ電"], ridership: 100000, isMajor: false },
   { name: "本厚木",     kana: "ほんあつぎ",     lat: 35.43855,  lng: 139.365171, lines: ["小田急"], ridership: 280000, isMajor: true },
@@ -130,7 +130,7 @@ export const stations = [
   { name: "八王子",     kana: "はちおうじ",     lat: 35.65557,  lng: 139.338998, lines: ["JR中央線", "JR横浜線", "JR八高線"], ridership: 240000, isMajor: true },
   { name: "多摩センター", kana: "たません",     lat: 35.624858, lng: 139.42064,  lines: ["京王相模原線", "小田急多摩線", "多摩モノレール"], ridership: 150000, isMajor: false },
   { name: "府中",       kana: "ふちゅう",       lat: 35.671988, lng: 139.480257, lines: ["京王線"], ridership: 110000, isMajor: false },
-  { name: "分倍河原",   kana: "ぶばいがわら",   lat: 35.663607, lng: 139.471548, lines: ["京王線", "JR南武線"], ridership: 100000, isMajor: false },
-  { name: "拝島",       kana: "はいじま",       lat: 35.71759,  lng: 139.353601, lines: ["JR青梅線", "JR五日市線", "西武拝島線"], ridership: 80000, isMajor: false },
+  { name: "分倍河原",   kana: "ぶばいがわら",   lat: 35.668448, lng: 139.468995, lines: ["京王線", "JR南武線"], ridership: 100000, isMajor: false },
+  { name: "拝島",       kana: "はいじま",       lat: 35.721133,  lng: 139.343626, lines: ["JR青梅線", "JR五日市線", "西武拝島線"], ridership: 80000, isMajor: false },
   { name: "聖蹟桜ヶ丘", kana: "せいせきさくらがおか", lat: 35.650607, lng: 139.446694, lines: ["京王線"], ridership: 80000, isMajor: false }
 ];
