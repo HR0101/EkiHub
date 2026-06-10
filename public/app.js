@@ -604,10 +604,15 @@
     // 所要時間の範囲（公平性の直感的表示）＋データ出典
     const rangeEl = document.getElementById("bestRange");
     if (rangeEl) {
-      const source =
-        lastData.routingRefined || station.routed
-          ? "（実経路データ）"
-          : "（距離からの概算）";
+      // データ出典の表示: 実経路(OTP) > 鉄道網ルート概算(グラフ) > 直線概算
+      let source;
+      if (lastData.routingRefined || station.routed) {
+        source = "（実経路データ）";
+      } else if (lastData.routingMethod === "graph") {
+        source = "（鉄道網ルート概算）";
+      } else {
+        source = "（距離からの概算）";
+      }
       const transfers =
         typeof station.averageTransfers === "number"
           ? ` ・平均乗換 ${station.averageTransfers}回`

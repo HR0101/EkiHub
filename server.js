@@ -15,6 +15,7 @@ import { readFileSync, existsSync } from "fs";
 
 import { stations as embeddedStations } from "./data/stations.js";
 import { computeCenterStation } from "./lib/centerLogic.js";
+import { getOrBuildGraph } from "./lib/stationGraph.js";
 import { fetchNearbySpots, CATEGORY_LABELS } from "./lib/poiService.js";
 import { makeProviderFromEnv } from "./lib/routeProvider.js";
 
@@ -277,4 +278,20 @@ app.listen(PORT, () => {
   console.log(
     `経路API: ${ROUTING_ENABLED ? `有効（${process.env.ROUTING_PROVIDER}）` : "無効（距離概算で動作）"}`
   );
+
+  // 駅ネットワークグラフを起動時に構築しておく（初回リクエストの遅延を避ける）.
+  // 失敗しても /api/center 側で都度構築されるため致命的ではない.
+  loadStations()
+    .then((stations) => {
+      const start = Date.now();
+      const graph = getOrBuildGraph(stations);
+      const edges = graph.adjacency.reduce((sum, list) => sum + list.length, 0) / 2;
+      console.log(
+        `駅ネットワーク構築: ${graph.count}駅 / ${edges}区間 (${Date.now() - start}ms) ` +
+          `― 経路ベースで中心駅を算出します`
+      );
+    })
+    .catch((error) => {
+      console.error("駅ネットワークの事前構築に失敗:", error.message);
+    });
 });
