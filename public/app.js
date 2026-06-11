@@ -344,8 +344,8 @@
         suggest.classList.remove("is-open");
         return;
       }
-      const matches = searchStations(q).slice(0, 8);
-      renderSuggest(suggest, matches, input);
+      const matches = searchStations(q);
+      renderSuggest(suggest, matches, input, q);
     });
 
     input.addEventListener("keydown", (e) => {
@@ -374,14 +374,139 @@
     });
   }
 
-  function searchStations(query) {
-    const q = query.toLowerCase();
-    return allStations.filter(
-      (s) => s.name.includes(query) || (s.kana && s.kana.toLowerCase().includes(q))
+  // ===== 入力補完ヘルパー =====
+
+  // ローマ字→ひらがな変換テーブル（ワープロローマ字）
+  const ROMAJI_TO_HIRAGANA = {
+    'a':'あ','i':'い','u':'う','e':'え','o':'お',
+    'ka':'か','ki':'き','ku':'く','ke':'け','ko':'こ',
+    'sa':'さ','shi':'し','si':'し','su':'す','se':'せ','so':'そ',
+    'ta':'た','chi':'ち','ti':'ち','tsu':'つ','tu':'つ','te':'て','to':'と',
+    'na':'な','ni':'に','nu':'ぬ','ne':'ね','no':'の',
+    'ha':'は','hi':'ひ','fu':'ふ','hu':'ふ','he':'へ','ho':'ほ',
+    'ma':'ま','mi':'み','mu':'む','me':'め','mo':'も',
+    'ya':'や','yu':'ゆ','yo':'よ',
+    'ra':'ら','ri':'り','ru':'る','re':'れ','ro':'ろ',
+    'wa':'わ','wo':'を','n':'ん',
+    'ga':'が','gi':'ぎ','gu':'ぐ','ge':'げ','go':'ご',
+    'za':'ざ','ji':'じ','zi':'じ','zu':'ず','ze':'ぜ','zo':'ぞ',
+    'da':'だ','de':'で','do':'ど',
+    'ba':'ば','bi':'び','bu':'ぶ','be':'べ','bo':'ぼ',
+    'pa':'ぱ','pi':'ぴ','pu':'ぷ','pe':'ぺ','po':'ぽ',
+    'kya':'きゃ','kyu':'きゅ','kyo':'きょ',
+    'sha':'しゃ','shu':'しゅ','sho':'しょ',
+    'cha':'ちゃ','chu':'ちゅ','cho':'ちょ',
+    'tya':'ちゃ','tyu':'ちゅ','tyo':'ちょ',
+    'nya':'にゃ','nyu':'にゅ','nyo':'にょ',
+    'hya':'ひゃ','hyu':'ひゅ','hyo':'ひょ',
+    'mya':'みゃ','myu':'みゅ','myo':'みょ',
+    'rya':'りゃ','ryu':'りゅ','ryo':'りょ',
+    'gya':'ぎゃ','gyu':'ぎゅ','gyo':'ぎょ',
+    'ja':'じゃ','ju':'じゅ','jo':'じょ',
+    'bya':'びゃ','byu':'びゅ','byo':'びょ',
+    'pya':'ぴゃ','pyu':'ぴゅ','pyo':'ぴょ',
+  };
+
+  // カタカナ→ひらがな（比較時の正規化に使用）
+  function katakanaToHiragana(str) {
+    return str.replace(/[ァ-ヶ]/g, (ch) =>
+      String.fromCharCode(ch.charCodeAt(0) - 0x60)
     );
   }
 
-  function renderSuggest(suggest, matches, input) {
+  // ローマ字→ひらがな（変換できない文字はそのまま残す）
+  function romajiToHiragana(str) {
+    let result = '';
+    let i = 0;
+    const s = str.toLowerCase();
+    while (i < s.length) {
+      // 重子音（tt/kk など）→ っ
+      if (
+        i + 1 < s.length &&
+        s[i] !== 'n' &&
+        s[i] === s[i + 1] &&
+        /[bcdfghjklmnpqrstvwxyz]/.test(s[i])
+      ) {
+        result += 'っ';
+        i++;
+        continue;
+      }
+      let matched = false;
+      for (let len = Math.min(3, s.length - i); len >= 1; len--) {
+        const chunk = s.slice(i, i + len);
+        if (ROMAJI_TO_HIRAGANA[chunk]) {
+          result += ROMAJI_TO_HIRAGANA[chunk];
+          i += len;
+          matched = true;
+          break;
+        }
+      }
+      if (!matched) { result += s[i]; i++; }
+    }
+    return result;
+  }
+
+  // 駅のスコアを計算する（前方一致 > 部分一致、乗降客数で tie-break）
+  function scoreStation(s, query) {
+    const name = s.name;
+    const kana = katakanaToHiragana((s.kana || '').toLowerCase());
+    const qLower = query.toLowerCase();
+    const qHira = katakanaToHiragana(qLower);
+    const qFromRomaji = romajiToHiragana(qLower);
+
+    let score = 0;
+
+    // 駅名マッチ
+    if (name === query) score += 1000;
+    else if (name.startsWith(query)) score += 500;
+    else if (name.includes(query)) score += 200;
+
+    // かなマッチ（ひらがな統一）
+    if (kana === qHira) score += 900;
+    else if (kana.startsWith(qHira)) score += 400;
+    else if (kana.includes(qHira)) score += 150;
+
+    // ローマ字変換後のかなマッチ（実際に変換された場合のみ）
+    if (qFromRomaji !== qLower) {
+      if (kana === qFromRomaji) score += 850;
+      else if (kana.startsWith(qFromRomaji)) score += 350;
+      else if (kana.includes(qFromRomaji)) score += 120;
+    }
+
+    if (score === 0) return 0;
+
+    // 乗降客数・主要駅ボーナス（スコアが近い場合の tie-break）
+    if (s.ridership) score += Math.min(Math.floor(Math.log10(s.ridership) * 8), 80);
+    if (s.isMajor) score += 20;
+
+    return score;
+  }
+
+  function searchStations(query) {
+    const q = query.trim();
+    if (!q) return [];
+    const scored = [];
+    for (const s of allStations) {
+      const sc = scoreStation(s, q);
+      if (sc > 0) scored.push({ station: s, score: sc });
+    }
+    scored.sort((a, b) => b.score - a.score);
+    return scored.slice(0, 10).map((x) => x.station);
+  }
+
+  // 駅名のマッチ部分を <mark> でハイライトして返す
+  function highlightMatch(name, query) {
+    if (!query) return escapeHtml(name);
+    const idx = name.indexOf(query);
+    if (idx === -1) return escapeHtml(name);
+    return (
+      escapeHtml(name.slice(0, idx)) +
+      '<mark class="suggest__hl">' + escapeHtml(query) + '</mark>' +
+      escapeHtml(name.slice(idx + query.length))
+    );
+  }
+
+  function renderSuggest(suggest, matches, input, query) {
     suggest.innerHTML = "";
     if (matches.length === 0) {
       suggest.classList.remove("is-open");
@@ -390,8 +515,23 @@
     matches.forEach((s) => {
       const item = document.createElement("div");
       item.className = "suggest__item";
-      const tag = s.isMajor ? " ★" : "";
-      item.innerHTML = `<span>${escapeHtml(s.name)}${tag}</span><span class="suggest__kana">${escapeHtml(s.kana || "")}</span>`;
+
+      const nameHtml = highlightMatch(s.name, query);
+      const majorHtml = s.isMajor
+        ? '<span class="suggest__major">★</span>'
+        : '';
+      const lines = (s.lines || []).slice(0, 2);
+      const linesHtml = lines.length
+        ? `<div class="suggest__sub">${lines.map((l) => escapeHtml(l)).join('<span class="suggest__dot"> · </span>')}</div>`
+        : '';
+
+      item.innerHTML = `
+        <div class="suggest__main">
+          <span class="suggest__name">${nameHtml}${majorHtml}</span>
+          <span class="suggest__kana">${escapeHtml(s.kana || '')}</span>
+        </div>
+        ${linesHtml}`;
+
       item.addEventListener("click", () => {
         input.value = s.name;
         suggest.classList.remove("is-open");
