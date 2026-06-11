@@ -382,6 +382,80 @@
     }
   };
 
+  // Google Calendar URL用の日時文字列(YYYYMMDDTHHMMSS)を生成する
+  const toGCalLocal = (date) => {
+    const p = (n) => String(n).padStart(2, "0");
+    return (
+      `${date.getFullYear()}${p(date.getMonth() + 1)}${p(date.getDate())}` +
+      `T${p(date.getHours())}${p(date.getMinutes())}${p(date.getSeconds())}`
+    );
+  };
+
+  // Google Calendar に追加するURLを生成する
+  const buildGoogleCalendarUrl = (stationName, meetingDate) => {
+    const start = meetingDate;
+    const end = new Date(meetingDate.getTime() + EVENT_DURATION_HOURS * 3600000);
+    const summary = E.t
+      ? E.t("meeting.icsSummary", "{station}で集合").replace("{station}", stationName)
+      : `${stationName}で集合`;
+
+    const params = new URLSearchParams({
+      action: "TEMPLATE",
+      text: summary,
+      dates: `${toGCalLocal(start)}/${toGCalLocal(end)}`,
+      location: stationName,
+    });
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  };
+
+  // Googleカレンダーボタン押下時の処理
+  const handleGoogleCalendarClick = () => {
+    try {
+      const meetingStr = E.getMeetingTime ? E.getMeetingTime() : null;
+      const meetingDate = parseMeeting(meetingStr);
+
+      if (!meetingDate) {
+        showToast(
+          E.t ? E.t("meeting.needTime", "集合時刻を入力してください") : "集合時刻を入力してください"
+        );
+        return;
+      }
+
+      const selected = E.getSelected ? E.getSelected() : null;
+      const data = E.getResult ? E.getResult() : null;
+      const station = selected || (data && data.best ? data.best : null);
+
+      if (!station || !station.name) {
+        showToast(
+          E.t ? E.t("meeting.needStation", "先に中心駅を算出してください") : "先に中心駅を算出してください"
+        );
+        return;
+      }
+
+      const url = buildGoogleCalendarUrl(station.name, meetingDate);
+      window.open(url, "_blank", "noopener,noreferrer");
+    } catch (err) {
+      console.error("[meetingTools] Googleカレンダー追加に失敗しました:", err);
+      showToast(
+        E.t ? E.t("meeting.icsError", "カレンダーの生成に失敗しました") : "カレンダーの生成に失敗しました"
+      );
+    }
+  };
+
+  const mountGoogleCalendarButton = () => {
+    const host = document.getElementById("hero-actions");
+    if (!host) return;
+    if (host.querySelector('[data-meeting-tools="gcal"]')) return;
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tool-btn";
+    btn.setAttribute("data-meeting-tools", "gcal");
+    btn.textContent = E.t ? E.t("meeting.addToGcal", "Googleカレンダー") : "Googleカレンダー";
+    btn.addEventListener("click", handleGoogleCalendarClick);
+    host.appendChild(btn);
+  };
+
   // ボタン押下時の処理
   const handleCalendarClick = () => {
     try {
@@ -448,6 +522,7 @@
     mountControl();
     mountPanel();
     mountCalendarButton();
+    mountGoogleCalendarButton();
     renderPanel();
 
     if (typeof E.on === "function") {
@@ -456,6 +531,7 @@
         mountControl();
         mountPanel();
         mountCalendarButton();
+        mountGoogleCalendarButton();
         renderPanel();
       };
       E.on("result", refresh);
