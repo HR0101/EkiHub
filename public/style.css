@@ -273,6 +273,8 @@ body {
 
 .suggest__name {
   font-weight: 600;
+  white-space: nowrap; /* 駅名が縦に崩れるのを防ぐ */
+  flex-shrink: 0;      /* 駅名は絶対に縮まない */
 }
 
 .suggest__major {
@@ -291,7 +293,11 @@ body {
 .suggest__kana {
   color: var(--text-faint);
   font-size: 0.78rem;
-  flex-shrink: 0;
+  flex-shrink: 1;      /* かなは縮んでよい */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .suggest__sub {
