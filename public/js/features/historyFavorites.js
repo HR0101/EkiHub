@@ -31,28 +31,23 @@
   E.injectStyle(
     "historyFavorites-style",
     `
-    .hf--wrap {
-      position: relative;
-      display: inline-block;
-    }
     .hf--panel {
-      position: absolute;
-      top: calc(100% + 6px);
-      right: 0;
-      z-index: 1200;
+      position: fixed;
+      z-index: 1800;
       width: 300px;
       max-height: 60vh;
       overflow-y: auto;
       padding: 8px;
       border-radius: 10px;
-      background: #1b2230;
-      color: #e8edf5;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+      background: var(--bg-panel-solid, #141a2c);
+      color: var(--text-main, #eef2ff);
+      border: 1px solid var(--border-soft, rgba(255,255,255,0.12));
+      box-shadow: 0 20px 60px rgba(0,0,0,0.55);
       display: none;
     }
     .hf--panel.is-open {
       display: block;
+      animation: fadeUp 0.18s ease both;
     }
     .hf--section-title {
       font-size: 11px;
@@ -466,6 +461,32 @@
     closePanel();
   }
 
+  // パネルをボタン直下に配置する（画面端からはみ出さないよう調整）
+  function positionPanel() {
+    if (!buttonEl || !panelEl) return;
+    const rect = buttonEl.getBoundingClientRect();
+    const panelW = 300;
+    const gap = 6;
+
+    let top  = rect.bottom + gap;
+    let left = rect.left;
+
+    // 右端からはみ出す場合は右揃え
+    if (left + panelW > window.innerWidth - 12) {
+      left = window.innerWidth - panelW - 12;
+    }
+    left = Math.max(12, left);
+
+    // 下端からはみ出す場合はボタン上に出す
+    const panelH = panelEl.offsetHeight || 300;
+    if (top + panelH > window.innerHeight - 12) {
+      top = rect.top - panelH - gap;
+    }
+
+    panelEl.style.top  = Math.max(8, top) + "px";
+    panelEl.style.left = left + "px";
+  }
+
   // パネルを開く
   function openPanel() {
     if (!panelEl) return;
@@ -473,6 +494,7 @@
     panelEl.classList.add("is-open");
     isOpen = true;
     if (buttonEl) buttonEl.setAttribute("aria-expanded", "true");
+    positionPanel();
     // 外側クリック監視を登録(次のイベントループで付与し直後のクリックを無視)
     outsideClickHandler = handleOutsideClick;
     window.setTimeout(() => {
@@ -500,20 +522,14 @@
   }
 
   // ===== マウント =====
-  // ツールバーへボタンとパネルを設置する
+  // ツールバーへボタンを設置し、パネルは body 直下に配置する
   function mount() {
     const toolbar = document.getElementById("toolbar");
-    // 拡張枠が無ければ何もしない(nullガード)
     if (!toolbar) {
       console.warn("historyFavorites: #toolbar が見つかりません");
       return;
     }
-    // 二重生成防止
     if (document.getElementById(BUTTON_ID)) return;
-
-    // 相対配置の親(ボタンとパネルを内包)
-    const wrap = document.createElement("div");
-    wrap.className = "hf--wrap";
 
     buttonEl = document.createElement("button");
     buttonEl.type = "button";
@@ -526,14 +542,13 @@
       ev.stopPropagation();
       togglePanel();
     });
+    toolbar.appendChild(buttonEl);
 
+    // パネルは body 直下に置き position:fixed で位置を制御する
     panelEl = document.createElement("div");
     panelEl.id = PANEL_ID;
     panelEl.className = "hf--panel";
-
-    wrap.appendChild(buttonEl);
-    wrap.appendChild(panelEl);
-    toolbar.appendChild(wrap);
+    document.body.appendChild(panelEl);
   }
 
   // ===== 初期化 =====
