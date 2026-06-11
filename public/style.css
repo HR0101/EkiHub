@@ -1137,6 +1137,42 @@ body {
   }
 }
 
+/* ===== 印刷・PDF書き出し（背景グラフィックOFF対応） ===== */
+@media print {
+  /* グラデーションテキストを黒文字に戻す（-webkit-text-fill-color が color より優先されるため明示上書き） */
+  .hero__title .accent {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: #000000 !important;
+    color: #000000 !important;
+  }
+
+  .result-card__name {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: #000000 !important;
+    color: #000000 !important;
+  }
+
+  /* 地図は操作不能なため非表示・余白も完全に消す */
+  .map {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+  }
+
+  /* オーロラ背景を非表示 */
+  .aurora {
+    display: none !important;
+  }
+}
+
 @keyframes popIn {
   0% {
     opacity: 0;

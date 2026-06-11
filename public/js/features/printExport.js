@@ -92,6 +92,11 @@
       }
       .hero__title .accent {
         color: #000000 !important;
+        /* グラデーションテキストを解除して黒文字で表示 */
+        background: none !important;
+        -webkit-background-clip: unset !important;
+        background-clip: unset !important;
+        -webkit-text-fill-color: #000000 !important;
       }
       .hero__lead {
         color: #000000 !important;
@@ -122,6 +127,11 @@
         color: #000000 !important;
         font-size: 20pt !important;
         margin: 1mm 0 !important;
+        /* グラデーションテキストを解除して黒文字で表示 */
+        background: none !important;
+        -webkit-background-clip: unset !important;
+        background-clip: unset !important;
+        -webkit-text-fill-color: #000000 !important;
       }
       .result-card__kana {
         color: #000000 !important;
@@ -156,9 +166,15 @@
         font-size: 8pt !important;
       }
 
-      /* 地図は印刷不要(操作不能なため非表示) */
+      /* 地図は印刷不要(操作不能なため非表示・余白も消す) */
       .map {
         display: none !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        border: none !important;
       }
 
       /* 所要時間リスト: 常に表示し白地・黒文字へ */
