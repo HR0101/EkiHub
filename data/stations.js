@@ -94,7 +94,7 @@ export const stations = [
   { name: "銀座",       kana: "ぎんざ",         lat: 35.671989, lng: 139.76506,  lines: ["銀座線", "丸ノ内線", "日比谷線"], ridership: 250000, isMajor: true },
 
   // ─── 千葉エリア（拡張） ───────────────────────────────────
-  { name: "海浜幕張",   kana: "かいひんまくはり", lat: 35.648423, lng: 140.041921, lines: ["JR京葉線"], ridership: 120000, isMajor: false },
+  { name: "海浜幕張",   kana: "かいひんまくはり", lat: 35.648423, lng: 140.041921, lines: ["JR京葉線"], ridership: 120000, isMajor: true },
   { name: "幕張",       kana: "まくはり",       lat: 35.659323, lng: 140.057986, lines: ["JR総武線"], ridership: 30000, isMajor: false },
   { name: "幕張本郷",   kana: "まくはりほんごう", lat: 35.672696,  lng: 140.042296, lines: ["JR総武線", "京成千葉線"], ridership: 60000, isMajor: false },
   { name: "津田沼",     kana: "つだぬま",       lat: 35.691389, lng: 140.02019, lines: ["JR総武線", "JR総武快速線"], ridership: 200000, isMajor: true },
