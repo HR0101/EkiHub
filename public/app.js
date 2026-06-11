@@ -494,7 +494,7 @@
       if (sc > 0) scored.push({ station: s, score: sc });
     }
     scored.sort((a, b) => b.score - a.score);
-    return scored.slice(0, 10).map((x) => x.station);
+    return scored.map((x) => x.station);
   }
 
   // 駅名のマッチ部分を <mark> でハイライトして返す
