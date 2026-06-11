@@ -1073,10 +1073,146 @@ body {
 }
 
 @media (max-width: 600px) {
+  /* ツールバーを上部固定から通常フローへ */
   .toolbar {
     position: static;
     justify-content: center;
     margin-bottom: 16px;
+  }
+
+  /* アプリ全体の余白を縮小 */
+  .app {
+    padding: 24px 14px 24px;
+  }
+
+  /* iOS Safari の自動ズーム防止（font-size < 16px のinputにフォーカスするとズームする） */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* ヒーロー */
+  .hero {
+    margin-bottom: 24px;
+  }
+
+  /* パネル・結果カードの余白縮小 */
+  .panel,
+  .result-card {
+    padding: 20px 16px;
+  }
+
+  /* 所要時間・ランキングの余白縮小 */
+  .travel-list,
+  .ranking {
+    padding: 18px 16px;
+  }
+
+  /* 機能パネルの余白縮小 */
+  .fpanel {
+    padding: 16px;
+  }
+
+  /* 所要時間アイテム: 名前幅・分数幅を狭く、バッジは2行目へ折り返す */
+  .travel-item {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .travel-item__name {
+    flex: 0 0 88px;
+    font-size: 0.84rem;
+  }
+  .travel-item__bar {
+    flex: 1 1 60px;
+  }
+  .travel-item__min {
+    flex: 0 0 44px;
+    font-size: 0.82rem;
+  }
+  .travel-item__fare {
+    font-size: 0.78rem;
+  }
+  /* バッジ類は行末に寄せる */
+  .badge {
+    font-size: 0.62rem;
+    padding: 2px 5px;
+  }
+
+  /* ランキング: メタ情報を折り返す */
+  .ranking-item {
+    flex-wrap: wrap;
+    row-gap: 2px;
+  }
+  .ranking-item__meta {
+    flex-basis: 100%;
+    padding-left: 38px;
+    font-size: 0.74rem;
+  }
+
+  /* ツールボタンを小さく */
+  .tool-btn {
+    padding: 8px 11px;
+    font-size: 0.8rem;
+  }
+
+  /* 地図の高さを縮小 */
+  .map {
+    height: 260px;
+  }
+
+  /* サジェストの最大高さを縮小（キーボードが出た際の重なり防止） */
+  .suggest {
+    max-height: 220px;
+  }
+}
+
+/* ===== 極小スマホ（480px以下）向け追加調整 ===== */
+@media (max-width: 480px) {
+  .app {
+    padding: 16px 12px 20px;
+  }
+
+  /* メトリクスを2列に（4枚あるので 2×2 グリッド） */
+  .metrics {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* 所要時間の名前をさらに縮小し、バーが潰れないよう最小幅を確保 */
+  .travel-item__name {
+    flex: 0 0 72px;
+    font-size: 0.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .travel-item__bar {
+    min-width: 40px;
+  }
+  .travel-item__min {
+    flex: 0 0 38px;
+    font-size: 0.78rem;
+  }
+
+  /* 地図をさらに縮小 */
+  .map {
+    height: 220px;
+  }
+
+  /* 結果カードの駅名フォントサイズを抑える */
+  .result-card__name {
+    font-size: clamp(1.6rem, 8vw, 2.4rem);
+  }
+
+  /* ランキングアイテムのメタをもう少し詰める */
+  .ranking-item__meta {
+    font-size: 0.7rem;
+  }
+
+  /* hero-actionsのボタンを小さく */
+  .hero-actions .tool-btn {
+    padding: 7px 10px;
+    font-size: 0.76rem;
   }
 }
 
