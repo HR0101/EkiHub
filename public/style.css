@@ -1281,8 +1281,8 @@ body {
   margin-bottom: 12px;
 }
 
-/* ===== ライトテーマ（themeToggleモジュールが data-theme=light を付与） ===== */
-[data-theme="light"] {
+/* ===== ライトモード（data-mode="light"） ===== */
+[data-mode="light"] {
   --bg-base: #eef1f8;
   --bg-panel: rgba(255, 255, 255, 0.82);
   --bg-panel-solid: #ffffff;
@@ -1295,12 +1295,20 @@ body {
   --shadow-lg: 0 18px 44px rgba(40, 60, 120, 0.16);
 }
 
-[data-theme="light"] .aurora {
-  opacity: 0.5;
+[data-mode="light"] .aurora {
+  opacity: 0.4;
 }
 
-[data-theme="light"] .leaflet-container {
+[data-mode="light"] .leaflet-container {
   background: #dfe5f0;
+}
+
+/* ライトモードでは白始まりのグラデーション文字が背景に溶けるため accent 色で上書き */
+[data-mode="light"] .result-card__name {
+  background: linear-gradient(120deg, var(--accent), var(--accent-3));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* ===== 共通アニメーション ===== */
@@ -1315,82 +1323,56 @@ body {
   }
 }
 
-/* ===== サクラテーマ ===== */
-[data-theme="sakura"] {
-  --bg-base: #120810;
-  --bg-panel: rgba(32, 14, 24, 0.80);
-  --bg-panel-solid: #1e0c18;
-  --bg-input: rgba(22, 8, 16, 0.88);
-  --border-soft: rgba(220, 100, 150, 0.22);
-  --border-focus: rgba(255, 120, 170, 0.7);
-  --text-main: #fff0f5;
-  --text-sub: #c8909a;
-  --text-faint: #8a6068;
+/* ===== サクラカラー（data-color="sakura"）===== */
+/* アクセント色のみ変更。背景はモード（dark/light）に従う */
+[data-color="sakura"] {
   --accent: #ff6eb4;
   --accent-2: #ff9d5c;
   --accent-3: #ffd166;
-  --danger: #ff4466;
-  --shadow-lg: 0 24px 60px rgba(140, 0, 60, 0.35);
+  --border-soft: rgba(220, 100, 150, 0.22);
+  --border-focus: rgba(255, 120, 170, 0.7);
 }
 
-[data-theme="sakura"] .aurora {
+[data-color="sakura"] .aurora {
   background:
     radial-gradient(40% 50% at 18% 12%, rgba(255, 100, 160, 0.30), transparent 70%),
     radial-gradient(45% 45% at 85% 18%, rgba(255, 140, 80, 0.22), transparent 70%),
     radial-gradient(50% 50% at 70% 92%, rgba(255, 200, 80, 0.18), transparent 70%);
 }
 
-[data-theme="sakura"] .hero__title .accent {
-  background: linear-gradient(120deg, var(--accent), var(--accent-2), var(--accent-3));
+/* ダーク+サクラ: 鮮やかな accent 色で文字グラデーションを再定義（白始まりは暗背景でも視認性が低いため） */
+[data-color="sakura"] .result-card__name {
+  background: linear-gradient(120deg, var(--accent), var(--accent-3));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-[data-theme="sakura"] .result-card__name {
-  background: linear-gradient(120deg, #fff0f5, var(--accent-3));
-}
-
-[data-theme="sakura"] .leaflet-container {
-  background: #1e0c18;
-}
-
-/* ===== 森テーマ ===== */
-[data-theme="forest"] {
-  --bg-base: #030d06;
-  --bg-panel: rgba(8, 26, 14, 0.78);
-  --bg-panel-solid: #071208;
-  --bg-input: rgba(5, 18, 8, 0.88);
-  --border-soft: rgba(60, 180, 100, 0.20);
-  --border-focus: rgba(60, 200, 120, 0.7);
-  --text-main: #eefff4;
-  --text-sub: #80b894;
-  --text-faint: #507060;
+/* ===== 森カラー（data-color="forest"）===== */
+[data-color="forest"] {
   --accent: #2dd67a;
   --accent-2: #22b8b0;
   --accent-3: #a8e64a;
-  --danger: #ff6b6b;
-  --shadow-lg: 0 24px 60px rgba(0, 40, 10, 0.50);
+  --border-soft: rgba(60, 180, 100, 0.20);
+  --border-focus: rgba(60, 200, 120, 0.7);
 }
 
-[data-theme="forest"] .aurora {
+[data-color="forest"] .aurora {
   background:
     radial-gradient(40% 50% at 18% 12%, rgba(30, 160, 80, 0.28), transparent 70%),
     radial-gradient(45% 45% at 85% 18%, rgba(0, 160, 160, 0.22), transparent 70%),
     radial-gradient(50% 50% at 70% 92%, rgba(100, 220, 40, 0.16), transparent 70%);
 }
 
-[data-theme="forest"] .hero__title .accent {
-  background: linear-gradient(120deg, var(--accent), var(--accent-2), var(--accent-3));
+[data-color="forest"] .result-card__name {
+  background: linear-gradient(120deg, var(--accent), var(--accent-3));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-[data-theme="forest"] .result-card__name {
-  background: linear-gradient(120deg, #eefff4, var(--accent-3));
-}
-
-[data-theme="forest"] .leaflet-container {
-  background: #071208;
-}
-
-/* ===== ハイコントラストテーマ（弱視対応・WCAG AA 準拠） ===== */
-[data-theme="high-contrast"] {
+/* ===== ハイコントラスト（data-color="high-contrast"）弱視対応・WCAG AA 準拠 ===== */
+[data-color="high-contrast"] {
   --bg-base: #000000;
   --bg-panel: #111111;
   --bg-panel-solid: #0a0a0a;
@@ -1407,25 +1389,25 @@ body {
   --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.9);
 }
 
-/* 装飾アニメーションを非表示（視覚的ノイズを排除） */
-[data-theme="high-contrast"] .aurora {
+/* 装飾を排除して視覚的ノイズを最小化 */
+[data-color="high-contrast"] .aurora {
   display: none;
 }
 
-/* パネル等を solid 背景にして最大コントラストを確保 */
-[data-theme="high-contrast"] .panel,
-[data-theme="high-contrast"] .result-card,
-[data-theme="high-contrast"] .travel-list,
-[data-theme="high-contrast"] .ranking,
-[data-theme="high-contrast"] .fpanel {
+/* パネルを solid 背景にして最大コントラストを確保 */
+[data-color="high-contrast"] .panel,
+[data-color="high-contrast"] .result-card,
+[data-color="high-contrast"] .travel-list,
+[data-color="high-contrast"] .ranking,
+[data-color="high-contrast"] .fpanel {
   background: var(--bg-panel-solid);
   border: 2px solid rgba(255, 255, 255, 0.6);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
 
-/* グラデーション文字を単色に変換（背景なしだと透明になるため） */
-[data-theme="high-contrast"] .hero__title .accent {
+/* グラデーション文字を単色に変換（コントラスト比確保） */
+[data-color="high-contrast"] .hero__title .accent {
   background: none;
   -webkit-background-clip: unset;
   background-clip: unset;
@@ -1433,7 +1415,7 @@ body {
   color: var(--accent);
 }
 
-[data-theme="high-contrast"] .result-card__name {
+[data-color="high-contrast"] .result-card__name {
   background: none;
   -webkit-background-clip: unset;
   background-clip: unset;
@@ -1441,7 +1423,7 @@ body {
   color: var(--accent-3);
 }
 
-[data-theme="high-contrast"] .leaflet-container {
+[data-color="high-contrast"] .leaflet-container {
   background: #000000;
 }
 
