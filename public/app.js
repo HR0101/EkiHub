@@ -414,6 +414,14 @@
     );
   }
 
+  // 表記揺れを統一する（クエリ・データ両側に適用して相互検索を可能にする）
+  // づ↔ず、ぢ↔じ はどちらで入力しても同じ駅にヒットする
+  function normalizeKana(str) {
+    return str
+      .replace(/づ/g, 'ず')
+      .replace(/ぢ/g, 'じ');
+  }
+
   // ローマ字→ひらがな（変換できない文字はそのまま残す）
   function romajiToHiragana(str) {
     let result = '';
@@ -452,10 +460,11 @@
   // 駅のスコアを計算する（前方一致 > 部分一致、乗降客数で tie-break）
   function scoreStation(s, query) {
     const name = s.name;
-    const kana = katakanaToHiragana((s.kana || '').toLowerCase());
+    // データ側・クエリ側の両方に正規化を適用（表記揺れを吸収）
+    const kana = normalizeKana(katakanaToHiragana((s.kana || '').toLowerCase()));
     const qLower = query.toLowerCase();
-    const qHira = katakanaToHiragana(qLower);
-    const qFromRomaji = romajiToHiragana(qLower);
+    const qHira = normalizeKana(katakanaToHiragana(qLower));
+    const qFromRomaji = normalizeKana(romajiToHiragana(qLower));
 
     let score = 0;
 
