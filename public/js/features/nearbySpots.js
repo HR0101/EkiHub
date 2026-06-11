@@ -353,15 +353,36 @@
     return e;
   }
 
+  // カテゴリごとに期待するタグ値を定義
+  // Overpassクエリが返してきた要素のタグを二重チェックし、誤タグ付きデータを除外する
+  const CATEGORY_TAG_CHECK = {
+    cafe:        (t) => t.amenity === "cafe",
+    restaurant:  (t) => t.amenity === "restaurant",
+    izakaya:     (t) => /^(bar|pub|biergarten)$/.test(t.amenity || ""),
+    fastfood:    (t) => t.amenity === "fast_food",
+    karaoke:     (t) => t.leisure === "karaoke",
+    convenience: (t) => t.shop === "convenience",
+    park:        (t) => t.leisure === "park",
+  };
+
+  // 居酒屋カテゴリで名前が明らかに別業態（ホール・センター・会館等）のものを除外する
+  // OSM の誤タグ付けによる混入対策
+  const IZAKAYA_NAME_EXCLUDE = /(?:ホール|文化センター|会館|公会堂|体育館|図書館|学校|大学|病院|クリニック|診療所|薬局|神社|寺院?|教会|郵便局|銀行|警察署|消防署|市役所|区役所|町役場)/;
+
   // Overpassレスポンスを内部形式へ正規化する
   function parseOverpass(raw, category) {
     const seen = new Set();
     const out = [];
     const els = raw && Array.isArray(raw.elements) ? raw.elements : [];
+    const tagCheck = CATEGORY_TAG_CHECK[category];
     for (const el of els) {
       const tags = el.tags || {};
       const name = tags.name || tags["name:ja"];
       if (!name) continue;
+      // タグが実際にカテゴリと一致するか検証（OSMの誤タグ付き要素を除外）
+      if (tagCheck && !tagCheck(tags)) continue;
+      // 居酒屋カテゴリで明らかに別業態の名前は除外
+      if (category === "izakaya" && IZAKAYA_NAME_EXCLUDE.test(name)) continue;
       const lat = typeof el.lat === "number" ? el.lat : el.center && el.center.lat;
       const lng = typeof el.lon === "number" ? el.lon : el.center && el.center.lon;
       if (typeof lat !== "number" || typeof lng !== "number") continue;
