@@ -83,6 +83,7 @@ export const stations = [
   { name: "赤羽",       kana: "あかばね",       lat: 35.778053, lng: 139.721156, lines: ["JR各線"], ridership: 240000, isMajor: true },
   { name: "西船橋",     kana: "にしふなばし",   lat: 35.707763, lng: 139.96094,  lines: ["JR総武線", "東西線", "東葉高速線", "武蔵野線"], ridership: 280000, isMajor: true },
   { name: "船橋",       kana: "ふなばし",       lat: 35.701736, lng: 139.985281, lines: ["JR総武線", "東武野田線", "京成本線"], ridership: 280000, isMajor: true },
+  { name: "馬込沢",     kana: "まごさわ",       lat: 35.741571, lng: 139.992256, lines: ["東武アーバンパークライン"], ridership: 25000, isMajor: false },
   { name: "千葉",       kana: "ちば",           lat: 35.613165, lng: 140.113287, lines: ["JR各線", "千葉都市モノレール"], ridership: 200000, isMajor: true },
   { name: "柏",         kana: "かしわ",         lat: 35.862096, lng: 139.970917, lines: ["JR常磐線", "東武野田線"], ridership: 240000, isMajor: true },
   { name: "町田",       kana: "まちだ",         lat: 35.544046, lng: 139.445125, lines: ["JR横浜線", "小田急"], ridership: 290000, isMajor: true },

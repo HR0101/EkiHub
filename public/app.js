@@ -446,6 +446,9 @@
     return result;
   }
 
+  // クエリが日本語かなかどうかを判定する
+  const KANA_RE = /^[ぁ-んァ-ヶー]+$/;
+
   // 駅のスコアを計算する（前方一致 > 部分一致、乗降客数で tie-break）
   function scoreStation(s, query) {
     const name = s.name;
