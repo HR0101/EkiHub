@@ -16,7 +16,7 @@
   const MODE_LABELS = { dark: "ダーク", light: "ライト", auto: "自動" };
 
   // ===== カラーテーマ（アクセント色） =====
-  const COLOR_ORDER = ["default", "sakura", "forest", "high-contrast"];
+  const COLOR_ORDER = ["default", "sakura", "forest", "ocean", "sunset", "autumn", "high-contrast"];
   const DEFAULT_COLOR = "default";
   const COLOR_STORAGE_KEY = "ekihub-color";
   const COLOR_BTN_ID = "themeToggle-color-btn";
@@ -24,6 +24,9 @@
     default: "デフォルト",
     sakura: "サクラ",
     forest: "森",
+    ocean: "海",
+    sunset: "夕焼け",
+    autumn: "紅葉",
     "high-contrast": "高コントラスト",
   };
 

@@ -1371,6 +1371,75 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+/* ===== 海カラー（data-color="ocean"）===== */
+[data-color="ocean"] {
+  --accent: #22d3ee;
+  --accent-2: #3b82f6;
+  --accent-3: #a5f3fc;
+  --border-soft: rgba(34, 211, 238, 0.22);
+  --border-focus: rgba(34, 211, 238, 0.7);
+}
+
+[data-color="ocean"] .aurora {
+  background:
+    radial-gradient(40% 50% at 18% 12%, rgba(34, 211, 238, 0.28), transparent 70%),
+    radial-gradient(45% 45% at 85% 18%, rgba(59, 130, 246, 0.22), transparent 70%),
+    radial-gradient(50% 50% at 70% 92%, rgba(165, 243, 252, 0.16), transparent 70%);
+}
+
+[data-color="ocean"] .result-card__name {
+  background: linear-gradient(120deg, var(--accent), var(--accent-3));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ===== 夕焼けカラー（data-color="sunset"）===== */
+[data-color="sunset"] {
+  --accent: #fb923c;
+  --accent-2: #c026d3;
+  --accent-3: #fde68a;
+  --border-soft: rgba(251, 146, 60, 0.22);
+  --border-focus: rgba(251, 146, 60, 0.7);
+}
+
+[data-color="sunset"] .aurora {
+  background:
+    radial-gradient(40% 50% at 18% 12%, rgba(251, 146, 60, 0.32), transparent 70%),
+    radial-gradient(45% 45% at 85% 18%, rgba(192, 38, 211, 0.25), transparent 70%),
+    radial-gradient(50% 50% at 70% 92%, rgba(253, 230, 138, 0.18), transparent 70%);
+}
+
+[data-color="sunset"] .result-card__name {
+  background: linear-gradient(120deg, var(--accent), var(--accent-3));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ===== 紅葉カラー（data-color="autumn"）===== */
+[data-color="autumn"] {
+  --accent: #f87171;
+  --accent-2: #fb923c;
+  --accent-3: #fbbf24;
+  --border-soft: rgba(248, 113, 113, 0.22);
+  --border-focus: rgba(248, 113, 113, 0.7);
+}
+
+[data-color="autumn"] .aurora {
+  background:
+    radial-gradient(40% 50% at 18% 12%, rgba(239, 68, 68, 0.28), transparent 70%),
+    radial-gradient(45% 45% at 85% 18%, rgba(249, 115, 22, 0.22), transparent 70%),
+    radial-gradient(50% 50% at 70% 92%, rgba(251, 191, 36, 0.18), transparent 70%);
+}
+
+[data-color="autumn"] .result-card__name {
+  background: linear-gradient(120deg, var(--accent), var(--accent-3));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* ===== ハイコントラスト（data-color="high-contrast"）弱視対応・WCAG AA 準拠 ===== */
 [data-color="high-contrast"] {
   --bg-base: #000000;
