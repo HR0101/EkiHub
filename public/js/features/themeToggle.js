@@ -10,8 +10,8 @@
   // ===== 定数定義 =====
   // 永続化キー
   const STORAGE_KEY = "ekihub-theme";
-  // テーマの循環順（dark → light → auto → dark ...）
-  const THEME_ORDER = ["dark", "light", "auto"];
+  // テーマの循環順
+  const THEME_ORDER = ["dark", "light", "sakura", "forest", "high-contrast", "auto"];
   // 既定テーマ（:root がダークのため dark を既定とする）
   const DEFAULT_THEME = "dark";
   // 自動判定用メディアクエリ（ライト指定を検出）
@@ -22,6 +22,9 @@
   const THEME_LABELS = {
     dark: "ダーク",
     light: "ライト",
+    sakura: "サクラ",
+    forest: "森",
+    "high-contrast": "高コントラスト",
     auto: "自動",
   };
 
@@ -39,7 +42,7 @@
     "themeToggle-style",
     `
     .themeToggle--btn {
-      min-width: 7.5em;
+      min-width: 9em;
       text-align: center;
       white-space: nowrap;
     }
@@ -87,11 +90,11 @@
     // 実効テーマを算出（auto はメディアクエリで解決）
     const effective =
       currentTheme === "auto" ? resolveAutoTheme() : currentTheme;
-    // dark は :root の既定なので属性を外す。light のみ属性を付与する
-    if (effective === "light") {
-      root.setAttribute("data-theme", "light");
+    // dark は :root の既定なので属性を外す。それ以外はテーマ名をそのまま付与する
+    if (effective === "dark") {
+      root.removeAttribute("data-theme");
     } else {
-      root.setAttribute("data-theme", "dark");
+      root.setAttribute("data-theme", effective);
     }
   }
 
