@@ -136,19 +136,21 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      outline: 2.5px solid transparent;
-      outline-offset: 2px;
-      transition: outline-color 0.18s, transform 0.18s;
+      /* box-shadowでリングを表現：layoutに影響しないため名前テキストに被らない */
+      box-shadow: none;
+      transition: box-shadow 0.18s, opacity 0.18s;
     }
 
     .tt-swatch.is-active .tt-swatch__circle {
-      outline-color: var(--text-main);
-      transform: scale(1.12);
+      /* パネル背景色のギャップ + テキスト色のリング */
+      box-shadow:
+        0 0 0 3px var(--bg-panel-solid, #141a2c),
+        0 0 0 5.5px var(--text-main, #eef2ff);
     }
 
     .tt-swatch:hover .tt-swatch__circle,
     .tt-swatch:focus-visible .tt-swatch__circle {
-      transform: scale(1.1);
+      opacity: 0.85;
     }
 
     .tt-swatch__name {
