@@ -9,7 +9,7 @@
 
   // ===== モード =====
   const MODE_ORDER = ["dark", "light", "auto"];
-  const DEFAULT_MODE = "dark";
+  const DEFAULT_MODE = "aute";
   const MODE_STORAGE_KEY = "ekihub-mode";
   const MODE_LABELS = { dark: "ダーク", light: "ライト", auto: "自動" };
 

@@ -40,8 +40,6 @@
       #toolbar,
       .panel,
       #feature-controls,
-      .leaflet-control,
-      .leaflet-control-container,
       .tool-btn,
       .btn,
       #hero-actions,
@@ -166,15 +164,35 @@
         font-size: 8pt !important;
       }
 
-      /* 地図は印刷不要(操作不能なため非表示・余白も消す) */
+      /* 地図: タイルは img 要素のため「背景グラフィックOFF」設定でも印刷される */
       .map {
-        display: none !important;
-        height: 0 !important;
-        min-height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
+        display: block !important;
+        height: 100mm !important;
+        margin: 0 0 4mm !important;
+        border: 1px solid #000000 !important;
+        border-radius: 6px !important;
+        box-shadow: none !important;
         overflow: hidden !important;
-        border: none !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* 地図上の操作UI(ズーム・レイヤ切替)は印刷しない */
+      .leaflet-control {
+        display: none !important;
+      }
+
+      /* 帰属表示(© OpenStreetMap)はライセンス上印刷にも残す */
+      .leaflet-control-attribution {
+        display: block !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 6pt !important;
+      }
+      .leaflet-control-attribution a {
+        color: #000000 !important;
       }
 
       /* 所要時間リスト: 常に表示し白地・黒文字へ */
@@ -211,6 +229,24 @@
         page-break-inside: avoid;
       }
 
+      /* リスト内の駅名・運賃・分数はテーマ色のままだと白文字で消えるため黒に統一 */
+      .travel-list li *,
+      .ranking li * {
+        color: #000000 !important;
+      }
+
+      /* 所要時間バーは印刷で見やすい単色に置き換える */
+      .travel-item__bar {
+        background: #dddddd !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .travel-item__fill {
+        background: #000000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
       /* 候補ランキング: 常に表示し白地・黒文字へ */
       .ranking {
         display: block !important;
@@ -240,6 +276,11 @@
       a {
         color: #000000 !important;
         text-decoration: none !important;
+      }
+
+      /* hidden属性の要素は display:block の上書きより優先して非表示に保つ */
+      [hidden] {
+        display: none !important;
       }
     }
   `

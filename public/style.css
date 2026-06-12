@@ -1515,15 +1515,16 @@ body {
     color: #000000 !important;
   }
 
-  /* 地図は操作不能なため非表示・余白も完全に消す */
+  /* 地図はタイル画像(img)ごと印刷に含める */
   .map {
-    display: none !important;
-    height: 0 !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
+    display: block !important;
+    height: 100mm !important;
+    margin: 0 0 4mm !important;
+    border: 1px solid #000000 !important;
+    box-shadow: none !important;
     overflow: hidden !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   /* オーロラ背景を非表示 */
