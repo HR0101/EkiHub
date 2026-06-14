@@ -1,12 +1,14 @@
 # ===== 依存パッケージ =====
 node_modules/
-CLAUDE.md/
 
 # ===== 環境変数・秘密情報 =====
 .env
 .env.*
 !.env.example
+
+# ===== Claude Code 関連 =====
 .claude
+CLAUDE.md
 
 # ===== ログ =====
 *.log
