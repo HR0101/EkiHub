@@ -4,6 +4,16 @@
 
 ダークモードを基調とした没入感のあるUIで，地図上に各駅からの位置関係と所要時間を可視化します．
 
+## 🌐 今すぐ使う（インストール不要）
+
+クラウド（Render）にデプロイ済みです．以下の公開URLへブラウザでアクセスするだけで利用できます．ローカル環境の構築は不要です．
+
+> **▶ [https://ekihub.onrender.com](https://ekihub.onrender.com)**
+
+> ℹ️ 無料プランで運用しているため，一定時間アクセスが無いとサーバーがスリープします．スリープ後の初回アクセスは起動に十数秒〜数十秒かかることがありますが，しばらく待つと通常どおり表示されます．
+
+ローカルで開発・改造したい場合は，後述の「[ローカルで開発する](#ローカルで開発する開発者向け)」を参照してください．
+
 ---
 
 ## 主な機能
@@ -40,6 +50,7 @@
 
 | 区分 | 採用技術 | 選定理由 |
 |---|---|---|
+| ホスティング | Render（Web Service） | GitHub連携でpush時に自動デプロイ．公開URLで誰でも利用可能． |
 | バックエンド | Node.js + Express | 軽量．駅データのマージやAPIキーの秘匿をサーバー側に集約できる． |
 | フロントエンド | HTML / CSS / Vanilla JS | フレームワーク非依存で軽量．没入感あるUIを直接制御． |
 | 地図 | Leaflet + CARTO Dark タイル | **APIキー不要・無料**でダークモードの地図を実現． |
@@ -94,28 +105,78 @@ EkiHub/
 
 ---
 
-## セットアップと起動
+## 使い方
 
-### 1. 依存をインストール
+利用方法は2通りです．**ただ使いたいだけなら ① だけで完結します．**
+
+### ① 公開URLで使う（一般利用者向け）
+
+ブラウザで公開URLを開くだけです．インストール・ログイン不要で，スマートフォンからも利用できます．
+
+> **▶ [https://ekihub.onrender.com](https://ekihub.onrender.com)**
+
+### ② ローカルで開発する（開発者向け）
+
+コードを改造したい場合や，経路API（OTP）を自前で連携したい場合は，手元で起動します．**Node.js 18 以上**が必要です．
+
+#### 1. リポジトリを取得して依存をインストール
 
 ```bash
+git clone https://github.com/HR0101/EkiHub.git
+cd EkiHub
 npm install
 ```
 
-### 2. サーバーを起動
+#### 2. サーバーを起動
 
 ```bash
 npm start          # 本番起動
 npm run dev        # ファイル監視つき起動（開発用）
 ```
 
-### 3. ブラウザでアクセス
+#### 3. ブラウザでアクセス
 
 ```
 http://localhost:3000
 ```
 
 > `data/stations-osm.json` と `data/ridership.json` はリポジトリに同梱済みのため，クローン後すぐに動作します．
+
+---
+
+## Renderへのデプロイ
+
+本アプリは **[Render](https://render.com/)** の Web Service として公開しています（公開URL：[https://ekihub.onrender.com](https://ekihub.onrender.com)）．GitHubリポジトリと連携しておけば，`main` ブランチへのpushで自動的に再デプロイされます．
+
+### サービス設定
+
+Render ダッシュボードで **New → Web Service** を作成し，本リポジトリを連携したうえで，以下を設定します．
+
+| 項目 | 値 |
+|---|---|
+| Environment | `Node` |
+| Build Command | `npm install` |
+| Start Command | `npm start` |
+| Instance Type | 任意（無料プランの `Free` でも動作） |
+
+> ビルド工程はありません（フロントエンドは `public/` の静的ファイルをそのまま配信します）．`npm install` で依存を入れ，`npm start`（＝`node server.js`）で起動するだけです．
+
+### ポートの扱い
+
+Render は待受ポートを環境変数 `PORT` で注入します．`server.js` は `const PORT = process.env.PORT || 3000;` でこれを受けるため，**追加設定は不要**です（ローカルでは既定の3000，Render上では注入値で起動します）．
+
+### 環境変数（任意）
+
+外部APIを使う場合は，Render ダッシュボードの **Environment → Environment Variables** に追加します．いずれも未設定で動作します（埋め込みデータ＋距離概算へ自動フォールバック）．
+
+| 変数 | 用途 |
+|---|---|
+| `ODPT_TOKEN` | 公共交通オープンデータ(ODPT)で駅データを拡張する場合 |
+| `ROUTING_PROVIDER` / `ROUTING_OTP_URL` / `ROUTING_TIMEOUT_MS` | 経路API(OTP)で所要時間・運賃を実データ化する場合（詳細は後述） |
+
+各変数の意味は「[環境変数（任意）](#環境変数任意)」を参照してください．
+
+> ⚠️ **無料プランの注意**：一定時間アクセスが無いとサービスがスリープし，次回アクセス時に再起動（コールドスタート）が発生します．初回表示が遅い場合は数十秒お待ちください．常時稼働させたい場合は有料プランへの変更を検討してください．
 
 ---
 
@@ -160,11 +221,11 @@ node scripts/buildRidership.js /path/to/S12-23_NumberOfPassengers.geojson
 
 ## 環境変数（任意）
 
-`.env.example` を `.env` にコピーして設定できます（`.env` はコミットされません）．
+ローカルでは `.env.example` を `.env` にコピーして設定できます（`.env` はコミットされません）．Render 上では「[Renderへのデプロイ](#renderへのデプロイ)」の手順に従い，ダッシュボードの Environment Variables に設定します．
 
 | 変数 | 用途 |
 |---|---|
-| `PORT` | 待受ポート（既定：3000） |
+| `PORT` | 待受ポート（既定：3000）．Render では自動注入されるため設定不要． |
 | `ODPT_TOKEN` | 公共交通オープンデータ(ODPT)で駅データをさらに拡張する場合に設定 |
 | `ROUTING_PROVIDER` | 経路APIの種別．現在は `otp`（OpenTripPlanner）に対応 |
 | `ROUTING_OTP_URL` | OTP2 の GraphQL エンドポイント |
