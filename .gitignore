@@ -28,6 +28,9 @@ Thumbs.db
 .idea/
 *.swp
 
+# ===== デプロイ手順書（個人用・公開しない） =====
+docs/deploy-oracle.md
+
 # ===== 補足 =====
 # data/stations-osm.json と data/ridership.json は外部データから生成される成果物ですが、
 # アプリ動作に必須で再取得が不安定なため、あえてコミット対象に含めています。
