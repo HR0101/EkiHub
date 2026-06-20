@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
+  <!-- iOSホーム画面用アイコン（背景は不透過。角丸はiOS側で自動付与）-->
+  <rect width="180" height="180" fill="#0a0e1a" />
+  <g transform="translate(38 30) scale(1.6)">
+    <circle cx="32" cy="28" r="13" fill="none" stroke="#46e0c8" stroke-width="5" />
+    <path d="M32 41 L32 56" stroke="#5e7bff" stroke-width="5" stroke-linecap="round" />
+  </g>
+</svg>

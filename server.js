@@ -77,7 +77,71 @@ const ODPT_TOKEN = process.env.ODPT_TOKEN || null;
 const routeProvider = makeProviderFromEnv();
 const ROUTING_ENABLED = Boolean(routeProvider);
 
+// index.html を起動時に読み込み、OGP等の絶対URLを配信時に注入できるようにする.
+// ビルドはせず、配信時に __ORIGIN__ をリクエストのホストへ置換するだけ.
+const INDEX_TEMPLATE = (() => {
+  try {
+    return readFileSync(join(__dirname, "public", "index.html"), "utf-8");
+  } catch (error) {
+    console.error("index.htmlの読込に失敗:", error.message);
+    return null;
+  }
+})();
+
+// リクエストから絶対オリジン(scheme://host)を組み立てる.
+// リバースプロキシ経由を考慮し X-Forwarded-* を優先する.
+function resolveOrigin(req) {
+  const proto = String(req.headers["x-forwarded-proto"] || req.protocol || "http")
+    .split(",")[0]
+    .trim();
+  const host = req.headers["x-forwarded-host"] || req.headers.host || `localhost:${PORT}`;
+  return `${proto}://${host}`;
+}
+
+// Content-Security-Policy（外部CDN/タイル/フォント/Overpassのみ許可）.
+// 値を変えると地図やフォントが壊れるため、利用元の追加時のみ慎重に更新する.
+const CONTENT_SECURITY_POLICY = [
+  "default-src 'self'",
+  // スクリプトは Leaflet(unpkg) と QRコード(jsDelivr) のみ外部許可
+  "script-src 'self' https://unpkg.com https://cdn.jsdelivr.net",
+  // injectStyle と style 属性のため inline を許可。CSSは Leaflet(unpkg)/Google Fonts
+  "style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com data:",
+  // 地図タイル(CARTO/OpenRailwayMap) と Leaflet のマーカー画像(unpkg)
+  "img-src 'self' data: blob: https://*.basemaps.cartocdn.com https://*.tiles.openrailwaymap.org https://unpkg.com",
+  // 自API と、ブラウザから直接叩く Overpass ミラー
+  "connect-src 'self' https://overpass-api.de https://overpass.private.coffee https://overpass.kumi.systems",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'"
+].join("; ");
+
+// セキュリティヘッダ（全レスポンス共通）.
+// 認証/Cookieは扱わないが、クリックジャッキングやMIMEスニッフィング等を防ぐ.
+app.use((_req, res, next) => {
+  res.setHeader("Content-Security-Policy", CONTENT_SECURITY_POLICY);
+  res.setHeader("X-Frame-Options", "DENY"); // 旧ブラウザ向けの保険
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader(
+    "Permissions-Policy",
+    "geolocation=(self), camera=(), microphone=(), payment=()"
+  );
+  // HTTPS接続を強制（本番HTTPS前提。HTTPでは各ブラウザが無視する）
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  next();
+});
+
 app.use(express.json());
+
+// トップページは OGP 等の絶対URLを注入して返す（静的配信より前に処理する）.
+app.get(["/", "/index.html"], (req, res, next) => {
+  if (!INDEX_TEMPLATE) return next();
+  const html = INDEX_TEMPLATE.replaceAll("__ORIGIN__", resolveOrigin(req));
+  res.type("html").send(html);
+});
+
 app.use(express.static(join(__dirname, "public")));
 
 // 駅一覧のキャッシュ（ハイブリッド: 埋め込み + 任意でODPT拡張）
@@ -160,7 +224,9 @@ app.get("/api/stations", async (_req, res) => {
     }));
     res.json({ count: slim.length, stations: slim });
   } catch (error) {
-    res.status(500).json({ error: "駅データの取得に失敗しました: " + error.message });
+    // 内部例外の詳細はログのみに残し、利用者には一般化したメッセージを返す
+    console.error("駅一覧の取得に失敗:", error);
+    res.status(500).json({ error: "駅データの取得に失敗しました。時間をおいて再度お試しください。" });
   }
 });
 
@@ -234,7 +300,9 @@ app.post("/api/center", async (req, res) => {
       routingUsed: ROUTING_ENABLED
     });
   } catch (error) {
-    res.status(500).json({ error: "算出に失敗しました: " + error.message });
+    // 内部例外の詳細はログのみに残し、利用者には一般化したメッセージを返す
+    console.error("中心駅の算出に失敗:", error);
+    res.status(500).json({ error: "算出に失敗しました。時間をおいて再度お試しください。" });
   }
 });
 
@@ -252,7 +320,9 @@ app.get("/api/spots", async (req, res) => {
     const spots = await fetchNearbySpots({ lat, lng, category, radius });
     res.json({ count: spots.length, category, radius, spots });
   } catch (error) {
-    res.status(500).json({ error: "周辺スポットの取得に失敗しました: " + error.message });
+    // 内部例外の詳細はログのみに残し、利用者には一般化したメッセージを返す
+    console.error("周辺スポットの取得に失敗:", error);
+    res.status(500).json({ error: "周辺スポットの取得に失敗しました。時間をおいて再度お試しください。" });
   }
 });
 
@@ -270,6 +340,18 @@ app.get("/api/health", (_req, res) => {
     routingProvider: ROUTING_ENABLED ? (process.env.ROUTING_PROVIDER || "custom") : null,
     features: ["center", "fare", "people-weight", "spots", "routing"]
   });
+});
+
+// 404ハンドラ（既知のルート・静的ファイルに合致しない場合）.
+// APIはJSON、それ以外は導線つきの404ページを返す.
+app.use((req, res) => {
+  if (req.path.startsWith("/api/")) {
+    return res.status(404).json({ error: "指定されたAPIは存在しません。" });
+  }
+  res.status(404);
+  const notFoundPage = join(__dirname, "public", "404.html");
+  if (existsSync(notFoundPage)) return res.sendFile(notFoundPage);
+  res.type("text").send("404 Not Found");
 });
 
 app.listen(PORT, () => {

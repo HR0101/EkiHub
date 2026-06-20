@@ -259,6 +259,8 @@
     removeBtn.className = "input-row__remove";
     removeBtn.innerHTML = "×";
     removeBtn.title = "この駅を削除";
+    // スクリーンリーダー向けに「×」記号ではなく役割を読み上げさせる
+    removeBtn.setAttribute("aria-label", "この駅を削除");
     removeBtn.addEventListener("click", () => removeInputRow(row));
 
     row.appendChild(indexBadge);
