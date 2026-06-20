@@ -12,13 +12,22 @@
 
   // 機能固有の定数
   const FEATURE_ID = "nearbyspots";
-  const SEARCH_RADIUS_M = 400; // 検索半径(メートル)
   const FLY_ZOOM = 16; // リスト項目クリック時のズーム
+  const RESULT_CAP = 120; // Overpassから取得する最大件数(従来40→拡大)
+
+  // 検索半径(メートル)の選択肢。既定は800m(従来は固定400m)。
+  const RADIUS_OPTIONS = [
+    { value: 400, label: E.t("spots.radius.400", "〜400m") },
+    { value: 800, label: E.t("spots.radius.800", "〜800m") },
+    { value: 1500, label: E.t("spots.radius.1500", "〜1.5km") },
+  ];
+  let currentRadius = 800; // 選択中の検索半径
 
   // カテゴリ定義(値はAPIのcategory,ラベルは日本語表示)
   const CATEGORIES = [
     { value: "cafe", label: E.t("spots.cat.cafe", "カフェ") },
     { value: "restaurant", label: E.t("spots.cat.restaurant", "レストラン") },
+    { value: "fastfood", label: E.t("spots.cat.fastfood", "ファストフード") },
     { value: "izakaya", label: E.t("spots.cat.izakaya", "居酒屋・バー") },
     { value: "karaoke", label: E.t("spots.cat.karaoke", "カラオケ") },
     { value: "convenience", label: E.t("spots.cat.convenience", "コンビニ") },
@@ -51,6 +60,23 @@
       margin-bottom: 10px;
     }
     .nsp-cat.is-active {
+      outline: 2px solid currentColor;
+      outline-offset: 1px;
+      font-weight: 600;
+    }
+    .nsp-radius {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .nsp-radius__label {
+      font-size: 12px;
+      opacity: 0.7;
+      margin-right: 2px;
+    }
+    .nsp-radius__btn.is-active {
       outline: 2px solid currentColor;
       outline-offset: 1px;
       font-weight: 600;
@@ -134,6 +160,28 @@
   });
   panel.appendChild(catWrap);
 
+  // 検索範囲(半径)セレクタ
+  const radiusWrap = document.createElement("div");
+  radiusWrap.className = "nsp-radius";
+  const radiusLabel = document.createElement("span");
+  radiusLabel.className = "nsp-radius__label";
+  radiusLabel.textContent = E.t("spots.radius.label", "範囲");
+  radiusWrap.appendChild(radiusLabel);
+  // ボタンへの参照(activeハイライト切替に使用)
+  const radiusButtons = [];
+  RADIUS_OPTIONS.forEach((opt) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tool-btn nsp-radius__btn";
+    btn.textContent = opt.label;
+    btn.dataset.radius = String(opt.value);
+    btn.addEventListener("click", () => handleRadiusClick(opt.value));
+    radiusButtons.push(btn);
+    radiusWrap.appendChild(btn);
+  });
+  panel.appendChild(radiusWrap);
+  updateActiveRadius(currentRadius);
+
   // 状態メッセージ
   const status = document.createElement("p");
   status.className = "nsp-status";
@@ -183,6 +231,21 @@
     catButtons.forEach((btn) => {
       btn.classList.toggle("is-active", btn.dataset.category === category);
     });
+  }
+
+  // 検索範囲ボタンのハイライトを更新する
+  function updateActiveRadius(radius) {
+    radiusButtons.forEach((btn) => {
+      btn.classList.toggle("is-active", Number(btn.dataset.radius) === radius);
+    });
+  }
+
+  // 検索範囲が押されたときのハンドラ(カテゴリ選択中なら新しい半径で再取得)
+  function handleRadiusClick(radius) {
+    if (currentRadius === radius) return;
+    currentRadius = radius;
+    updateActiveRadius(radius);
+    if (activeCategory) handleCategoryClick(activeCategory);
   }
 
   // 一覧とマーカーを初期状態へ戻す
@@ -327,16 +390,29 @@
     fetchSpots(selected.lat, selected.lng, category);
   }
 
-  // カテゴリ -> Overpassのタグ条件（ブラウザ直接取得のフォールバック用）
-  const OVERPASS_TAGS = {
-    cafe: '["amenity"="cafe"]',
-    restaurant: '["amenity"="restaurant"]',
-    izakaya: '["amenity"~"bar|pub|biergarten"]',
-    fastfood: '["amenity"="fast_food"]',
-    karaoke: '["leisure"="karaoke"]',
-    convenience: '["shop"="convenience"]',
-    park: '["leisure"="park"]'
+  // カテゴリ -> Overpassのタグ条件（複数条件で網羅性を上げる）
+  const CATEGORY_SELECTORS = {
+    cafe: ['["amenity"="cafe"]', '["shop"="coffee"]'],
+    restaurant: ['["amenity"="restaurant"]', '["amenity"="food_court"]'],
+    fastfood: ['["amenity"="fast_food"]'],
+    izakaya: ['["amenity"="pub"]', '["amenity"="bar"]', '["amenity"="biergarten"]', '["cuisine"~"izakaya"]'],
+    karaoke: ['["leisure"="karaoke"]', '["amenity"="karaoke_box"]'],
+    convenience: ['["shop"="convenience"]'],
+    park: ['["leisure"="park"]', '["leisure"="garden"]']
   };
+
+  // カテゴリのタグ条件から node/way/relation を網羅する Overpass クエリを組み立てる
+  function buildOverpassQuery(category, lat, lng, radius) {
+    const selectors = CATEGORY_SELECTORS[category];
+    if (!selectors) return null;
+    const parts = [];
+    for (const sel of selectors) {
+      parts.push("node" + sel + "(around:" + radius + "," + lat + "," + lng + ");");
+      parts.push("way" + sel + "(around:" + radius + "," + lat + "," + lng + ");");
+      parts.push("relation" + sel + "(around:" + radius + "," + lat + "," + lng + ");");
+    }
+    return "[out:json][timeout:25];(" + parts.join("") + ");out center tags " + RESULT_CAP + ";";
+  }
   // Overpassミラー（ブラウザから直接叩く。OverpassはCORS許可済み）
   const OVERPASS_ENDPOINTS = [
     "https://overpass-api.de/api/interpreter",
@@ -356,13 +432,13 @@
   // カテゴリごとに期待するタグ値を定義
   // Overpassクエリが返してきた要素のタグを二重チェックし、誤タグ付きデータを除外する
   const CATEGORY_TAG_CHECK = {
-    cafe:        (t) => t.amenity === "cafe",
-    restaurant:  (t) => t.amenity === "restaurant",
-    izakaya:     (t) => /^(bar|pub|biergarten)$/.test(t.amenity || ""),
+    cafe:        (t) => t.amenity === "cafe" || t.shop === "coffee",
+    restaurant:  (t) => t.amenity === "restaurant" || t.amenity === "food_court",
     fastfood:    (t) => t.amenity === "fast_food",
-    karaoke:     (t) => t.leisure === "karaoke",
+    izakaya:     (t) => /^(pub|bar|biergarten)$/.test(t.amenity || "") || /izakaya/i.test(t.cuisine || ""),
+    karaoke:     (t) => t.leisure === "karaoke" || t.amenity === "karaoke_box",
     convenience: (t) => t.shop === "convenience",
-    park:        (t) => t.leisure === "park",
+    park:        (t) => t.leisure === "park" || t.leisure === "garden",
   };
 
   // 居酒屋カテゴリで名前が明らかに別業態（ホール・センター・会館等）のものを除外する
@@ -377,7 +453,8 @@
     const tagCheck = CATEGORY_TAG_CHECK[category];
     for (const el of els) {
       const tags = el.tags || {};
-      const name = tags.name || tags["name:ja"];
+      // 名称が無い場合はブランド名で代替（チェーン店の取りこぼしを防ぐ）
+      const name = tags.name || tags["name:ja"] || tags.brand;
       if (!name) continue;
       // タグが実際にカテゴリと一致するか検証（OSMの誤タグ付き要素を除外）
       if (tagCheck && !tagCheck(tags)) continue;
@@ -386,8 +463,10 @@
       const lat = typeof el.lat === "number" ? el.lat : el.center && el.center.lat;
       const lng = typeof el.lon === "number" ? el.lon : el.center && el.center.lon;
       if (typeof lat !== "number" || typeof lng !== "number") continue;
-      if (seen.has(name)) continue;
-      seen.add(name);
+      // 同名でも別地点なら別店舗として残す（名前+座標で重複判定。約11m単位）
+      const dedup = name + "@" + Math.round(lat * 1e4) + "," + Math.round(lng * 1e4);
+      if (seen.has(dedup)) continue;
+      seen.add(dedup);
       out.push({
         name,
         category,
@@ -402,13 +481,8 @@
   // ブラウザから直接Overpassへ問い合わせる（ユーザーのネットワークで取得）
   // 各ミラーに個別タイムアウトを設け、失敗したら次のミラーへ進む。
   async function queryOverpassDirect(lat, lng, category, myId) {
-    const tag = OVERPASS_TAGS[category];
-    if (!tag) return [];
-    const q =
-      "[out:json][timeout:20];(" +
-      "node" + tag + "(around:" + SEARCH_RADIUS_M + "," + lat + "," + lng + ");" +
-      "way" + tag + "(around:" + SEARCH_RADIUS_M + "," + lat + "," + lng + ");" +
-      ");out center tags 40;";
+    const q = buildOverpassQuery(category, lat, lng, currentRadius);
+    if (!q) return [];
     let lastErr = null;
     for (const ep of OVERPASS_ENDPOINTS) {
       if (myId !== requestSeq) throw supersededError(); // 古い取得は破棄

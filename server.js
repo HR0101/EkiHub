@@ -313,7 +313,7 @@ app.get("/api/spots", async (req, res) => {
     const lat = Number(req.query.lat);
     const lng = Number(req.query.lng);
     const category = String(req.query.category || "cafe");
-    const radius = Math.min(1000, Math.max(100, Number(req.query.radius) || 400));
+    const radius = Math.min(1500, Math.max(100, Number(req.query.radius) || 800));
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
       return res.status(400).json({ error: "緯度経度を指定してください." });
     }
