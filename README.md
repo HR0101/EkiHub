@@ -6,11 +6,9 @@
 
 ## 🌐 今すぐ使う（インストール不要）
 
-クラウド（Render）にデプロイ済みです．以下の公開URLへブラウザでアクセスするだけで利用できます．ローカル環境の構築は不要です．
+公開サーバーにデプロイ済みです．以下の公開URLへブラウザでアクセスするだけで利用できます．ローカル環境の構築は不要です．
 
-> **▶ [https://ekihub.onrender.com](https://ekihub.onrender.com)**
-
-> ℹ️ 無料プランで運用しているため，一定時間アクセスが無いとサーバーがスリープします．スリープ後の初回アクセスは起動に十数秒〜数十秒かかることがありますが，しばらく待つと通常どおり表示されます．
+> **▶ [https://ekihub.jp](https://ekihub.jp)**
 
 ローカルで開発・改造したい場合は，後述の「[ローカルで開発する](#ローカルで開発する開発者向け)」を参照してください．
 
@@ -50,7 +48,7 @@
 
 | 区分 | 採用技術 | 選定理由 |
 |---|---|---|
-| ホスティング | Render（Web Service） | GitHub連携でpush時に自動デプロイ．公開URLで誰でも利用可能． |
+| ホスティング | Oracle Cloud VM（nginx + PM2） | 自前VMでnginxリバースプロキシ＋PM2常駐．Let's EncryptでHTTPS化． |
 | バックエンド | Node.js + Express | 軽量．駅データのマージやAPIキーの秘匿をサーバー側に集約できる． |
 | フロントエンド | HTML / CSS / Vanilla JS | フレームワーク非依存で軽量．没入感あるUIを直接制御． |
 | 地図 | Leaflet + CARTO Dark タイル | **APIキー不要・無料**でダークモードの地図を実現． |
@@ -113,7 +111,7 @@ EkiHub/
 
 ブラウザで公開URLを開くだけです．インストール・ログイン不要で，スマートフォンからも利用できます．
 
-> **▶ [https://ekihub.onrender.com](https://ekihub.onrender.com)**
+> **▶ [https://ekihub.jp](https://ekihub.jp)**
 
 ### ② ローカルで開発する（開発者向け）
 
@@ -144,39 +142,54 @@ http://localhost:3000
 
 ---
 
-## Renderへのデプロイ
+## デプロイ（公開サーバー）
 
-本アプリは **[Render](https://render.com/)** の Web Service として公開しています（公開URL：[https://ekihub.onrender.com](https://ekihub.onrender.com)）．GitHubリポジトリと連携しておけば，`main` ブランチへのpushで自動的に再デプロイされます．
+本アプリは **Oracle Cloud の VM（Ubuntu）** 上で公開しています（公開URL：[https://ekihub.jp](https://ekihub.jp)）．ビルド工程はないため，`git clone` → `npm install` → `npm start` で動く構成を，VM 上で常駐化・HTTPS 化しているだけです．
 
-### サービス設定
+### サーバー構成
 
-Render ダッシュボードで **New → Web Service** を作成し，本リポジトリを連携したうえで，以下を設定します．
+```
+[ブラウザ] ──HTTPS──> [nginx :80/:443] ──proxy──> [Node/Express :3000（PM2常駐）] ──> 外部API
+```
 
-| 項目 | 値 |
-|---|---|
-| Environment | `Node` |
-| Build Command | `npm install` |
-| Start Command | `npm start` |
-| Instance Type | 任意（無料プランの `Free` でも動作） |
+- **nginx**：リバースプロキシ兼TLS終端（:80 / :443）．http→httpsへリダイレクト．
+- **Node.js + Express**：アプリ本体（:3000）を **PM2** で常駐・自動再起動．
+- **Let's Encrypt（certbot）**：TLS証明書を取得し，自動更新．
 
-> ビルド工程はありません（フロントエンドは `public/` の静的ファイルをそのまま配信します）．`npm install` で依存を入れ，`npm start`（＝`node server.js`）で起動するだけです．
+> 任意の Node 実行環境（VM / VPS / PaaS 等）で同様に動作します．PaaS では待受ポートが環境変数 `PORT` で注入されることが多いですが，`server.js` は `const PORT = process.env.PORT || 3000;` で受けるため追加設定は不要です．
 
-### ポートの扱い
+### nginx の要点
 
-Render は待受ポートを環境変数 `PORT` で注入します．`server.js` は `const PORT = process.env.PORT || 3000;` でこれを受けるため，**追加設定は不要**です（ローカルでは既定の3000，Render上では注入値で起動します）．
+OGP の絶対URLをサーバー側で生成するため，リバースプロキシで `Host` と `X-Forwarded-Proto` を転送します（これらが無いと OGP の `og:url` などが正しいホスト・スキームになりません）．
+
+```nginx
+location / {
+    proxy_pass         http://127.0.0.1:3000;
+    proxy_set_header   Host              $host;
+    proxy_set_header   X-Forwarded-Proto $scheme;
+    proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+}
+```
+
+### 更新フロー（git pull 型）
+
+ローカルで変更を commit & push したのち，VM 側で最新を取得して PM2 を再起動します．
+
+```bash
+# VM 側
+cd ~/ekihub-app/EkiHub
+git pull origin main
+pm2 restart ekihub        # 依存に変更が無ければ npm install は不要
+```
 
 ### 環境変数（任意）
 
-外部APIを使う場合は，Render ダッシュボードの **Environment → Environment Variables** に追加します．いずれも未設定で動作します（埋め込みデータ＋距離概算へ自動フォールバック）．
+外部APIを使う場合のみ設定します（例：シェルの `export`，PM2 の ecosystem 設定，systemd の `Environment=` 等）．いずれも未設定で動作します（埋め込みデータ＋距離概算へ自動フォールバック）．各変数の意味は「[環境変数（任意）](#環境変数任意)」を参照してください．
 
 | 変数 | 用途 |
 |---|---|
 | `ODPT_TOKEN` | 公共交通オープンデータ(ODPT)で駅データを拡張する場合 |
 | `ROUTING_PROVIDER` / `ROUTING_OTP_URL` / `ROUTING_TIMEOUT_MS` | 経路API(OTP)で所要時間・運賃を実データ化する場合（詳細は後述） |
-
-各変数の意味は「[環境変数（任意）](#環境変数任意)」を参照してください．
-
-> ⚠️ **無料プランの注意**：一定時間アクセスが無いとサービスがスリープし，次回アクセス時に再起動（コールドスタート）が発生します．初回表示が遅い場合は数十秒お待ちください．常時稼働させたい場合は有料プランへの変更を検討してください．
 
 ---
 
@@ -221,11 +234,11 @@ node scripts/buildRidership.js /path/to/S12-23_NumberOfPassengers.geojson
 
 ## 環境変数（任意）
 
-ローカルでは `.env.example` を `.env` にコピーして設定できます（`.env` はコミットされません）．Render 上では「[Renderへのデプロイ](#renderへのデプロイ)」の手順に従い，ダッシュボードの Environment Variables に設定します．
+ローカルでは `.env.example` を `.env` にコピーして設定できます（`.env` はコミットされません）．公開サーバー上では「[デプロイ（公開サーバー）](#デプロイ公開サーバー)」の手順に従い，環境変数として設定します．
 
 | 変数 | 用途 |
 |---|---|
-| `PORT` | 待受ポート（既定：3000）．Render では自動注入されるため設定不要． |
+| `PORT` | 待受ポート（既定：3000）．nginxリバースプロキシ構成ではこの3000へプロキシします（PaaSでは自動注入される場合あり）． |
 | `ODPT_TOKEN` | 公共交通オープンデータ(ODPT)で駅データをさらに拡張する場合に設定 |
 | `ROUTING_PROVIDER` | 経路APIの種別．現在は `otp`（OpenTripPlanner）に対応 |
 | `ROUTING_OTP_URL` | OTP2 の GraphQL エンドポイント |
