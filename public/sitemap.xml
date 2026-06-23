@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://sitemaps.org">
   <url>
-    <!-- ↓ __ORIGIN__ の部分をご自身の実際のサイトURL（最後はスラッシュ）に書き換えてください -->
-    <loc>https://ekihub.jp/</loc>
+    <loc>https://ekihub.jp</loc>
     <priority>1.0</priority>
     <changefreq>daily</changefreq>
   </url>
