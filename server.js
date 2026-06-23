@@ -88,6 +88,8 @@ const INDEX_TEMPLATE = (() => {
   }
 })();
 
+app.use(express.static("public"));
+
 // リクエストから絶対オリジン(scheme://host)を組み立てる.
 // リバースプロキシ経由を考慮し X-Forwarded-* を優先する.
 function resolveOrigin(req) {
