@@ -13,8 +13,8 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUTPUT_PATH = join(__dirname, "..", "data", "stations-osm.json");
 
-// 関東1都6県をおおよそ覆うバウンディングボックス (south, west, north, east)
-const BBOX = [34.9, 138.9, 37.2, 141.1];
+// 日本全国をおおよそ覆うバウンディングボックス (south, west, north, east)
+const BBOX = [24.0, 122.9, 45.6, 145.9];
 
 // Overpassクエリ: railway=station の node / way を取得（廃止・地下のみ等は除外しない簡易版）
 const QUERY = `

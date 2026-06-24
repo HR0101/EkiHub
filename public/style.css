@@ -72,6 +72,35 @@ body {
   padding: 48px 24px 32px;
 }
 
+/* トップナビゲーション */
+.top-nav {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  z-index: 10;
+}
+
+.nav-link {
+  display: inline-block;
+  padding: 8px 16px;
+  color: var(--text-sub);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition: var(--transition);
+}
+
+.nav-link:hover {
+  color: var(--text-main);
+  border-color: var(--border-focus);
+  box-shadow: 0 4px 12px rgba(110, 170, 255, 0.15);
+}
+
 /* ===== ヒーロー ===== */
 .hero {
   text-align: center;
