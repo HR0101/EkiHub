@@ -56,6 +56,18 @@ const ridershipMap = loadRidershipMap();
 // モードA(主要駅)判定の閾値(1日あたり乗降客数). data/stations.js と揃える.
 const MAJOR_THRESHOLD = 200000;
 
+// 関東以外の主要駅リスト（ridership.json にデータがない地域向け）
+const EXTRA_MAJOR_STATIONS = new Set([
+  "札幌", "青森", "盛岡", "仙台", "秋田", "山形", "福島",
+  "新潟", "富山", "金沢", "福井", "甲府", "長野",
+  "岐阜", "静岡", "浜松", "名古屋", "豊橋",
+  "津", "大津", "京都", "大阪", "新大阪", "天王寺", "難波", "なんば", "京橋",
+  "神戸", "三ノ宮", "姫路", "奈良", "和歌山",
+  "鳥取", "松江", "岡山", "倉敷", "広島", "福山", "山口", "新山口",
+  "徳島", "高松", "松山", "高知",
+  "福岡", "博多", "小倉", "佐賀", "長崎", "熊本", "大分", "宮崎", "鹿児島中央", "那覇空港"
+]);
+
 // マージ済み駅リストへ乗降客数を適用し、主要駅フラグを再計算する.
 // S12データがある駅は実測値で上書きし、規模をモードA判定へ反映する.
 function applyRidership(stations) {
@@ -64,8 +76,8 @@ function applyRidership(stations) {
     if (typeof measured === "number" && measured > 0) {
       s.ridership = measured;
     }
-    // 実測 or 既存フラグのいずれかで主要駅とみなす
-    s.isMajor = s.isMajor === true || s.ridership >= MAJOR_THRESHOLD;
+    // 実測 or 既存フラグ or 関東外主要駅リストのいずれかで主要駅とみなす
+    s.isMajor = s.isMajor === true || s.ridership >= MAJOR_THRESHOLD || EXTRA_MAJOR_STATIONS.has(s.name);
   }
   return stations;
 }
