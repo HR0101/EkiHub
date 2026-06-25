@@ -1108,9 +1108,11 @@ body {
 }
 
 @media (max-width: 600px) {
-  /* ツールバーを上部固定から通常フローへ */
-  .toolbar {
+  /* ツールバー・ナビを上部固定から通常フローへ */
+  .toolbar,
+  .top-nav {
     position: static;
+    display: flex;
     justify-content: center;
     margin-bottom: 16px;
   }
