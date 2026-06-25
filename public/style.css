@@ -76,7 +76,7 @@ body {
 .top-nav {
   position: absolute;
   top: 16px;
-  right: 24px;
+  left: 24px;
   z-index: 10;
 }
 
@@ -1109,11 +1109,17 @@ body {
 
 @media (max-width: 600px) {
   /* ツールバー・ナビを上部固定から通常フローへ */
-  .toolbar,
-  .top-nav {
+  .toolbar {
     position: static;
     display: flex;
     justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .top-nav {
+    position: static;
+    display: flex;
+    justify-content: flex-start;
     margin-bottom: 16px;
   }
 
