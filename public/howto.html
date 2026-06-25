@@ -9,6 +9,18 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    <script>
+      (function() {
+        try {
+          var mode = localStorage.getItem("ekihub-mode") || "auto";
+          var color = localStorage.getItem("ekihub-color") || "default";
+          var root = document.documentElement;
+          var effectiveMode = mode === "auto" ? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark") : mode;
+          if (effectiveMode !== "dark") root.setAttribute("data-mode", effectiveMode);
+          if (color !== "default") root.setAttribute("data-color", color);
+        } catch (e) {}
+      })();
+    </script>
     <style>
       .howto-content {
         background: var(--bg-panel);
@@ -65,7 +77,7 @@
     <div class="aurora" aria-hidden="true"></div>
     <main class="app">
       <nav class="top-nav">
-        <a href="index.html" class="nav-link">← ホームに戻る</a>
+        <a href="/" class="nav-link">← ホームに戻る</a>
       </nav>
       <header class="hero">
         <div class="hero__badge">GUIDE</div>
