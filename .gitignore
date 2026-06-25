@@ -1,10 +1,13 @@
 # ===== 依存パッケージ =====
 node_modules/
+docs/
 
 # ===== 環境変数・秘密情報 =====
 .env
 .env.*
 !.env.example
+Lighthouse.pdf
+Lighthouse02.pdf
 
 # ===== Claude Code 関連 =====
 .claude
