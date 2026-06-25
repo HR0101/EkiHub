@@ -1,0 +1,104 @@
+name: Deploy to Oracle Cloud
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "*.md"
+      - "docs/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci
+      - run: node scripts/testRouting.js
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get runner public IP
+        id: runner-ip
+        run: echo "ip=$(curl -s ifconfig.me)" >> "$GITHUB_OUTPUT"
+
+      - name: Install OCI CLI
+        run: pip install oci-cli --quiet
+
+      - name: Configure OCI CLI
+        run: |
+          mkdir -p ~/.oci
+          echo "${{ secrets.OCI_CLI_KEY_CONTENT }}" > ~/.oci/key.pem
+          chmod 600 ~/.oci/key.pem
+          cat > ~/.oci/config << EOF
+          [DEFAULT]
+          user=${{ secrets.OCI_CLI_USER }}
+          fingerprint=${{ secrets.OCI_CLI_FINGERPRINT }}
+          key_file=~/.oci/key.pem
+          tenancy=${{ secrets.OCI_CLI_TENANCY }}
+          region=ap-tokyo-1
+          EOF
+
+      - name: Open SSH for this runner
+        run: |
+          RULES=$(oci network security-list get \
+            --security-list-id "${{ secrets.OCI_SECURITY_LIST_ID }}" \
+            --query 'data."ingress-security-rules"' --raw-output)
+
+          NEW_RULE=$(jq -n --arg ip "${{ steps.runner-ip.outputs.ip }}/32" '{
+            "description": "GitHub Actions (temp)",
+            "icmp-options": null,
+            "is-stateless": false,
+            "protocol": "6",
+            "source": $ip,
+            "source-type": "CIDR_BLOCK",
+            "tcp-options": {
+              "destination-port-range": {"max": 22, "min": 22},
+              "source-port-range": null
+            },
+            "udp-options": null
+          }')
+
+          UPDATED=$(echo "$RULES" | jq --argjson new "$NEW_RULE" '. + [$new]')
+
+          oci network security-list update \
+            --security-list-id "${{ secrets.OCI_SECURITY_LIST_ID }}" \
+            --ingress-security-rules "$UPDATED" --force
+
+          sleep 10
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/ekihub-app/EkiHub
+            git pull origin main
+            npm install --omit=dev
+            pm2 restart ekihub
+
+      - name: Health check
+        run: |
+          sleep 5
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 15 https://ekihub.jp)
+          echo "Health check status: $STATUS"
+          [ "$STATUS" = "200" ] || exit 1
+
+      - name: Close SSH for this runner
+        if: always()
+        run: |
+          RULES=$(oci network security-list get \
+            --security-list-id "${{ secrets.OCI_SECURITY_LIST_ID }}" \
+            --query 'data."ingress-security-rules"' --raw-output) || exit 0
+
+          CLEANED=$(echo "$RULES" | jq '[.[] | select(.description != "GitHub Actions (temp)")]')
+
+          oci network security-list update \
+            --security-list-id "${{ secrets.OCI_SECURITY_LIST_ID }}" \
+            --ingress-security-rules "$CLEANED" --force || true
