@@ -51,6 +51,20 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap"
       rel="stylesheet"
     />
+    <script>
+      (function() {
+        try {
+          var validModes = ["dark", "light", "auto"];
+          var raw = localStorage.getItem("ekihub-mode");
+          var mode = (raw && validModes.indexOf(raw) !== -1) ? raw : "auto";
+          var color = localStorage.getItem("ekihub-color") || "default";
+          var root = document.documentElement;
+          var effectiveMode = mode === "auto" ? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark") : mode;
+          if (effectiveMode !== "dark") root.setAttribute("data-mode", effectiveMode);
+          if (color !== "default") root.setAttribute("data-color", color);
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <!-- 背景の装飾グラデーション -->

@@ -12,7 +12,9 @@
     <script>
       (function() {
         try {
-          var mode = localStorage.getItem("ekihub-mode") || "auto";
+          var validModes = ["dark", "light", "auto"];
+          var raw = localStorage.getItem("ekihub-mode");
+          var mode = (raw && validModes.indexOf(raw) !== -1) ? raw : "auto";
           var color = localStorage.getItem("ekihub-color") || "default";
           var root = document.documentElement;
           var effectiveMode = mode === "auto" ? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark") : mode;
