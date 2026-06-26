@@ -22,6 +22,16 @@
       })();
     </script>
     <style>
+      /* デスクトップ: top-navがabsoluteなので heroを下にずらして重なりを防ぐ */
+      .top-nav + .hero {
+        padding-top: 40px;
+      }
+      @media (max-width: 600px) {
+        /* モバイル: top-navはstaticになるので追加の余白は不要 */
+        .top-nav + .hero {
+          padding-top: 0;
+        }
+      }
       .howto-content {
         background: var(--bg-panel);
         backdrop-filter: blur(18px);
