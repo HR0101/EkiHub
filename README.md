@@ -43,6 +43,7 @@
 | 周辺スポット | 集合駅周辺のカフェ・居酒屋・カラオケ等をOSMから取得し地図表示． |
 | 履歴・お気に入り | 検索履歴を保存・再実行．駅の組合せをお気に入り登録． |
 | 印刷 | 結果を印刷用レイアウトで出力． |
+| 鉄道運行情報 | ODPTセンターの最新運行情報を表示．PCでは入力欄下のカード、スマートフォンでは上部の「運行情報」ボタンから開く． |
 
 ---
 
@@ -98,6 +99,7 @@ EkiHub/
 │   ├── centerLogic.js         # 中心駅算出（重心・時間・運賃・人数重み・モードA/B）
 │   ├── stationGraph.js        # 駅ネットワークグラフ構築・ダイクストラ法
 │   ├── fareEstimate.js        # 距離からの運賃概算
+│   ├── odptTrainInformation.js# ODPT運行情報の取得・正規化・キャッシュ
 │   ├── routeProvider.js       # 経路API抽象化（Strategy Pattern・差し替え式）
 │   └── poiService.js          # 周辺スポット取得（Overpass API・キャッシュつき）
 ├── scripts/
@@ -124,6 +126,7 @@ EkiHub/
         ├── meetingTools.js    # 集合時刻・出発逆算・カレンダー(.ics)
         ├── nearbySpots.js     # 周辺スポット取得・地図表示
         ├── historyFavorites.js# 履歴・お気に入り
+        ├── trainInformation.js# ODPT鉄道運行情報カード
         └── printExport.js     # 印刷用出力
 ```
 
@@ -205,7 +208,7 @@ SSHポートは通常自宅IPのみに制限しており，デプロイ時のみ
 | 変数 | 用途 |
 |---|---|
 | `PORT` | 待受ポート（既定：3000） |
-| `ODPT_TOKEN` | 公共交通オープンデータ(ODPT)で駅データを拡張する場合 |
+| `ODPT_TOKEN` | 公共交通オープンデータセンターのアクセストークン．駅データ拡張と鉄道運行情報カードに使用 |
 | `ROUTING_PROVIDER` | 経路APIの種別（現在は `otp` に対応） |
 | `ROUTING_OTP_URL` | OTP2 の GraphQL エンドポイント |
 | `ROUTING_TIMEOUT_MS` | 経路APIのタイムアウト（既定：8000） |
