@@ -1375,6 +1375,13 @@ body {
   line-height: 1.4;
 }
 
+.train-info-card__coverage {
+  margin-top: 4px;
+  color: var(--text-faint);
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
 .train-info-card__actions {
   gap: 6px;
 }
