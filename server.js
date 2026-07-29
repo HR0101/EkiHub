@@ -3,6 +3,7 @@
 //   1) 静的フロントエンド(public/)の配信
 //   2) /api/stations  : 候補・入力補完用の駅一覧を返す（ODPTトークンがあれば全駅へ拡張）
 //   3) /api/center    : 入力駅群と モードA/B から中心駅を算出して返す
+//   4) /api/train-information : ODPTの最新運行情報を安全な公開形式で返す
 //
 // 外部APIキー（任意）は環境変数で受け取り、秘匿する:
 //   ODPT_TOKEN        : 公共交通オープンデータ(ODPT)の駅データ拡張に利用
@@ -18,6 +19,7 @@ import { computeCenterStation } from "./lib/centerLogic.js";
 import { getOrBuildGraph } from "./lib/stationGraph.js";
 import { fetchNearbySpots, CATEGORY_LABELS } from "./lib/poiService.js";
 import { makeProviderFromEnv } from "./lib/routeProvider.js";
+import { createOdptTrainInformationClient } from "./lib/odptTrainInformation.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -85,6 +87,7 @@ function applyRidership(stations) {
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ODPT_TOKEN = process.env.ODPT_TOKEN || null;
+const odptTrainInformation = createOdptTrainInformationClient({ token: ODPT_TOKEN });
 // 経路プロバイダ（環境変数で選択。未設定なら null = 距離概算へフォールバック）
 const routeProvider = makeProviderFromEnv();
 const ROUTING_ENABLED = Boolean(routeProvider);
@@ -242,6 +245,30 @@ app.get("/api/stations", async (_req, res) => {
   }
 });
 
+// 最新の鉄道運行情報。アクセストークンはサーバー内だけで使用し、フロントへ返さない.
+app.get("/api/train-information", async (_req, res) => {
+  try {
+    const data = await odptTrainInformation.getTrainInformation();
+    res.setHeader(
+      "Cache-Control",
+      `public, max-age=${data.refreshAfterSeconds}, stale-while-revalidate=30`
+    );
+    res.json(data);
+  } catch (error) {
+    if (error?.code === "ODPT_NOT_CONFIGURED") {
+      return res.status(503).json({
+        code: error.code,
+        error: "運行情報は現在準備中です。"
+      });
+    }
+    console.error("ODPT運行情報の取得に失敗:", error);
+    res.status(502).json({
+      code: "ODPT_UNAVAILABLE",
+      error: "運行情報を取得できませんでした。時間をおいて更新してください。"
+    });
+  }
+});
+
 // 中心駅算出API
 // リクエストボディ: { origins: ["新宿","横浜",...], mode: "A" | "B" }
 app.post("/api/center", async (req, res) => {
@@ -350,7 +377,7 @@ app.get("/api/health", (_req, res) => {
     odptEnabled: Boolean(ODPT_TOKEN),
     routingEnabled: ROUTING_ENABLED,
     routingProvider: ROUTING_ENABLED ? (process.env.ROUTING_PROVIDER || "custom") : null,
-    features: ["center", "fare", "people-weight", "spots", "routing"]
+    features: ["center", "fare", "people-weight", "spots", "routing", "train-information"]
   });
 });
 

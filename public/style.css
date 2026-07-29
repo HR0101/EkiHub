@@ -149,6 +149,13 @@ body {
   align-items: start;
 }
 
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
 @media (max-width: 880px) {
   .layout {
     grid-template-columns: 1fr;
@@ -1316,6 +1323,297 @@ body {
   color: var(--text-sub);
   font-weight: 700;
   margin-bottom: 12px;
+}
+
+/* ===== ODPT 鉄道運行情報 ===== */
+.train-info-mobile-trigger {
+  display: none;
+}
+
+.train-info-card.fpanel {
+  padding: 20px;
+  overflow: hidden;
+  animation: fadeUp 1s var(--transition) both;
+}
+
+.train-info-card__head,
+.train-info-card__actions,
+.train-info-card__summary,
+.train-info-card__loading,
+.train-info-card__state {
+  display: flex;
+  align-items: center;
+}
+
+.train-info-card__head {
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.train-info-card__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-3);
+  font-size: 0.67rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.train-info-card__live {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-3);
+  box-shadow: 0 0 0 4px rgba(70, 224, 200, 0.12);
+}
+
+.train-info-card__title {
+  margin-top: 2px;
+  font-size: 1.02rem;
+  line-height: 1.4;
+}
+
+.train-info-card__actions {
+  gap: 6px;
+}
+
+.train-info-card__icon-btn {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  background: var(--bg-input);
+  color: var(--text-sub);
+  font-family: inherit;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.train-info-card__icon-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.train-info-card__icon-btn:active {
+  transform: rotate(-22deg);
+}
+
+.train-info-card__close {
+  display: none;
+}
+
+.train-info-card__summary {
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 11px 12px;
+  border: 1px solid rgba(70, 224, 200, 0.22);
+  border-radius: 12px;
+  background: rgba(70, 224, 200, 0.07);
+}
+
+.train-info-card__summary.has-alert {
+  border-color: rgba(255, 107, 139, 0.28);
+  background: rgba(255, 107, 139, 0.08);
+}
+
+.train-info-card__summary-main {
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.train-info-card__summary-count {
+  flex: 0 0 auto;
+  color: var(--text-faint);
+  font-size: 0.7rem;
+}
+
+.train-info-card__list {
+  max-height: 310px;
+  padding-right: 4px;
+  overflow-y: auto;
+  list-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-focus) transparent;
+}
+
+.train-info-card__item {
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.train-info-card__item:last-child {
+  border-bottom: 0;
+}
+
+.train-info-card__item-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.train-info-card__railway {
+  min-width: 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.train-info-card__badge {
+  flex: 0 0 auto;
+  padding: 2px 7px;
+  border: 1px solid rgba(70, 224, 200, 0.28);
+  border-radius: 999px;
+  background: rgba(70, 224, 200, 0.08);
+  color: var(--accent-3);
+  font-size: 0.65rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.train-info-card__item.has-alert .train-info-card__badge {
+  border-color: rgba(255, 107, 139, 0.34);
+  background: rgba(255, 107, 139, 0.1);
+  color: var(--danger);
+}
+
+.train-info-card__text {
+  margin-top: 5px;
+  color: var(--text-sub);
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.train-info-card__item-time {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-faint);
+  font-size: 0.64rem;
+}
+
+.train-info-card__loading,
+.train-info-card__state {
+  min-height: 104px;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--text-sub);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.train-info-card__spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--border-soft);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.train-info-card__retry {
+  padding: 7px 12px;
+  border: 1px solid var(--border-soft);
+  border-radius: 9px;
+  background: var(--bg-input);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.train-info-card__foot {
+  margin-top: 13px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-soft);
+  color: var(--text-faint);
+  font-size: 0.64rem;
+  line-height: 1.55;
+}
+
+.train-info-card__foot p + p {
+  margin-top: 4px;
+}
+
+.train-info-card__foot a {
+  color: var(--text-sub);
+  text-underline-offset: 2px;
+}
+
+.train-info-backdrop {
+  display: none;
+}
+
+@media (max-width: 880px) {
+  .train-info-mobile-trigger {
+    display: inline-flex;
+  }
+
+  .train-info-card.fpanel {
+    display: none;
+  }
+
+  .train-info-card.fpanel.is-mobile-open {
+    position: fixed;
+    z-index: 1001;
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    display: block;
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+    background: var(--bg-panel-solid);
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.62);
+    animation: trainInfoSheetIn 0.28s var(--transition) both;
+  }
+
+  .train-info-card__close {
+    display: grid;
+  }
+
+  .train-info-card__list {
+    max-height: min(42dvh, 340px);
+  }
+
+  .train-info-backdrop.is-open {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    display: block;
+    background: rgba(4, 7, 16, 0.68);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+
+  body.train-info-is-open {
+    overflow: hidden;
+  }
+}
+
+@keyframes trainInfoSheetIn {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media print {
+  .train-info-card,
+  .train-info-mobile-trigger,
+  .train-info-backdrop {
+    display: none !important;
+  }
 }
 
 /* ===== ライトモード（data-mode="light"） ===== */
