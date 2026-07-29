@@ -9,20 +9,8 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet" />
-    <script>
-      (function() {
-        try {
-          var validModes = ["dark", "light", "auto"];
-          var raw = localStorage.getItem("ekihub-mode");
-          var mode = (raw && validModes.indexOf(raw) !== -1) ? raw : "auto";
-          var color = localStorage.getItem("ekihub-color") || "default";
-          var root = document.documentElement;
-          var effectiveMode = mode === "auto" ? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark") : mode;
-          if (effectiveMode !== "dark") root.setAttribute("data-mode", effectiveMode);
-          if (color !== "default") root.setAttribute("data-color", color);
-        } catch (e) {}
-      })();
-    </script>
+    <!-- テーマ復元（CSPでインラインJSは禁止のため外部ファイル。描画前に適用するので defer を付けない） -->
+    <script src="js/themeBoot.js"></script>
     <style>
       /* デスクトップ: top-navがabsoluteなので heroを下にずらして重なりを防ぐ */
       .top-nav + .hero {
@@ -52,6 +40,13 @@
       }
       .howto-content h2:first-child {
         margin-top: 0;
+      }
+      /* ライトモードでは accent-3（明るい寒色・暖色）が白背景に溶けて読めないため、
+         accent へ黒を混ぜてコントラストを確保する（color-mix 非対応環境は accent のまま）。
+         高コントラストは data-mode に関わらず黒背景なので対象外とする。 */
+      [data-mode="light"]:not([data-color="high-contrast"]) .howto-content h2 {
+        color: var(--accent);
+        color: color-mix(in srgb, var(--accent) 70%, #000);
       }
       .howto-content h3 {
         color: var(--text-main);
