@@ -6,17 +6,42 @@
 
   if (!window.EkiHub) return;
   const E = window.EkiHub;
+  const sharedTheme = window.EkiHubTheme;
+
+  // themeBoot.js が公開する設定を優先し、未読込時だけローカル既定値へフォールバックする。
+  const FALLBACK_MODE_ORDER = ["dark", "light", "auto"];
+  const FALLBACK_COLOR_ORDER = [
+    "default",
+    "sakura",
+    "forest",
+    "ocean",
+    "sunset",
+    "autumn",
+    "high-contrast"
+  ];
+  const MODE_ORDER =
+    Array.isArray(sharedTheme?.VALID_MODES) && sharedTheme.VALID_MODES.length > 0
+      ? [...sharedTheme.VALID_MODES]
+      : FALLBACK_MODE_ORDER;
+  const COLOR_ORDER =
+    Array.isArray(sharedTheme?.VALID_COLORS) && sharedTheme.VALID_COLORS.length > 0
+      ? [...sharedTheme.VALID_COLORS]
+      : FALLBACK_COLOR_ORDER;
+  const MODE_STORAGE_KEY =
+    typeof sharedTheme?.MODE_STORAGE_KEY === "string" && sharedTheme.MODE_STORAGE_KEY
+      ? sharedTheme.MODE_STORAGE_KEY
+      : "ekihub-mode";
+  const COLOR_STORAGE_KEY =
+    typeof sharedTheme?.COLOR_STORAGE_KEY === "string" && sharedTheme.COLOR_STORAGE_KEY
+      ? sharedTheme.COLOR_STORAGE_KEY
+      : "ekihub-color";
 
   // ===== モード =====
-  const MODE_ORDER = ["dark", "light", "auto"];
   const DEFAULT_MODE = "auto";
-  const MODE_STORAGE_KEY = "ekihub-mode";
   const MODE_LABELS = { dark: "ダーク", light: "ライト", auto: "自動" };
 
   // ===== カラーテーマ =====
-  const COLOR_ORDER = ["default", "sakura", "forest", "ocean", "sunset", "autumn", "high-contrast"];
   const DEFAULT_COLOR = "default";
-  const COLOR_STORAGE_KEY = "ekihub-color";
   const COLOR_LABELS = {
     default:         "デフォルト",
     sakura:          "サクラ",

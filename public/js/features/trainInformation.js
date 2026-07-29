@@ -145,9 +145,27 @@
         headers: { Accept: "application/json" },
         cache: "no-store"
       });
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (_parseError) {
+        if (!response.ok) {
+          throw new Error(
+            `運行情報を取得できませんでした（HTTP ${response.status}）。時間をおいて更新してください。`
+          );
+        }
+        throw new Error("運行情報の応答を読み取れませんでした。時間をおいて更新してください。");
+      }
       if (!response.ok) {
-        throw new Error(data.error || "運行情報を取得できませんでした。");
+        const apiMessage =
+          data && typeof data.error === "string" && data.error.trim() ? data.error.trim() : null;
+        throw new Error(
+          apiMessage ||
+            `運行情報を取得できませんでした（HTTP ${response.status}）。時間をおいて更新してください。`
+        );
+      }
+      if (!data || typeof data !== "object" || Array.isArray(data)) {
+        throw new Error("運行情報の応答形式を確認できませんでした。時間をおいて更新してください。");
       }
       renderInformation(data);
       hasLoaded = true;
@@ -173,6 +191,8 @@
     }
     lastFocused = document.activeElement;
     card.classList.add("is-mobile-open");
+    card.setAttribute("role", "dialog");
+    card.setAttribute("aria-modal", "true");
     backdrop.classList.add("is-open");
     backdrop.setAttribute("aria-hidden", "false");
     openButton.setAttribute("aria-expanded", "true");
@@ -183,6 +203,8 @@
 
   function closeMobileCard({ restoreFocus = true } = {}) {
     card.classList.remove("is-mobile-open");
+    card.removeAttribute("role");
+    card.removeAttribute("aria-modal");
     backdrop.classList.remove("is-open");
     backdrop.setAttribute("aria-hidden", "true");
     openButton.setAttribute("aria-expanded", "false");

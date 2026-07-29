@@ -86,7 +86,7 @@ function applyRidership(stations) {
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const ODPT_TOKEN = process.env.ODPT_TOKEN || null;
+const ODPT_TOKEN = String(process.env.ODPT_TOKEN || "").trim() || null;
 const odptTrainInformation = createOdptTrainInformationClient({ token: ODPT_TOKEN });
 // 経路プロバイダ（環境変数で選択。未設定なら null = 距離概算へフォールバック）
 const routeProvider = makeProviderFromEnv();
@@ -255,6 +255,7 @@ app.get("/api/train-information", async (_req, res) => {
     );
     res.json(data);
   } catch (error) {
+    res.setHeader("Cache-Control", "no-store");
     if (error?.code === "ODPT_NOT_CONFIGURED") {
       return res.status(503).json({
         code: error.code,

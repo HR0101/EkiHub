@@ -114,7 +114,7 @@ test("クライアントはODPTレスポンスを更新間隔内でキャッシ�
     };
   };
   const client = createOdptTrainInformationClient({
-    token: "secret-token",
+    token: "  secret-token \n",
     fetchImpl,
     now: () => NOW
   });
@@ -127,9 +127,10 @@ test("クライアントはODPTレスポンスを更新間隔内でキャッシ�
   assert.equal(second, first);
   assert.equal(requested.length, 2);
   assert.ok(requested.every((url) => url.includes("acl%3AconsumerKey=secret-token")));
+  assert.ok(requested.every((url) => !url.includes("%20")));
 });
 
 test("アクセストークン未設定時は設定エラーにする", async () => {
-  const client = createOdptTrainInformationClient({ token: null });
+  const client = createOdptTrainInformationClient({ token: "  \n" });
   await assert.rejects(client.getTrainInformation(), { code: "ODPT_NOT_CONFIGURED" });
 });
