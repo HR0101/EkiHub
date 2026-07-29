@@ -175,7 +175,14 @@
   `);
 
   // ===== テーマ適用 =====
+  // 適用そのものは全ページ共通の themeBoot.js に委譲し、ロジックの二重管理を避ける
   function applyTheme() {
+    const theme = window.EkiHubTheme;
+    if (theme && typeof theme.apply === "function") {
+      theme.apply(currentMode, currentColor);
+      return;
+    }
+    // themeBoot.js が読み込まれていない場合のフォールバック
     const root = document.documentElement;
     if (!root) return;
     const effectiveMode = currentMode === "auto" ? resolveAutoMode() : currentMode;
