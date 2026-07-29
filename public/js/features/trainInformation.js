@@ -72,8 +72,11 @@
 
   function renderInformation(data) {
     const items = Array.isArray(data.items) ? data.items : [];
-    const alertCount = items.filter((item) => !item.isNormal).length;
-    const normalCount = items.length - alertCount;
+    const stateOf = (item) =>
+      item.serviceState || (item.isNormal ? "normal" : item.isServiceEnded ? "ended" : "alert");
+    const alertCount = items.filter((item) => stateOf(item) === "alert").length;
+    const endedCount = items.filter((item) => stateOf(item) === "ended").length;
+    const normalCount = items.length - alertCount - endedCount;
 
     if (items.length === 0) {
       content.innerHTML = `
@@ -81,24 +84,34 @@
           <p>現在、表示できる鉄道運行情報はありません。</p>
         </div>`;
     } else {
-      const summaryText =
-        alertCount > 0
-          ? `${alertCount}路線に運行情報があります`
-          : "掲載路線はすべて平常運転です";
-      const summaryCount =
-        alertCount > 0
-          ? `平常 ${normalCount} / 情報あり ${alertCount}`
-          : `${normalCount}路線`;
+      let summaryText = "掲載路線はすべて平常運転です";
+      if (alertCount > 0) summaryText = `${alertCount}路線に遅延等の運行情報があります`;
+      else if (endedCount === items.length) summaryText = "掲載路線は本日の運行を終了しています";
+      else if (endedCount > 0) summaryText = "掲載路線に遅延等の情報はありません";
+
+      const counts = [];
+      if (normalCount > 0) counts.push(`平常 ${normalCount}`);
+      if (endedCount > 0) counts.push(`運行終了 ${endedCount}`);
+      if (alertCount > 0) counts.push(`情報あり ${alertCount}`);
+      const summaryCount = counts.join(" / ");
       const listHtml = items
         .map((item) => {
-          const badge = item.isNormal ? "平常運転" : item.status || "運行情報あり";
+          const serviceState = stateOf(item);
+          const badge =
+            serviceState === "normal"
+              ? "平常運転"
+              : serviceState === "ended"
+                ? "本日の運行終了"
+                : item.status || "運行情報あり";
+          const stateClass =
+            serviceState === "alert" ? " has-alert" : serviceState === "ended" ? " is-ended" : "";
           const itemUpdated = item.updatedAt
             ? `<time class="train-info-card__item-time" datetime="${escapeHtml(item.updatedAt)}">
                 更新 ${escapeHtml(formatTimestamp(item.updatedAt))}
               </time>`
             : "";
           return `
-            <li class="train-info-card__item${item.isNormal ? "" : " has-alert"}">
+            <li class="train-info-card__item${stateClass}">
               <div class="train-info-card__item-head">
                 <span class="train-info-card__railway">${escapeHtml(item.railway)}</span>
                 <span class="train-info-card__badge">${escapeHtml(badge)}</span>
@@ -110,7 +123,7 @@
         .join("");
 
       content.innerHTML = `
-        <div class="train-info-card__summary${alertCount > 0 ? " has-alert" : ""}">
+        <div class="train-info-card__summary${alertCount > 0 ? " has-alert" : endedCount > 0 ? " has-ended" : ""}">
           <span class="train-info-card__summary-main">${escapeHtml(summaryText)}</span>
           <span class="train-info-card__summary-count">${escapeHtml(summaryCount)}</span>
         </div>

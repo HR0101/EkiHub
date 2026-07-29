@@ -54,6 +54,36 @@ test("ODPT運行情報を表示用データへ正規化する", () => {
   assert.equal(items[1].isNormal, true);
 });
 
+test("遅延なし・本日の運行終了・異常を別の表示状態に分類する", () => {
+  const items = normalizeTrainInformation(
+    [
+      {
+        "@id": "no-delay",
+        "odpt:railway": "odpt.Railway:Example.NoDelay",
+        "odpt:trainInformationText": "現在、１５分以上の遅延はありません。"
+      },
+      {
+        "@id": "ended",
+        "odpt:railway": "odpt.Railway:Example.Ended",
+        "odpt:trainInformationText": "本日の列車の運転は終了しました。"
+      },
+      {
+        "@id": "suspended",
+        "odpt:railway": "odpt.Railway:Example.Suspended",
+        "odpt:trainInformationStatus": "運転見合わせ",
+        "odpt:trainInformationText": "安全確認のため運転を見合わせています。"
+      }
+    ],
+    new Map(),
+    NOW
+  );
+
+  assert.equal(items.find((item) => item.id === "no-delay").serviceState, "normal");
+  assert.equal(items.find((item) => item.id === "ended").serviceState, "ended");
+  assert.equal(items.find((item) => item.id === "ended").isServiceEnded, true);
+  assert.equal(items.find((item) => item.id === "suspended").serviceState, "alert");
+});
+
 test("クライアントはODPTレスポンスを更新間隔内でキャッシュする", async () => {
   const responses = {
     "odpt:TrainInformation": [

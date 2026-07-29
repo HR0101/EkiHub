@@ -1430,6 +1430,11 @@ body {
   background: rgba(255, 107, 139, 0.08);
 }
 
+.train-info-card__summary.has-ended {
+  border-color: var(--border-soft);
+  background: rgba(120, 140, 200, 0.07);
+}
+
 .train-info-card__summary-main {
   font-size: 0.84rem;
   font-weight: 700;
@@ -1488,6 +1493,12 @@ body {
   border-color: rgba(255, 107, 139, 0.34);
   background: rgba(255, 107, 139, 0.1);
   color: var(--danger);
+}
+
+.train-info-card__item.is-ended .train-info-card__badge {
+  border-color: var(--border-soft);
+  background: rgba(120, 140, 200, 0.08);
+  color: var(--text-faint);
 }
 
 .train-info-card__text {
