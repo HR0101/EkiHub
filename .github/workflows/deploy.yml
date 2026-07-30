@@ -6,6 +6,8 @@ on:
     paths-ignore:
       - "*.md"
       - "docs/**"
+  # push なしで main を再デプロイするための手動実行口
+  workflow_dispatch:
 
 jobs:
   test:
@@ -21,6 +23,9 @@ jobs:
 
   deploy:
     needs: test
+    # デプロイ先は本番（ekihub.jp）1つしかないため、main 以外では実行しない。
+    # Test ブランチへの push は上の test ジョブだけを走らせ、本番には触れない。
+    if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     steps:
       - name: Get runner public IP
