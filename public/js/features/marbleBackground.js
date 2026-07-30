@@ -95,8 +95,9 @@
       inset: -12%;
       z-index: 0;
       pointer-events: none;
-      /* 明るいカラーテーマ（サクラ等）でも主張しすぎない濃さに抑える */
-      opacity: 0.19;
+      /* 明るいカラーテーマ（サクラ等）でも主張しすぎない濃さに抑える。
+         背景の露出が大きいページは --mb-opacity で個別に下げられる。 */
+      opacity: var(--mb-opacity, 0.19);
       /* 暗い背景には光として乗せる */
       mix-blend-mode: screen;
       will-change: transform;
@@ -122,7 +123,7 @@
     /* ライトモードでは光として乗せると白飛びするため、色を沈める合成に変える */
     [data-mode="light"] .mb-layer {
       mix-blend-mode: multiply;
-      opacity: 0.13;
+      opacity: var(--mb-opacity-light, 0.13);
     }
 
     /* 高コントラストは視覚ノイズを排除する方針（.aurora と揃える） */
