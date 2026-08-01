@@ -1,7 +1,14 @@
-// マーブル背景モジュール（装飾専用・任意読み込み）
+// 流動背景モジュール（装飾専用・任意読み込み）
 //
-// テーマカラー（--accent / --accent-2 / --accent-3）の縞をノイズで歪ませ、
-// 大理石の脈のような層を既存の .aurora の上に重ねる。
+// ぼかした色の塊（ブロブ）を重ね、混ざり合いながら流れる背景を作る。
+// 円形の要素へ斜めのグラデーションを塗り、blur でぼかす構成。
+//
+// 指定仕様は 1.2W / 1.3W / 1.0W の3枚構成だったが、
+// 粒度を細かくするため 1枚あたりを小さくして枚数を増やしている。
+// サイズに対する ぼかし量の比率（約12.5%）と色・グラデーション角度は仕様どおり。
+//
+// 配置は仕様の考え方を踏襲し、画面中央を原点として
+// 2点を結ぶ線分上の1点（係数は乱数）に置く。線分自体も粒ごとに抽選する。
 //
 // 装飾専用のため、次の方針で「読み込まれなくても困らない」ことを保証する。
 //   - 読み込み順は最後。実行も requestIdleCallback で主要機能の後に回す
@@ -13,117 +20,157 @@
 
   const LAYER_ID = "marbleBackground-layer";
   const STYLE_ID = "marbleBackground-style";
-  const GRADIENT_ID = "marbleBackground-veins";
-  const FILTER_ID = "marbleBackground-filter";
 
   // 主要機能の描画を優先するため、暇になるまで生成を待つ時間の上限
   const IDLE_TIMEOUT_MS = 2500;
   // requestIdleCallback 非対応ブラウザ向けの遅延
   const FALLBACK_DELAY_MS = 500;
 
-  // 内部座標系のサイズ。実画面の解像度でフィルタを計算すると数十msのフレーム落ちが出るため、
-  // 小さく描いて引き伸ばす（ぼかした模様なので拡大による粗さは目立たない）。
-  const CANVAS_WIDTH = 560;
-  const CANVAS_HEIGHT = 320;
-
-  // 大理石の脈を作るフィルタの調整値（すべて上の内部座標系での値）
-  const NOISE_FREQUENCY = "0.02 0.042"; // 横へ流れる細かなうねりにする
-  // オクターブ数が計算コストを最も左右する。3 にすると長いフレームが出るため 2 に留める。
-  const NOISE_OCTAVES = 2;
-  const NOISE_SEED = 17;
-  const DISPLACE_SCALE = 56;            // 縞を歪ませる強さ＝マーブルらしさ
-  const SOFTEN_DEVIATION = 1.4;         // 脈の輪郭をぼかして背景に溶かす
-
-  // 縞の並び。[グラデーション上の位置(%), 色トーン] で、
-  // 位置が近い組み合わせが細い脈として現れる。a/b/c は accent 系3色に対応する。
-  const VEIN_STOPS = [
-    [0, "a"], [6, "b"], [8, "c"], [10, "b"],
-    [26, "a"], [40, "c"], [42, "a"],
-    [58, "b"], [62, "c"], [64, "b"],
-    [80, "a"], [92, "c"], [94, "a"], [100, "b"],
-  ];
-
-  const VEIN_STOPS_MARKUP = VEIN_STOPS
-    .map(([offset, tone]) => `<stop class="mb-stop mb-stop--${tone}" offset="${offset}%" />`)
-    .join("");
-
-  const SVG_MARKUP = `
-    <svg
-      class="mb-canvas"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}"
-      preserveAspectRatio="none"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <defs>
-        <linearGradient id="${GRADIENT_ID}" x1="0%" y1="0%" x2="100%" y2="100%">
-          ${VEIN_STOPS_MARKUP}
-        </linearGradient>
-        <filter
-          id="${FILTER_ID}"
-          x="-15%" y="-15%" width="130%" height="130%"
-          color-interpolation-filters="sRGB"
-          filterUnits="objectBoundingBox"
-        >
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="${NOISE_FREQUENCY}"
-            numOctaves="${NOISE_OCTAVES}"
-            seed="${NOISE_SEED}"
-            result="mbNoise"
-          />
-          <feDisplacementMap
-            in="SourceGraphic"
-            in2="mbNoise"
-            scale="${DISPLACE_SCALE}"
-            xChannelSelector="R"
-            yChannelSelector="G"
-            result="mbVeins"
-          />
-          <feGaussianBlur in="mbVeins" stdDeviation="${SOFTEN_DEVIATION}" />
-        </filter>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#${GRADIENT_ID})" filter="url(#${FILTER_ID})" />
-    </svg>
-  `;
+  const GRAIN_COUNT = 30;
+  // 画面幅に対する粒の直径(%)。
+  // 大小を混ぜることで、大きな粒が下地の色を作り、小さな粒が
+  // 局所的な色の変化を足して「細かい混ざり合い」になる。
+  // 個々が「点」として見えないよう、下限も隣と重なる大きさに保つ。
+  const SIZE_MIN = 12;
+  const SIZE_MAX = 44;
+  // ぼかし量は直径に対する比率。mask のフェードと合わせて輪郭を完全に消す。
+  const BLUR_RATIO = 0.18;
+  // 中心からの散らばり（画面幅・高さに対する倍率）。
+  // 広げすぎると粒が孤立して点に見えるため、重なりを保てる範囲に抑える。
+  const SPREAD_X = 0.45;
+  const SPREAD_Y = 0.45;
+  // 一周の秒数の範囲。粒ごとにばらけさせて全体の周期を感じさせない。
+  // 長すぎると動いて見えないため、20〜35秒に収める。
+  const DURATION_MIN = 19;
+  const DURATION_MAX = 34;
+  // 軌道パターンの数（CSSの @keyframes と対応）
+  const TRACK_VARIANTS = 4;
+  // 色の種類（CSSの --mb-grain-* と対応）
+  const TONE_VARIANTS = 3;
 
   const STYLE_CSS = `
     .mb-layer {
       position: fixed;
-      /* 動かした際に端が見えないよう画面より一回り大きく取る */
-      inset: -12%;
+      inset: 0;
       z-index: 0;
       pointer-events: none;
-      /* 明るいカラーテーマ（サクラ等）でも主張しすぎない濃さに抑える。
-         背景の露出が大きいページは --mb-opacity で個別に下げられる。 */
-      opacity: var(--mb-opacity, 0.19);
-      /* 暗い背景には光として乗せる */
-      mix-blend-mode: screen;
-      will-change: transform;
-      animation: mbDrift 46s ease-in-out infinite alternate;
+      overflow: hidden;
+      /* 背景色そのものが揺らいで見えるようにするため、加算や乗算ではなく
+         通常合成で「背景に近い色」を敷く。
+         色を上に乗せる合成にすると、黒／白の地からテーマ色が浮いてしまう。 */
+      opacity: var(--mb-opacity, 1);
+      mix-blend-mode: normal;
     }
 
-    .mb-canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    /* 縞の色はテーマ変数を参照するので、カラーテーマ切替に自動で追従する */
-    .mb-stop--a { stop-color: var(--accent); }
-    .mb-stop--b { stop-color: var(--accent-2); }
-    .mb-stop--c { stop-color: var(--accent-3); }
-
-    @keyframes mbDrift {
-      from { transform: translate3d(0, 0, 0) scale(1.04); }
-      to   { transform: translate3d(-2.5%, 1.5%, 0) scale(1.12); }
-    }
-
-    /* ライトモードでは光として乗せると白飛びするため、色を沈める合成に変える */
     [data-mode="light"] .mb-layer {
-      mix-blend-mode: multiply;
-      opacity: var(--mb-opacity-light, 0.13);
+      opacity: var(--mb-opacity-light, 1);
+    }
+
+    /* 粒の色は「地の色（--bg-base）にテーマのアクセントをわずかに混ぜたもの」。
+       アクセントをそのまま置くと黒／白の地から色が浮いて主張が強くなるため、
+       混ぜる割合を1割前後に抑え、近い色どうしの濃淡として流す。
+       カラーテーマを変えれば混ざる色相も変わる。
+       1行目は color-mix 非対応環境向けのフォールバック（地の色のみ）。 */
+    .mb-layer {
+      --mb-grain-1: linear-gradient(135deg, var(--bg-base), var(--bg-base));
+      --mb-grain-1: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--accent-2) 20%, var(--bg-base)),
+        color-mix(in srgb, var(--accent) 11%, var(--bg-base))
+      );
+      --mb-grain-2: linear-gradient(135deg, var(--bg-base), var(--bg-base));
+      --mb-grain-2: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--accent-3) 14%, var(--bg-base)),
+        color-mix(in srgb, var(--accent-2) 18%, var(--bg-base))
+      );
+      --mb-grain-3: linear-gradient(45deg, var(--bg-base), var(--bg-base));
+      --mb-grain-3: linear-gradient(
+        45deg,
+        color-mix(in srgb, var(--accent) 17%, var(--bg-base)),
+        color-mix(in srgb, var(--accent-3) 9%, var(--bg-base))
+      );
+    }
+
+    /* ライトは地が明るいぶん、同じ割合でも色が立ちやすいので控えめにする */
+    [data-mode="light"] .mb-layer {
+      --mb-grain-1: linear-gradient(135deg, var(--bg-base), var(--bg-base));
+      --mb-grain-1: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--accent) 13%, var(--bg-base)),
+        color-mix(in srgb, var(--accent-2) 8%, var(--bg-base))
+      );
+      --mb-grain-2: linear-gradient(135deg, var(--bg-base), var(--bg-base));
+      --mb-grain-2: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--accent-3) 12%, var(--bg-base)),
+        color-mix(in srgb, var(--accent) 9%, var(--bg-base))
+      );
+      --mb-grain-3: linear-gradient(45deg, var(--bg-base), var(--bg-base));
+      --mb-grain-3: linear-gradient(
+        45deg,
+        color-mix(in srgb, var(--accent-2) 11%, var(--bg-base)),
+        color-mix(in srgb, var(--accent-3) 7%, var(--bg-base))
+      );
+    }
+
+    .mb-grain {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      aspect-ratio: 1;
+      will-change: transform;
+      /* 円形に切り抜くと輪郭が「点」として見えてしまうため、
+         中心から外へ徐々に透明になるマスクでにじませ、隣の粒と溶け合わせる。
+         グラデーションの角度と色は background 側（仕様どおり）が保持される。 */
+      -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 18%, transparent 70%);
+      mask-image: radial-gradient(circle at 50% 50%, #000 18%, transparent 70%);
+      /* 位置(--mb-x/--mb-y)・サイズ・ぼかし・周期は marbleBackground.js が与える */
+    }
+
+    .mb-grain--tone1 { background: var(--mb-grain-1); }
+    .mb-grain--tone2 { background: var(--mb-grain-2); }
+    .mb-grain--tone3 { background: var(--mb-grain-3); }
+
+    /* 軌道は4種を使い回し、周期と開始位相を粒ごとにずらして重なりを常に変える。
+       translate の % は「粒自身の直径」基準なので、粒が小さいと移動量も小さくなる。
+       画面上でしっかり流れて見えるよう、直径と同程度（100%前後）動かす。 */
+    @keyframes mbTrack1 {
+      0%   { transform: translate(calc(-50% + var(--mb-x)), calc(-50% + var(--mb-y))) scale(1); }
+      33%  { transform: translate(calc(-50% + var(--mb-x) + 105%), calc(-50% + var(--mb-y) - 80%)) scale(1.3); }
+      66%  { transform: translate(calc(-50% + var(--mb-x) - 75%), calc(-50% + var(--mb-y) + 95%)) scale(0.85); }
+      100% { transform: translate(calc(-50% + var(--mb-x)), calc(-50% + var(--mb-y))) scale(1); }
+    }
+
+    @keyframes mbTrack2 {
+      0%   { transform: translate(calc(-50% + var(--mb-x)), calc(-50% + var(--mb-y))) scale(1); }
+      33%  { transform: translate(calc(-50% + var(--mb-x) - 115%), calc(-50% + var(--mb-y) + 70%)) scale(0.8); }
+      66%  { transform: translate(calc(-50% + var(--mb-x) + 85%), calc(-50% + var(--mb-y) + 110%)) scale(1.35); }
+      100% { transform: translate(calc(-50% + var(--mb-x)), calc(-50% + var(--mb-y))) scale(1); }
+    }
+
+    @keyframes mbTrack3 {
+      0%   { transform: translate(calc(-50% + var(--mb-x)), calc(-50% + var(--mb-y))) scale(1); }
+      33%  { transform: translate(calc(-50% + var(--mb-x) + 60%), calc(-50% + var(--mb-y) + 125%)) scale(1.2); }
+      66%  { transform: translate(calc(-50% + var(--mb-x) + 130%), calc(-50% + var(--mb-y) - 60%)) scale(0.9); }
+      100% { transform: translate(calc(-50% + var(--mb-x)), calc(-50% + var(--mb-y))) scale(1); }
+    }
+
+    @keyframes mbTrack4 {
+      0%   { transform: translate(calc(-50% + var(--mb-x)), calc(-50% + var(--mb-y))) scale(1); }
+      33%  { transform: translate(calc(-50% + var(--mb-x) - 95%), calc(-50% + var(--mb-y) - 105%)) scale(1.25); }
+      66%  { transform: translate(calc(-50% + var(--mb-x) + 50%), calc(-50% + var(--mb-y) - 130%)) scale(0.95); }
+      100% { transform: translate(calc(-50% + var(--mb-x)), calc(-50% + var(--mb-y))) scale(1); }
+    }
+
+    .mb-grain--track1 { animation-name: mbTrack1; }
+    .mb-grain--track2 { animation-name: mbTrack2; }
+    .mb-grain--track3 { animation-name: mbTrack3; }
+    .mb-grain--track4 { animation-name: mbTrack4; }
+
+    .mb-grain {
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
     }
 
     /* 高コントラストは視覚ノイズを排除する方針（.aurora と揃える） */
@@ -133,12 +180,58 @@
 
     /* 動きに敏感な利用者には静止した模様として見せる */
     @media (prefers-reduced-motion: reduce) {
-      .mb-layer {
+      .mb-grain {
         animation: none;
-        transform: scale(1.04);
       }
     }
   `;
+
+  function randomBetween(min, max) {
+    return min + Math.random() * (max - min);
+  }
+
+  function lerp(from, to, t) {
+    return from + (to - from) * t;
+  }
+
+  // 粒1つを作る。位置は「乱数で決めた2点を結ぶ線分上の1点」に置く。
+  function createGrain(index) {
+    const grain = document.createElement("span");
+    const track = (index % TRACK_VARIANTS) + 1;
+    const tone = (index % TONE_VARIANTS) + 1;
+    grain.className = `mb-grain mb-grain--track${track} mb-grain--tone${tone}`;
+
+    const size = randomBetween(SIZE_MIN, SIZE_MAX);
+    grain.style.width = `${size.toFixed(2)}%`;
+
+    // 線分の両端を抽選し、その上の1点を選ぶ
+    const from = [randomBetween(-SPREAD_X, SPREAD_X), randomBetween(-SPREAD_Y, SPREAD_Y)];
+    const to = [randomBetween(-SPREAD_X, SPREAD_X), randomBetween(-SPREAD_Y, SPREAD_Y)];
+    const t = Math.random();
+    grain.dataset.mbX = lerp(from[0], to[0], t).toFixed(4);
+    grain.dataset.mbY = lerp(from[1], to[1], t).toFixed(4);
+
+    grain.style.animationDuration = `${randomBetween(DURATION_MIN, DURATION_MAX).toFixed(1)}s`;
+    // 負の遅延で開始位相をずらし、読み込み直後に全粒が揃って動くのを避ける
+    grain.style.animationDelay = `${-randomBetween(0, DURATION_MAX).toFixed(1)}s`;
+    return grain;
+  }
+
+  // 画面サイズから粒の位置とぼかし量を確定する（リサイズ時も呼ぶ）
+  function layoutGrains(layer) {
+    const width = layer.offsetWidth;
+    const height = layer.offsetHeight;
+    if (!width || !height) return;
+
+    layer.querySelectorAll(".mb-grain").forEach((grain) => {
+      const x = parseFloat(grain.dataset.mbX) * width;
+      const y = parseFloat(grain.dataset.mbY) * height;
+      grain.style.setProperty("--mb-x", `${x.toFixed(1)}px`);
+      grain.style.setProperty("--mb-y", `${y.toFixed(1)}px`);
+      // 直径は width(%) 指定なので、実寸から ぼかし量を求める
+      grain.style.filter = `blur(${(grain.offsetWidth * BLUR_RATIO).toFixed(1)}px)`;
+    });
+  }
 
   // コアの injectStyle があれば使い、無ければ自前で <style> を作る。
   // （コアを読み込まないページでも単体で動くようにするため）
@@ -157,20 +250,37 @@
 
   // 既存のオーロラ層のすぐ上に重ねる（コンテンツは .app の z-index で前面に残る）
   function mountLayer() {
-    if (document.getElementById(LAYER_ID)) return;
+    if (document.getElementById(LAYER_ID)) return null;
 
     const layer = document.createElement("div");
     layer.id = LAYER_ID;
     layer.className = "mb-layer";
     layer.setAttribute("aria-hidden", "true");
-    layer.innerHTML = SVG_MARKUP;
 
     const aurora = document.querySelector(".aurora");
     if (aurora && aurora.parentNode) {
       aurora.parentNode.insertBefore(layer, aurora.nextSibling);
     } else if (document.body) {
       document.body.insertBefore(layer, document.body.firstChild);
+    } else {
+      return null;
     }
+
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < GRAIN_COUNT; i += 1) {
+      fragment.appendChild(createGrain(i));
+    }
+    layer.appendChild(fragment);
+    layoutGrains(layer);
+    return layer;
+  }
+
+  function observeResize(layer) {
+    if (typeof ResizeObserver !== "function") {
+      window.addEventListener("resize", () => layoutGrains(layer));
+      return;
+    }
+    new ResizeObserver(() => layoutGrains(layer)).observe(layer);
   }
 
   // 主要機能の描画・操作を妨げないよう、ブラウザが暇になってから生成する
@@ -185,7 +295,8 @@
   function init() {
     try {
       injectStyle(STYLE_ID, STYLE_CSS);
-      mountLayer();
+      const layer = mountLayer();
+      if (layer) observeResize(layer);
     } catch (error) {
       // 装飾だけなので、失敗しても既存の背景のまま何もしない
       if (window.console) console.warn("marbleBackground: 背景の生成に失敗しました", error);

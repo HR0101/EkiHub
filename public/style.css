@@ -19,6 +19,34 @@
   --radius: 18px;
   --radius-sm: 12px;
   --transition: 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ===== ネオモーフィズム =====
+     光源を左上に置き，左上のハイライトと右下の影で面の浮き沈みを表現する.
+     境界線を使わない代わりに影で輪郭を作るため，
+     テーマごとに面の色と影の強さを揃えて調整すること. */
+  --nm-surface: #161d33;         /* 浮いた面。--bg-base より少し明るくして影を乗せる */
+  --nm-surface-sunken: #0d1222;  /* 沈んだ面（入力欄・指標タイルなど） */
+  --nm-light: rgba(150, 175, 240, 0.22); /* 左上のハイライト */
+  --nm-dark: rgba(0, 0, 0, 0.74);        /* 右下の影 */
+  --nm-offset: 8px;              /* 影のずらし量。大きいほど厚みが出る */
+  --nm-blur: 16px;
+  --nm-offset-sm: 4px;           /* ボタンなど小さい要素用 */
+  --nm-blur-sm: 9px;
+
+  /* 浮き（raised）と沈み（sunken）の影。要素側はこれを参照する */
+  --nm-raised:
+    calc(var(--nm-offset) * -1) calc(var(--nm-offset) * -1) var(--nm-blur) var(--nm-light),
+    var(--nm-offset) var(--nm-offset) var(--nm-blur) var(--nm-dark);
+  --nm-raised-sm:
+    calc(var(--nm-offset-sm) * -1) calc(var(--nm-offset-sm) * -1) var(--nm-blur-sm) var(--nm-light),
+    var(--nm-offset-sm) var(--nm-offset-sm) var(--nm-blur-sm) var(--nm-dark);
+  --nm-sunken:
+    inset calc(var(--nm-offset-sm) * -1) calc(var(--nm-offset-sm) * -1) var(--nm-blur-sm) var(--nm-light),
+    inset var(--nm-offset-sm) var(--nm-offset-sm) var(--nm-blur-sm) var(--nm-dark);
+  /* 細い溝（進捗バー・スライダー）用の浅い沈み */
+  --nm-sunken-xs:
+    inset -2px -2px 4px var(--nm-light),
+    inset 2px 2px 4px var(--nm-dark);
 }
 
 * {
@@ -88,17 +116,17 @@ body {
   font-weight: 500;
   font-size: 0.9rem;
   border-radius: var(--radius-sm);
-  background: var(--bg-panel);
-  border: 1px solid var(--border-soft);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: var(--nm-surface);
+  box-shadow: var(--nm-raised-sm);
   transition: var(--transition);
 }
 
 .nav-link:hover {
   color: var(--text-main);
-  border-color: var(--border-focus);
-  box-shadow: 0 4px 12px rgba(110, 170, 255, 0.15);
+}
+
+.nav-link:active {
+  box-shadow: var(--nm-sunken);
 }
 
 /* ===== ヒーロー ===== */
@@ -164,13 +192,10 @@ body {
 
 /* ===== パネル（ガラスモーフィズム） ===== */
 .panel {
-  background: var(--bg-panel);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid var(--border-soft);
+  background: var(--nm-surface);
   border-radius: var(--radius);
   padding: 28px 24px;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--nm-raised);
   animation: fadeUp 0.9s var(--transition) both;
 }
 
@@ -218,9 +243,10 @@ body {
 .input-row input {
   width: 100%;
   padding: 12px 14px;
-  background: var(--bg-input);
-  border: 1px solid var(--border-soft);
+  background: var(--nm-surface-sunken);
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
+  box-shadow: var(--nm-sunken);
   color: var(--text-main);
   font-size: 0.98rem;
   font-family: inherit;
@@ -231,10 +257,11 @@ body {
   color: var(--text-faint);
 }
 
+/* 影だけでは輪郭が弱いため、フォーカス時はリングを明確に出す（沈みの影は残す） */
 .input-row input:focus {
   outline: none;
   border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px rgba(94, 123, 255, 0.18);
+  box-shadow: var(--nm-sunken), 0 0 0 3px rgba(94, 123, 255, 0.28);
 }
 
 .input-row input.is-valid {
@@ -269,10 +296,9 @@ body {
   left: 0;
   right: 0;
   z-index: 50;
-  background: var(--bg-panel-solid);
-  border: 1px solid var(--border-soft);
+  background: var(--nm-surface);
   border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--nm-raised), 0 18px 40px rgba(0, 0, 0, 0.4);
   max-height: 320px;
   overflow-y: auto;
   display: none;
@@ -360,16 +386,19 @@ body {
   width: 100%;
   margin-top: 14px;
   padding: 11px;
-  background: transparent;
-  border: 1px dashed var(--border-soft);
+  background: var(--nm-surface);
+  border: none;
+  box-shadow: var(--nm-raised-sm);
   color: var(--text-sub);
   font-size: 0.92rem;
 }
 
 .btn--ghost:hover {
   color: var(--accent);
-  border-color: var(--accent);
-  background: rgba(94, 123, 255, 0.06);
+}
+
+.btn--ghost:active {
+  box-shadow: var(--nm-sunken);
 }
 
 .btn--primary {
@@ -443,9 +472,9 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 4px;
   padding: 4px;
-  background: var(--bg-input);
-  border: 1px solid var(--border-soft);
+  background: var(--nm-surface-sunken);
   border-radius: 14px;
+  box-shadow: var(--nm-sunken);
 }
 
 .toggle__btn {
@@ -755,13 +784,10 @@ body {
 }
 
 .result-card {
-  background: var(--bg-panel);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid var(--border-soft);
+  background: var(--nm-surface);
   border-radius: var(--radius);
   padding: 28px;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--nm-raised);
   position: relative;
   overflow: hidden;
 }
@@ -827,6 +853,12 @@ body {
   border: 1px solid var(--border-soft);
 }
 
+/* ライトモードでは上の明るい文字色が白い面に溶けるため、accent を暗く混ぜて読めるようにする */
+[data-mode="light"]:not([data-color="high-contrast"]) .chips li {
+  color: var(--accent);
+  color: color-mix(in srgb, var(--accent) 72%, #000);
+}
+
 /* メトリクス */
 .metrics {
   display: grid;
@@ -835,9 +867,9 @@ body {
 }
 
 .metric {
-  background: var(--bg-input);
-  border: 1px solid var(--border-soft);
+  background: var(--nm-surface-sunken);
   border-radius: var(--radius-sm);
+  box-shadow: var(--nm-sunken);
   padding: 16px 12px;
   text-align: center;
 }
@@ -860,8 +892,7 @@ body {
 .map {
   height: 380px;
   border-radius: var(--radius);
-  border: 1px solid var(--border-soft);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--nm-raised);
   background: var(--bg-panel-solid);
   z-index: 1;
 }
@@ -919,11 +950,10 @@ body {
 /* ===== 所要時間リスト ===== */
 .travel-list,
 .ranking {
-  background: var(--bg-panel);
-  border: 1px solid var(--border-soft);
+  background: var(--nm-surface);
   border-radius: var(--radius);
   padding: 22px 24px;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--nm-raised);
 }
 
 .travel-list__title,
@@ -958,8 +988,9 @@ body {
 .travel-item__bar {
   flex: 1;
   height: 8px;
-  background: var(--bg-input);
+  background: var(--nm-surface-sunken);
   border-radius: 999px;
+  box-shadow: var(--nm-sunken-xs);
   overflow: hidden;
 }
 
@@ -1293,29 +1324,33 @@ body {
   align-items: center;
   gap: 6px;
   padding: 9px 14px;
-  background: var(--bg-input);
-  border: 1px solid var(--border-soft);
+  background: var(--nm-surface);
+  border: none;
   border-radius: var(--radius-sm);
+  box-shadow: var(--nm-raised-sm);
   color: var(--text-sub);
   font-family: inherit;
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  transition: color var(--transition), border-color var(--transition), background var(--transition);
+  transition: color var(--transition), box-shadow var(--transition);
 }
 
 .tool-btn:hover {
   color: var(--accent);
-  border-color: var(--accent);
+}
+
+/* 押している間は面が沈む */
+.tool-btn:active {
+  box-shadow: var(--nm-sunken);
 }
 
 /* 機能モジュールが使う共通パネル */
 .fpanel {
-  background: var(--bg-panel);
-  border: 1px solid var(--border-soft);
+  background: var(--nm-surface);
   border-radius: var(--radius);
   padding: 20px 22px;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--nm-raised);
 }
 
 .fpanel__title {
@@ -1646,6 +1681,26 @@ body {
   --text-sub: #4a5878;
   --text-faint: #8a96b4;
   --shadow-lg: 0 18px 44px rgba(40, 60, 120, 0.16);
+
+  /* ライトは面を背景よりわずかに明るくし、白のハイライトと青みの影で立体を作る */
+  --nm-surface: #f3f6fd;
+  --nm-surface-sunken: #e6ebf6;
+  --nm-light: #ffffff;
+  --nm-dark: rgba(38, 56, 110, 0.17);
+}
+
+/* accent-3 は明るいミント系のため、ライトの明るい面に文字として置くと読めない.
+   色みは保ったまま黒を混ぜてコントラストを上げる（color-mix 非対応環境は元の色）. */
+[data-mode="light"]:not([data-color="high-contrast"]) .hero__badge,
+[data-mode="light"]:not([data-color="high-contrast"]) .suggest__major,
+[data-mode="light"]:not([data-color="high-contrast"]) .weight__hint,
+[data-mode="light"]:not([data-color="high-contrast"]) .metric__value,
+[data-mode="light"]:not([data-color="high-contrast"]) .travel-item__min,
+[data-mode="light"]:not([data-color="high-contrast"]) .badge--direct,
+[data-mode="light"]:not([data-color="high-contrast"]) .train-info-card__eyebrow,
+[data-mode="light"]:not([data-color="high-contrast"]) .train-info-card__badge {
+  color: var(--accent-3);
+  color: color-mix(in srgb, var(--accent-3) 48%, #000);
 }
 
 [data-mode="light"] .aurora {
@@ -1826,6 +1881,42 @@ body {
   border: 2px solid rgba(255, 255, 255, 0.6);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+}
+
+/* ネオモーフィズムは影で輪郭を作るため、高コントラストでは判別しづらい.
+   面と枠線がはっきり分かれるフラット表示へ戻す. */
+[data-color="high-contrast"] .panel,
+[data-color="high-contrast"] .result-card,
+[data-color="high-contrast"] .travel-list,
+[data-color="high-contrast"] .ranking,
+[data-color="high-contrast"] .fpanel,
+[data-color="high-contrast"] .map,
+[data-color="high-contrast"] .suggest,
+[data-color="high-contrast"] .metric,
+[data-color="high-contrast"] .toggle,
+[data-color="high-contrast"] .tool-btn,
+[data-color="high-contrast"] .btn--ghost,
+[data-color="high-contrast"] .nav-link,
+[data-color="high-contrast"] .input-row input {
+  box-shadow: none;
+  border: 2px solid var(--border-soft);
+}
+
+[data-color="high-contrast"] .metric,
+[data-color="high-contrast"] .toggle,
+[data-color="high-contrast"] .input-row input {
+  background: var(--bg-input);
+}
+
+[data-color="high-contrast"] .tool-btn,
+[data-color="high-contrast"] .btn--ghost {
+  background: var(--bg-input);
+}
+
+/* フォーカスは枠線と重なっても分かるよう別色のリングで示す */
+[data-color="high-contrast"] .input-row input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent);
 }
 
 /* グラデーション文字を単色に変換（コントラスト比確保） */
