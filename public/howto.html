@@ -22,15 +22,19 @@
           padding-top: 0;
         }
       }
+      /* カードはトップページと同じネオモーフィズム（style.css の --nm-* を参照） */
       .howto-content {
-        background: var(--bg-panel);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        border: 1px solid var(--border-soft);
+        background: var(--nm-surface);
         border-radius: var(--radius);
         padding: 40px;
-        box-shadow: var(--shadow-lg);
+        box-shadow: var(--nm-raised);
         animation: fadeUp 0.9s var(--transition) both;
+      }
+      /* 高コントラストでは影による輪郭が判別しづらいため枠線に戻す */
+      [data-color="high-contrast"] .howto-content {
+        background: var(--bg-panel-solid);
+        border: 2px solid var(--border-soft);
+        box-shadow: none;
       }
       .howto-content h2 {
         color: var(--accent-3);
