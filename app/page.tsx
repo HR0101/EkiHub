@@ -1,4 +1,5 @@
 import { HomeView } from "@/components/HomeView";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 /**
  * トップページ。
@@ -17,6 +18,7 @@ export default function HomePage() {
             <a href="/howto" className="tool-btn">
               使い方
             </a>
+            <ThemeToggle />
           </div>
           <div className="hero__badge">EkiHub</div>
           <h1 className="hero__title">

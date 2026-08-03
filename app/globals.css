@@ -32,7 +32,7 @@
      変数名は各所から参照されているので維持し，中身だけを差し替えている.
      新しく面を作るときも影を足さず、この変数を参照すること. */
   --nm-surface: #ffffff;         /* 通常の面 */
-  --nm-surface-sunken: #f7faf8;  /* 一段沈んだ面（溝・トグルの受け皿など） */
+  --nm-surface-sunken: #f7faf8; /* 一段沈んだ面（溝・トグルの受け皿など） */
   --nm-light: transparent;       /* 旧ハイライト（フラット化で不使用） */
   --nm-dark: transparent;        /* 旧影（フラット化で不使用） */
   --nm-raised: 0 0 0 1px var(--border-soft);
@@ -1935,4 +1935,161 @@ body {
   .input-row__remove:active {
     transform: none;
   }
+}
+
+/* ===================================================================
+   テーマ切替パネル
+   ------------------------------------------------------------------- */
+.theme-toggle {
+  position: relative;
+  display: inline-block;
+}
+
+.theme-toggle__dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: middle;
+}
+
+.theme-toggle__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  min-width: 232px;
+  padding: 14px;
+  text-align: left;
+  background: var(--nm-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--nm-raised), var(--shadow-lg);
+}
+
+.theme-toggle__group {
+  border: none;
+}
+
+.theme-toggle__group + .theme-toggle__group {
+  margin-top: 14px;
+}
+
+.theme-toggle__legend {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-sub);
+  margin-bottom: 8px;
+}
+
+.theme-toggle__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.theme-toggle__option {
+  padding: 6px 12px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-pill);
+  background: var(--nm-surface);
+  color: var(--text-sub);
+  font-family: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition), background var(--transition);
+}
+
+.theme-toggle__option:hover {
+  color: var(--text-main);
+  border-color: var(--border-strong);
+}
+
+/* 選択中は淡い面と緑の輪郭で示す（トグルと同じ表し方に揃える） */
+.theme-toggle__option.is-active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.theme-toggle__option:active {
+  transform: translateY(var(--nm-press-offset)) scale(0.97);
+  transition: transform var(--nm-press-time) ease-out;
+}
+
+/* ===================================================================
+   使い方ページ（/howto）
+   ------------------------------------------------------------------- */
+.howto-content {
+  background: var(--nm-surface);
+  border-radius: var(--radius);
+  padding: 40px;
+  box-shadow: var(--nm-raised);
+}
+
+.howto-content h2 {
+  color: var(--text-main);
+  margin-top: 32px;
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+}
+
+.howto-content h2:first-child {
+  margin-top: 0;
+}
+
+/* 見出しの始まりはトップページと同じ緑の縦バーで示す */
+.howto-content h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-main);
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-size: 1.15rem;
+}
+
+.howto-content h3::before {
+  content: "";
+  flex: 0 0 4px;
+  align-self: stretch;
+  min-height: 1.15em;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.howto-content p,
+.howto-content li {
+  color: var(--text-sub);
+  margin-bottom: 12px;
+  line-height: 1.8;
+}
+
+.howto-content ul {
+  padding-left: 24px;
+  margin-bottom: 24px;
+}
+
+.howto-content strong {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+/* デスクトップでは top-nav が absolute なので、hero を下げて重なりを防ぐ */
+.top-nav + .hero {
+  padding-top: 40px;
+}
+
+@media (max-width: 600px) {
+  .top-nav + .hero {
+    padding-top: 0;
+  }
+}
+
+/* 高コントラストでは影による輪郭が判別しづらいため枠線に戻す */
+[data-color="high-contrast"] .howto-content {
+  background: var(--bg-panel-solid);
+  border: 2px solid var(--border-soft);
+  box-shadow: none;
 }

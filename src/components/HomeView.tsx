@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
 
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Ranking } from "@/components/Ranking";
 import { ResultCard } from "@/components/ResultCard";
 import { StationForm } from "@/components/StationForm";
@@ -86,6 +87,8 @@ export function HomeView() {
             onSelect={selectStation}
           />
         )}
+
+        <LoadingOverlay isComputing={centerMutation.isPending} />
       </section>
     </div>
   );

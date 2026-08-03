@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 
 import { Providers } from "@/components/Providers";
+import { THEME_BOOT_SCRIPT } from "@/lib/theme";
 
 // Leaflet の基本スタイル。自前のCSSより先に読み込んで上書きできるようにする
 import "leaflet/dist/leaflet.css";
@@ -69,7 +70,14 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ja" className={notoSansJp.variable}>
+    <html lang="ja" className={notoSansJp.variable} suppressHydrationWarning>
+      <head>
+        {/*
+          保存済みテーマを描画前に当てる。React のマウントを待つと
+          一瞬ライトで表示されてちらつくため、同期スクリプトで先に流す。
+        */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
+      </head>
       <body>
         <Providers>{children}</Providers>
       </body>

@@ -26,6 +26,13 @@ function weightLabel(percent: number): string {
   return "公平さ最優先";
 }
 
+/** 運賃をどれだけ効かせるか */
+function fareLabel(percent: number): string {
+  if (percent <= 33) return "重視しない";
+  if (percent <= 66) return "やや重視";
+  return "重視";
+}
+
 const MODE_OPTIONS: { value: Mode; main: string; sub: string }[] = [
   { value: "A", main: "主要駅限定", sub: "新宿・渋谷など大規模駅" },
   { value: "B", main: "規模不問", sub: "純粋に地理・時間の中心" },
@@ -41,11 +48,14 @@ export function StationForm({
   const rows = useEkiHubStore((state) => state.rows);
   const mode = useEkiHubStore((state) => state.mode);
   const fairnessWeight = useEkiHubStore((state) => state.fairnessWeight);
+  const fareWeight = useEkiHubStore((state) => state.fareWeight);
   const addRow = useEkiHubStore((state) => state.addRow);
   const setMode = useEkiHubStore((state) => state.setMode);
   const setFairnessWeight = useEkiHubStore((state) => state.setFairnessWeight);
+  const setFareWeight = useEkiHubStore((state) => state.setFareWeight);
 
   const weightPercent = Math.round(fairnessWeight * 100);
+  const farePercent = Math.round(fareWeight * 100);
   const filledCount = useMemo(
     () => selectFilledOrigins(rows).origins.length,
     [rows]
@@ -125,6 +135,23 @@ export function StationForm({
             <span>近さ重視</span>
             <span>公平さ重視</span>
           </div>
+        </div>
+
+        <div className="weight">
+          <div className="weight__head">
+            <span className="mode__label">運賃の重視度</span>
+            <span className="weight__hint">{fareLabel(farePercent)}</span>
+          </div>
+          <input
+            type="range"
+            className="slider"
+            min={0}
+            max={100}
+            step={10}
+            value={farePercent}
+            aria-label="運賃の重視度"
+            onChange={(event) => setFareWeight(Number(event.target.value) / 100)}
+          />
         </div>
 
         <button
