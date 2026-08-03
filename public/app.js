@@ -113,7 +113,8 @@
   // ====================================================================
   const MIN_INPUTS = 2;
   const DEFAULT_CENTER = [35.681382, 139.766084];
-  const TILE_URL = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+  // 白基調のUIに合わせて明るいタイルを使う（暗いタイルは面の中で浮いてしまう）
+  const TILE_URL = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
   const TILE_ATTR =
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
   const EARTH_RADIUS_M = 6371000;

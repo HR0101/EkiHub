@@ -28,7 +28,8 @@
     "autumn",
     HIGH_CONTRAST_COLOR,
   ];
-  const DEFAULT_MODE = AUTO_MODE;
+  // 白基調のデザインを既定として見せるため、初回は light から始める
+  const DEFAULT_MODE = LIGHT_MODE;
   const DEFAULT_COLOR = "default";
 
   const LIGHT_QUERY = "(prefers-color-scheme: light)";
@@ -100,8 +101,9 @@
 
     const effectiveMode = resolveEffectiveMode(mode);
 
-    // dark は :root の既定値なので属性を付けない（CSS の上書きを最小限に保つ）
-    if (effectiveMode === DARK_MODE) {
+    // light は :root の既定値なので属性を付けない（CSS の上書きを最小限に保つ）。
+    // style.css の [data-mode="dark"] と対になっているので、変更時は両方を揃えること。
+    if (effectiveMode === LIGHT_MODE) {
       root.removeAttribute("data-mode");
     } else {
       root.setAttribute("data-mode", effectiveMode);

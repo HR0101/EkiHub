@@ -364,7 +364,7 @@
 
       .sg-step.is-current .sg-step__num {
         background: linear-gradient(120deg, var(--accent), var(--accent-2));
-        box-shadow: 0 4px 12px rgba(94, 123, 255, 0.45);
+        box-shadow: 0 4px 12px rgba(14, 138, 69, 0.45);
         color: #fff;
       }
 
@@ -386,7 +386,7 @@
         margin-top: 8px;
         border-radius: 50%;
         background: var(--accent);
-        box-shadow: 0 0 0 3px rgba(94, 123, 255, 0.18);
+        box-shadow: 0 0 0 3px rgba(14, 138, 69, 0.18);
       }
 
       /* 条件コントロールをまとめる枠。見た目は持たず、囲みの範囲を決めるためだけに存在する */
@@ -402,8 +402,8 @@
         border-radius: 16px;
         pointer-events: none;
         box-shadow:
-          0 0 0 1.5px rgba(94, 123, 255, 0.5),
-          0 0 22px rgba(94, 123, 255, 0.22);
+          0 0 0 1.5px rgba(14, 138, 69, 0.5),
+          0 0 22px rgba(14, 138, 69, 0.22);
         box-shadow:
           0 0 0 1.5px color-mix(in srgb, var(--accent) 55%, transparent),
           0 0 22px color-mix(in srgb, var(--accent) 24%, transparent);
