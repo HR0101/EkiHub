@@ -47,7 +47,6 @@
     }
     .hf--panel.is-open {
       display: block;
-      animation: fadeUp 0.18s ease both;
     }
     .hf--section-title {
       font-size: 11px;

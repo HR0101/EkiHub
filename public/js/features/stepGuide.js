@@ -407,19 +407,12 @@
         box-shadow:
           0 0 0 1.5px color-mix(in srgb, var(--accent) 55%, transparent),
           0 0 22px color-mix(in srgb, var(--accent) 24%, transparent);
-        animation: sgBreath 2.8s ease-in-out infinite;
-      }
-
-      @keyframes sgBreath {
-        0%, 100% { opacity: 0.45; }
-        50% { opacity: 1; }
       }
 
       /* 高コントラストでは光が滲んで見えづらいので実線の枠で示す */
       [data-color="high-contrast"] .sg-focus::after {
         box-shadow: none;
         border: 2px dashed var(--accent);
-        animation: none;
       }
 
       [data-color="high-contrast"] .sg-bar,
@@ -428,9 +421,7 @@
         border: 2px solid var(--border-soft);
       }
 
-      /* 動きが苦手なユーザーには点滅させず、常時点灯のリングにする */
       @media (prefers-reduced-motion: reduce) {
-        .sg-focus::after { animation: none; opacity: 0.85; }
         .sg-step__btn:active { transform: none; }
       }
 

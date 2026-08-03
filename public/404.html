@@ -17,10 +17,7 @@
     <style>
       /* themeBoot.js が上書きするが、読み込めなかった場合の既定として宣言しておく */
       :root {
-        color-scheme: dark;
-        /* 本文が少なく背景が全面に見えるページなので、流動背景は他ページより控えめにする */
-        --mb-opacity: 0.2;
-        --mb-opacity-light: 0.15;
+        color-scheme: light;
       }
       /* 404 は中央寄せの独自レイアウトなので style.css の body 定義を上書きする */
       body {
@@ -35,8 +32,7 @@
         font-family: "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
         text-align: center;
       }
-      /* 背景装飾（.aurora とマーブル）は position:fixed のため、
-         本文を positioned にして前面へ出す */
+      /* 背景の色帯（.aurora）は position:fixed のため、本文を positioned にして前面へ出す */
       .box {
         position: relative;
         z-index: 1;
@@ -102,7 +98,5 @@
       <a class="home" href="/">トップへ戻る</a>
     </main>
 
-    <!-- 背景装飾（marbleBackground.js）は白基調のフラットデザインでは
-         情報の邪魔になるため読み込んでいない（index.html と揃えている）。 -->
   </body>
 </html>

@@ -22,13 +22,12 @@
           padding-top: 0;
         }
       }
-      /* カードはトップページと同じネオモーフィズム（style.css の --nm-* を参照） */
+      /* カードはトップページと同じ面の表現（style.css の --nm-* を参照） */
       .howto-content {
         background: var(--nm-surface);
         border-radius: var(--radius);
         padding: 40px;
         box-shadow: var(--nm-raised);
-        animation: fadeUp 0.9s var(--transition) both;
       }
       /* 高コントラストでは影による輪郭が判別しづらいため枠線に戻す */
       [data-color="high-contrast"] .howto-content {
@@ -123,7 +122,5 @@
       </div>
     </main>
 
-    <!-- 背景装飾（marbleBackground.js）は白基調のフラットデザインでは
-         情報の邪魔になるため読み込んでいない（index.html と揃えている）。 -->
   </body>
 </html>
