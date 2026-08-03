@@ -1,5 +1,6 @@
 "use client";
 
+import { ResultActions } from "@/components/ResultActions";
 import type { CenterResult, RankingEntry } from "@/types/ekihub";
 
 interface Props {
@@ -97,7 +98,7 @@ export function ResultCard({ result, station }: Props) {
           {`各メンバー ${station.minMinutes}〜${station.maxMinutes}分${transfers} ${routingSourceLabel(result, station)}`}
         </p>
 
-        <div className="hero-actions" id="hero-actions" />
+        <ResultActions station={station} />
       </div>
     </div>
   );

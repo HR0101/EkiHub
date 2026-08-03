@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 
 import { StationInputRow } from "@/components/StationInputRow";
+import { StepGuide } from "@/components/StepGuide";
 import {
   MIN_INPUT_ROWS,
   selectFilledOrigins,
@@ -14,6 +15,8 @@ interface Props {
   stations: readonly Station[];
   isComputing: boolean;
   errorMessage: string | null;
+  /** 手順ガイドがいま案内している段階（0始まり） */
+  currentStep: number;
   onSubmit: () => void;
 }
 
@@ -43,6 +46,7 @@ export function StationForm({
   stations,
   isComputing,
   errorMessage,
+  currentStep,
   onSubmit,
 }: Props) {
   const rows = useEkiHubStore((state) => state.rows);
@@ -65,6 +69,8 @@ export function StationForm({
   return (
     <section className="panel" aria-label="入力フォーム">
       <h2 className="panel__title">最寄駅を入力</h2>
+
+      <StepGuide currentIndex={currentStep} />
 
       <form
         className="form"

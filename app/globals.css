@@ -2093,3 +2093,362 @@ body {
   border: 2px solid var(--border-soft);
   box-shadow: none;
 }
+
+/* ===================================================================
+   結果アクション（共有・QR・コピー・印刷）
+   ------------------------------------------------------------------- */
+.qr-panel {
+  flex-basis: 100%;
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: var(--radius);
+  background: var(--nm-surface-sunken);
+  box-shadow: var(--nm-sunken);
+  text-align: center;
+}
+
+.qr-panel img {
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+}
+
+.qr-panel__note {
+  margin-top: 8px;
+  font-size: 0.76rem;
+  color: var(--text-sub);
+}
+
+/* ===================================================================
+   周辺スポット
+   ------------------------------------------------------------------- */
+.spot-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.spot-controls--radius {
+  margin-top: 8px;
+}
+
+.spot-controls__label {
+  font-size: 0.78rem;
+  color: var(--text-sub);
+  margin-right: 2px;
+}
+
+/* 選択中はトグルと同じ「淡い面＋緑の輪郭」で示す */
+.tool-btn.is-active {
+  color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.spot-note {
+  margin-top: 12px;
+  font-size: 0.82rem;
+  color: var(--text-sub);
+}
+
+.spot-list {
+  margin-top: 12px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.spot-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--nm-surface-sunken);
+}
+
+.spot-item__name {
+  font-size: 0.9rem;
+}
+
+.spot-item__meta {
+  font-size: 0.74rem;
+  color: var(--text-faint);
+  text-align: right;
+}
+
+/* ===================================================================
+   運行情報の一覧
+   ------------------------------------------------------------------- */
+.train-info-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.train-info-item {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--nm-surface-sunken);
+  /* 既定は「情報あり」。左の帯で状態を示す */
+  border-left: 3px solid var(--danger);
+}
+
+.train-info-item.is-normal {
+  border-left-color: var(--accent);
+}
+
+.train-info-item.is-ended {
+  border-left-color: var(--text-faint);
+}
+
+.train-info-item__railway {
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.train-info-item__status {
+  font-size: 0.78rem;
+  color: var(--text-sub);
+}
+
+.train-info-item__text {
+  font-size: 0.76rem;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+
+/* ===================================================================
+   手順ガイド（1→2→3）
+   ------------------------------------------------------------------- */
+.sg {
+  margin: 0 0 18px;
+}
+
+.sg-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--nm-surface-sunken);
+  border-radius: 14px;
+  box-shadow: var(--nm-sunken);
+}
+
+.sg-step {
+  min-width: 0;
+}
+
+.sg-step__btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 6px;
+  border-radius: 11px;
+  color: var(--text-faint);
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: color var(--transition), background var(--transition), box-shadow var(--transition);
+}
+
+.sg-step__num {
+  flex: 0 0 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--nm-surface);
+  box-shadow: var(--nm-raised-sm);
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+.sg-step__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 済んだ手順は番号だけ達成色にする */
+.sg-step.is-done .sg-step__btn {
+  color: var(--text-sub);
+}
+
+.sg-step.is-done .sg-step__num {
+  background: var(--accent-3);
+  box-shadow: none;
+  color: #ffffff;
+}
+
+/* 現在の手順だけ面を起こす */
+.sg-step.is-current .sg-step__btn {
+  background: var(--nm-surface);
+  box-shadow: var(--nm-raised-sm);
+  color: var(--text-main);
+}
+
+.sg-step.is-current .sg-step__num {
+  background: var(--accent);
+  box-shadow: none;
+  color: #ffffff;
+}
+
+.sg-now {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 10px 2px 0;
+  font-size: 0.79rem;
+  line-height: 1.6;
+  color: var(--text-sub);
+}
+
+.sg-now::before {
+  content: "";
+  flex: 0 0 6px;
+  height: 6px;
+  margin-top: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+@media (max-width: 420px) {
+  .sg-step__label {
+    display: none;
+  }
+  .sg-step__btn {
+    gap: 0;
+  }
+}
+
+@media print {
+  .sg {
+    display: none !important;
+  }
+}
+
+/* 高コントラストは影で輪郭を作れないため枠線に戻す */
+[data-color="high-contrast"] .sg-bar,
+[data-color="high-contrast"] .sg-step.is-current .sg-step__btn {
+  box-shadow: none;
+  border: 2px solid var(--border-soft);
+}
+
+/* ===================================================================
+   算出履歴
+   ------------------------------------------------------------------- */
+.sidebar__tools {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.history {
+  position: relative;
+}
+
+.history__count {
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.history__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  width: 300px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 10px;
+  text-align: left;
+  background: var(--nm-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--nm-raised), var(--shadow-lg);
+}
+
+.history__empty {
+  padding: 10px 4px;
+  font-size: 0.82rem;
+  color: var(--text-sub);
+}
+
+.history__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.history__item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.history__item:hover {
+  background: var(--nm-surface-sunken);
+}
+
+.history__restore {
+  flex: 1;
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: inherit;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.history__best {
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.history__origins {
+  font-size: 0.74rem;
+  color: var(--text-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history__icon {
+  flex: 0 0 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-faint);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color var(--transition), background var(--transition);
+}
+
+.history__icon.is-active {
+  color: var(--accent);
+}
+
+.history__icon--remove:hover {
+  color: var(--danger);
+  background: rgba(198, 40, 40, 0.1);
+}
