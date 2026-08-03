@@ -160,7 +160,7 @@ export const ko: Messages = {
       auto: "기기 설정에 맞춤",
     },
     colors: {
-      default: "초록",
+      default: "하늘색",
       sakura: "벚꽃",
       forest: "숲",
       ocean: "바다",

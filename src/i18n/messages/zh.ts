@@ -160,7 +160,7 @@ export const zh: Messages = {
       auto: "跟随设备",
     },
     colors: {
-      default: "绿",
+      default: "水蓝",
       sakura: "樱",
       forest: "森",
       ocean: "海",

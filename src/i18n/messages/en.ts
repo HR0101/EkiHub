@@ -160,7 +160,7 @@ export const en: Messages = {
       auto: "Match device",
     },
     colors: {
-      default: "Green",
+      default: "Sky",
       sakura: "Sakura",
       forest: "Forest",
       ocean: "Ocean",

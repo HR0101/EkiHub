@@ -37,7 +37,7 @@ const MAX_FIT_ZOOM = 14;
 
 /** 入力駅と候補駅を結ぶ点線 */
 const LINK_LINE_STYLE = {
-  color: "#0e8a45",
+  color: "#0284c7",
   weight: 1.5,
   opacity: 0.4,
   dashArray: "4 6",
@@ -151,8 +151,8 @@ export function StationMap({ result, station }: Props) {
           center={[result.centroid.lat, result.centroid.lng]}
           radius={5}
           pathOptions={{
-            color: "#127a6b",
-            fillColor: "#127a6b",
+            color: "#0e7490",
+            fillColor: "#0e7490",
             fillOpacity: 0.6,
             weight: 1,
           }}

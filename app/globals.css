@@ -2,29 +2,29 @@
 
 :root {
   /* ===== カラートークン =====
-     白い面 / ごく薄い緑の背景 / 深緑のアクセント.
+     白い面 / ごく薄い水色の背景 / 濃い水色のアクセント.
      面の立体は影ではなく 1px の輪郭で表す（--nm-* 参照）. */
-  --bg-base: #f4f8f5;        /* ページ背景 */
+  --bg-base: #f3f7fa;        /* ページ背景 */
   --bg-panel: #ffffff;       /* 面。半透明は使わず輪郭で区切る */
   --bg-panel-solid: #ffffff;
   --bg-input: #ffffff;
-  --border-soft: #dbe0dc;    /* 面の輪郭・区切り線 */
-  --border-strong: #cbd5ce;  /* 押し出したい輪郭（選択中の枠など） */
-  --border-focus: #0e8a45;
-  --text-main: #1f2a24;
-  --text-sub: #5c6b62;
-  --text-faint: #8a978f;
-  --accent: #0e8a45;         /* 主アクセント（深緑） */
-  --accent-2: #0a6d36;       /* ホバー・押下の濃い緑 */
-  --accent-3: #127a6b;       /* 補助（ティール寄り。数値や達成表示に使う） */
-  --accent-soft: #eef7f0;    /* 選択中・強調の淡い面 */
+  --border-soft: #d8e0e7;    /* 面の輪郭・区切り線 */
+  --border-strong: #c3cfd8;  /* 押し出したい輪郭（選択中の枠など） */
+  --border-focus: #0284c7;
+  --text-main: #1c2733;
+  --text-sub: #56646f;
+  --text-faint: #8593a0;
+  --accent: #0284c7;         /* 主アクセント（水色） */
+  --accent-2: #0369a1;       /* ホバー・押下の濃い水色 */
+  --accent-3: #0e7490;       /* 補助（青緑寄り。達成表示などに使う） */
+  --accent-soft: #e8f4fb;    /* 選択中・強調の淡い面 */
   --danger: #c62828;
-  --shadow-lg: 0 8px 24px rgba(31, 42, 36, 0.10);
+  --shadow-lg: 0 8px 24px rgba(28, 39, 51, 0.10);
   --radius: 10px;
   --radius-sm: 6px;
   --radius-pill: 999px;      /* 主要ボタンの角丸 */
   --transition: 0.18s ease;
-  --aurora-tint: #e4f1e7;    /* 背景上端の色（.aurora が参照） */
+  --aurora-tint: #dbecf8;    /* 背景上端の色（.aurora が参照） */
 
   /* ===== 面の表現 =====
      もとはネオモーフィズム（影による浮き沈み）だったが，
@@ -32,7 +32,7 @@
      変数名は各所から参照されているので維持し，中身だけを差し替えている.
      新しく面を作るときも影を足さず、この変数を参照すること. */
   --nm-surface: #ffffff;         /* 通常の面 */
-  --nm-surface-sunken: #f7faf8; /* 一段沈んだ面（溝・トグルの受け皿など） */
+  --nm-surface-sunken: #f6fafc; /* 一段沈んだ面（溝・トグルの受け皿など） */
   --nm-light: transparent;       /* 旧ハイライト（フラット化で不使用） */
   --nm-dark: transparent;        /* 旧影（フラット化で不使用） */
   --nm-raised: 0 0 0 1px var(--border-soft);
@@ -215,7 +215,7 @@ body {
 }
 
 /* ===== セクション見出し =====
-   左に立てた緑の縦バーで見出しの始まりを示す.
+   左に立てた水色の縦バーで見出しの始まりを示す.
    このページ内で「ここから新しいまとまり」を表す唯一の記号なので，
    装飾目的で他の要素へ流用しないこと. */
 .panel__title,
@@ -268,7 +268,7 @@ body {
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--accent);
-  background: rgba(14, 138, 69, 0.12);
+  background: rgba(2, 132, 199, 0.12);
   border-radius: 50%;
 }
 
@@ -298,11 +298,11 @@ body {
 .input-row input:focus {
   outline: none;
   border-color: var(--border-focus);
-  box-shadow: var(--nm-sunken), 0 0 0 3px rgba(14, 138, 69, 0.28);
+  box-shadow: var(--nm-sunken), 0 0 0 3px rgba(2, 132, 199, 0.28);
 }
 
 .input-row input.is-valid {
-  border-color: rgba(18, 122, 107, 0.6);
+  border-color: rgba(14, 116, 144, 0.6);
 }
 
 .input-row input.is-invalid {
@@ -358,7 +358,7 @@ body {
 
 .suggest__item:hover,
 .suggest__item.is-active {
-  background: rgba(14, 138, 69, 0.16);
+  background: rgba(2, 132, 199, 0.16);
 }
 
 .suggest__main {
@@ -382,7 +382,7 @@ body {
 }
 
 .suggest__hl {
-  background: rgba(14, 138, 69, 0.28);
+  background: rgba(2, 132, 199, 0.28);
   color: inherit;
   border-radius: 2px;
   font-style: normal;
@@ -535,7 +535,7 @@ body {
   opacity: 0.8;
 }
 
-/* 選択中の面。塗りつぶさず、淡い面＋緑の輪郭で「いまここ」を示す */
+/* 選択中の面。塗りつぶさず、淡い面＋水色の輪郭で「いまここ」を示す */
 .toggle__slider {
   position: absolute;
   z-index: 1;
@@ -590,7 +590,7 @@ body {
   border-radius: 50%;
   background: #fff;
   border: 3px solid var(--accent);
-  box-shadow: 0 1px 4px rgba(31, 42, 36, 0.22);
+  box-shadow: 0 1px 4px rgba(28, 39, 51, 0.22);
   transition: transform var(--transition);
 }
 
@@ -604,7 +604,7 @@ body {
   border-radius: 50%;
   background: #fff;
   border: 3px solid var(--accent);
-  box-shadow: 0 1px 4px rgba(31, 42, 36, 0.22);
+  box-shadow: 0 1px 4px rgba(28, 39, 51, 0.22);
 }
 
 .weight__labels {
@@ -706,7 +706,7 @@ body {
   inset: 0 0 6px 0;
   border-radius: 10px 15px 8px 8px;
   background: linear-gradient(120deg, var(--accent), var(--accent-2));
-  box-shadow: 0 5px 14px rgba(14, 138, 69, 0.4);
+  box-shadow: 0 5px 14px rgba(2, 132, 199, 0.4);
 }
 
 .train__window {
@@ -883,7 +883,7 @@ body {
   text-align: center;
 }
 
-/* 数値は色を持たせず、大きさと太さだけで読ませる（緑は見出しと操作に絞る） */
+/* 数値は色を持たせず、大きさと太さだけで読ませる（色は見出しと操作に絞る） */
 .metric__value {
   display: block;
   font-size: 1.6rem;
@@ -932,7 +932,7 @@ body {
   font-weight: 700;
   color: #fff;
   border: 2px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 1px 4px rgba(31, 42, 36, 0.28);
+  box-shadow: 0 1px 4px rgba(28, 39, 51, 0.28);
 }
 
 .pin--origin {
@@ -1047,11 +1047,11 @@ body {
 /* 現在カードに表示中の候補をハイライト */
 .ranking-item.is-selected {
   border-color: var(--accent-3);
-  background: rgba(18, 122, 107, 0.12);
+  background: rgba(14, 116, 144, 0.12);
 }
 
 .ranking-item.is-selected .ranking-item__rank {
-  background: rgba(18, 122, 107, 0.22);
+  background: rgba(14, 116, 144, 0.22);
   color: var(--accent-3);
 }
 
@@ -1063,7 +1063,7 @@ body {
   border-radius: 50%;
   font-size: 0.8rem;
   font-weight: 700;
-  background: rgba(14, 138, 69, 0.18);
+  background: rgba(2, 132, 199, 0.18);
   color: var(--accent-2);
 }
 
@@ -1133,15 +1133,15 @@ body {
 }
 
 .badge--direct {
-  background: rgba(18, 122, 107, 0.16);
+  background: rgba(14, 116, 144, 0.16);
   color: var(--accent-3);
-  border: 1px solid rgba(18, 122, 107, 0.4);
+  border: 1px solid rgba(14, 116, 144, 0.4);
 }
 
 .badge--transfer {
-  background: rgba(14, 138, 69, 0.16);
+  background: rgba(2, 132, 199, 0.16);
   color: #b6c4ff;
-  border: 1px solid rgba(14, 138, 69, 0.4);
+  border: 1px solid rgba(2, 132, 199, 0.4);
 }
 
 .travel-item__fare {
@@ -1414,7 +1414,7 @@ body {
   height: 7px;
   border-radius: 50%;
   background: var(--accent-3);
-  box-shadow: 0 0 0 4px rgba(18, 122, 107, 0.12);
+  box-shadow: 0 0 0 4px rgba(14, 116, 144, 0.12);
 }
 
 .train-info-card__title {
@@ -1468,9 +1468,9 @@ body {
   gap: 12px;
   margin-bottom: 12px;
   padding: 11px 12px;
-  border: 1px solid rgba(18, 122, 107, 0.22);
+  border: 1px solid rgba(14, 116, 144, 0.22);
   border-radius: 12px;
-  background: rgba(18, 122, 107, 0.07);
+  background: rgba(14, 116, 144, 0.07);
 }
 
 .train-info-card__summary.has-alert {
@@ -1480,7 +1480,7 @@ body {
 
 .train-info-card__summary.has-ended {
   border-color: var(--border-soft);
-  background: rgba(31, 42, 36, 0.07);
+  background: rgba(28, 39, 51, 0.07);
 }
 
 .train-info-card__summary-main {
@@ -1528,9 +1528,9 @@ body {
 .train-info-card__badge {
   flex: 0 0 auto;
   padding: 2px 7px;
-  border: 1px solid rgba(18, 122, 107, 0.28);
+  border: 1px solid rgba(14, 116, 144, 0.28);
   border-radius: 999px;
-  background: rgba(18, 122, 107, 0.08);
+  background: rgba(14, 116, 144, 0.08);
   color: var(--accent-3);
   font-size: 0.65rem;
   font-weight: 700;
@@ -1545,7 +1545,7 @@ body {
 
 .train-info-card__item.is-ended .train-info-card__badge {
   border-color: var(--border-soft);
-  background: rgba(31, 42, 36, 0.08);
+  background: rgba(28, 39, 51, 0.08);
   color: var(--text-faint);
 }
 
@@ -1636,7 +1636,7 @@ body {
     max-height: calc(100dvh - 24px);
     overflow-y: auto;
     background: var(--bg-panel-solid);
-    box-shadow: 0 12px 40px rgba(31, 42, 36, 0.18);
+    box-shadow: 0 12px 40px rgba(28, 39, 51, 0.18);
   }
 
   .train-info-card__close {
@@ -1676,29 +1676,29 @@ body {
    themeBoot.js は light のとき data-mode を付けない（= :root が既定）ので、
    ここのセレクタと対応が崩れないよう両方を揃えて変更すること. */
 [data-mode="dark"] {
-  --bg-base: #10151a;
-  --bg-panel: #171d24;
-  --bg-panel-solid: #171d24;
-  --bg-input: #171d24;
-  --border-soft: #2b343d;
-  --border-strong: #3a444f;
-  --border-focus: #34c77b;
-  --text-main: #e8edea;
-  --text-sub: #9aa8a0;
-  --text-faint: #6f7d76;
-  --accent: #34c77b;
-  --accent-2: #2aa866;
-  --accent-3: #3fb9a6;
-  --accent-soft: rgba(52, 199, 123, 0.14);
-  --aurora-tint: #16211c;
+  --bg-base: #0f1620;
+  --bg-panel: #161e28;
+  --bg-panel-solid: #161e28;
+  --bg-input: #161e28;
+  --border-soft: #2a343f;
+  --border-strong: #39454f;
+  --border-focus: #38bdf8;
+  --text-main: #e7edf2;
+  --text-sub: #98a6b2;
+  --text-faint: #6d7c88;
+  --accent: #38bdf8;
+  --accent-2: #0ea5e9;
+  --accent-3: #22d3ee;
+  --accent-soft: rgba(56, 189, 248, 0.16);
+  --aurora-tint: #141f2a;
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.45);
 
-  --nm-surface: #171d24;
-  --nm-surface-sunken: #131920;
+  --nm-surface: #161e28;
+  --nm-surface-sunken: #121a23;
 }
 
 [data-mode="dark"] .leaflet-container {
-  background: #1a2028;
+  background: #182029;
 }
 
 /* 地図タイルは明るい配色のみ配信しているため、暗い画面では明度を落として馴染ませる */
@@ -2042,7 +2042,7 @@ body {
   border-color: var(--border-strong);
 }
 
-/* 選択中は淡い面と緑の輪郭で示す（トグルと同じ表し方に揃える） */
+/* 選択中は淡い面と水色の輪郭で示す（トグルと同じ表し方に揃える） */
 .theme-toggle__option.is-active {
   color: var(--accent);
   border-color: var(--accent);
@@ -2075,7 +2075,7 @@ body {
   margin-top: 0;
 }
 
-/* 見出しの始まりはトップページと同じ緑の縦バーで示す */
+/* 見出しの始まりはトップページと同じ水色の縦バーで示す */
 .howto-content h3 {
   display: flex;
   align-items: center;
@@ -2174,7 +2174,7 @@ body {
   margin-right: 2px;
 }
 
-/* 選択中はトグルと同じ「淡い面＋緑の輪郭」で示す */
+/* 選択中はトグルと同じ「淡い面＋水色の輪郭」で示す */
 .tool-btn.is-active {
   color: var(--accent);
   background: var(--accent-soft);

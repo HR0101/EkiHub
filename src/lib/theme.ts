@@ -28,8 +28,8 @@ export const DEFAULT_MODE: ThemeMode = "light";
 export const DEFAULT_COLOR: ThemeColor = "default";
 
 /** ブラウザUI（モバイルのアドレスバー等）の色。globals.css の --bg-base と揃える */
-const THEME_COLOR_LIGHT = "#f4f8f5";
-const THEME_COLOR_DARK = "#10151a";
+const THEME_COLOR_LIGHT = "#f3f7fa";
+const THEME_COLOR_DARK = "#0f1620";
 const THEME_COLOR_HIGH_CONTRAST = "#000000";
 
 /** auto を実際の配色へ解決する */
