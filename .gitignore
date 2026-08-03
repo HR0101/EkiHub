@@ -42,3 +42,9 @@ docs/deploy-oracle.md
 # data/stations-osm.json と data/ridership.json は外部データから生成される成果物ですが、
 # アプリ動作に必須で再取得が不安定なため、あえてコミット対象に含めています。
 # 再生成する場合は README の「データ更新」を参照してください。
+
+#  Next.js のビルド成果物 
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
