@@ -2,9 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { useTranslation } from "@/i18n/LocaleProvider";
 import {
-  COLOR_LABELS,
-  MODE_LABELS,
   THEME_COLORS,
   THEME_MODES,
   applyTheme,
@@ -21,6 +20,7 @@ import {
  * ここは「いま何が選ばれているか」を読み直して操作を受け付けるだけ。
  */
 export function ThemeToggle() {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<ThemeMode>("light");
   const [color, setColor] = useState<ThemeColor>("default");
   const [isOpen, setIsOpen] = useState(false);
@@ -68,14 +68,14 @@ export function ThemeToggle() {
         aria-haspopup="dialog"
         onClick={() => setIsOpen((current) => !current)}
       >
-        テーマ
+        {t("theme.button")}
         <span className="theme-toggle__dot" aria-hidden="true" />
       </button>
 
       {isOpen && (
-        <div className="theme-toggle__panel" role="dialog" aria-label="テーマ設定">
+        <div className="theme-toggle__panel" role="dialog" aria-label={t("theme.dialogLabel")}>
           <fieldset className="theme-toggle__group">
-            <legend className="theme-toggle__legend">明るさ</legend>
+            <legend className="theme-toggle__legend">{t("theme.brightness")}</legend>
             <div className="theme-toggle__options">
               {THEME_MODES.map((option) => (
                 <button
@@ -85,14 +85,14 @@ export function ThemeToggle() {
                   aria-pressed={mode === option}
                   onClick={() => update(option, color)}
                 >
-                  {MODE_LABELS[option]}
+                  {t(`theme.modes.${option}`)}
                 </button>
               ))}
             </div>
           </fieldset>
 
           <fieldset className="theme-toggle__group">
-            <legend className="theme-toggle__legend">色</legend>
+            <legend className="theme-toggle__legend">{t("theme.color")}</legend>
             <div className="theme-toggle__options">
               {THEME_COLORS.map((option) => (
                 <button
@@ -102,7 +102,7 @@ export function ThemeToggle() {
                   aria-pressed={color === option}
                   onClick={() => update(mode, option)}
                 >
-                  {COLOR_LABELS[option]}
+                  {t(`theme.colors.${option}`)}
                 </button>
               ))}
             </div>

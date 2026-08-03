@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { useTranslation } from "@/i18n/LocaleProvider";
 import type { HistoryEntry } from "@/hooks/useSearchHistory";
 
 interface Props {
@@ -18,6 +19,7 @@ export function HistoryPanel({
   onToggleFavorite,
   onRemove,
 }: Props) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -39,18 +41,16 @@ export function HistoryPanel({
         aria-haspopup="dialog"
         onClick={() => setIsOpen((current) => !current)}
       >
-        履歴
+        {t("history.button")}
         {entries.length > 0 && (
           <span className="history__count">{entries.length}</span>
         )}
       </button>
 
       {isOpen && (
-        <div className="history__panel" role="dialog" aria-label="算出履歴">
+        <div className="history__panel" role="dialog" aria-label={t("history.dialogLabel")}>
           {entries.length === 0 ? (
-            <p className="history__empty">
-              算出するとここに履歴が残ります。
-            </p>
+            <p className="history__empty">{t("history.empty")}</p>
           ) : (
             <ul className="history__list">
               {entries.map((entry) => (
@@ -71,11 +71,11 @@ export function HistoryPanel({
                   <button
                     type="button"
                     className={`history__icon ${entry.isFavorite ? "is-active" : ""}`}
-                    aria-label={
+                    aria-label={t(
                       entry.isFavorite
-                        ? "お気に入りから外す"
-                        : "お気に入りに追加"
-                    }
+                        ? "history.removeFavorite"
+                        : "history.addFavorite"
+                    )}
                     aria-pressed={entry.isFavorite}
                     onClick={() => onToggleFavorite(entry.id)}
                   >
@@ -84,7 +84,7 @@ export function HistoryPanel({
                   <button
                     type="button"
                     className="history__icon history__icon--remove"
-                    aria-label="この履歴を削除"
+                    aria-label={t("history.remove")}
                     onClick={() => onRemove(entry.id)}
                   >
                     ×

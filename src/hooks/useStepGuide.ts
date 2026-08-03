@@ -7,34 +7,24 @@ import {
   selectFilledOrigins,
   type StationInputRow,
 } from "@/stores/useEkiHubStore";
+import type { MessageKey } from "@/i18n";
 import type { CenterResult } from "@/types/ekihub";
 
 /** 手順の識別子。配列の並びがそのまま表示順になる */
 export const STEP_IDS = ["origins", "compute", "tune"] as const;
 export type StepId = (typeof STEP_IDS)[number];
 
+/** 文言は辞書から引くので、ここではキーだけを持つ */
 export interface StepDefinition {
   id: StepId;
-  label: string;
-  hint: string;
+  labelKey: MessageKey;
+  hintKey: MessageKey;
 }
 
 export const STEPS: StepDefinition[] = [
-  {
-    id: "origins",
-    label: "最寄駅",
-    hint: "集まる人それぞれの最寄駅を、2駅以上入力してください。",
-  },
-  {
-    id: "compute",
-    label: "算出",
-    hint: "駅が揃いました。「中心駅を算出する」を押してください。",
-  },
-  {
-    id: "tune",
-    label: "調整",
-    hint: "候補の絞り込みや重視ポイントを変えると、結果を選び直せます。",
-  },
+  { id: "origins", labelKey: "steps.origins", hintKey: "steps.originsHint" },
+  { id: "compute", labelKey: "steps.compute", hintKey: "steps.computeHint" },
+  { id: "tune", labelKey: "steps.tune", hintKey: "steps.tuneHint" },
 ];
 
 /** 入力内容を1つの文字列にまとめる（結果の新旧を比べるための指紋） */

@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
+import { useTranslation } from "@/i18n/LocaleProvider";
 import { ApiRequestError, fetchTrainInformation } from "@/lib/api";
 
 /** 既定の再取得間隔（サーバーが返す refreshAfterSeconds で上書きする） */
@@ -9,6 +10,7 @@ const FALLBACK_REFRESH_MS = 120_000;
 
 /** 鉄道の運行情報。ODPT のトークンが無い環境では準備中の案内を出す */
 export function TrainInformation() {
+  const { t } = useTranslation();
   const query = useQuery({
     queryKey: ["train-information"],
     queryFn: ({ signal }) => fetchTrainInformation(signal),
@@ -31,18 +33,18 @@ export function TrainInformation() {
             LIVE
           </span>
           <h2 id="trainInfoTitle" className="train-info-card__title">
-            鉄道の運行情報
+            {t("trainInfo.title")}
           </h2>
           <p className="train-info-card__coverage">
-            首都圏のODPT提供路線のみ（全路線を網羅していません）
+            {t("trainInfo.coverage")}
           </p>
         </div>
         <div className="train-info-card__actions">
           <button
             type="button"
             className="train-info-card__icon-btn"
-            aria-label="運行情報を更新"
-            title="運行情報を更新"
+            aria-label={t("trainInfo.refresh")}
+            title={t("trainInfo.refresh")}
             disabled={query.isFetching}
             onClick={() => void query.refetch()}
           >
@@ -55,18 +57,18 @@ export function TrainInformation() {
         {query.isPending && (
           <div className="train-info-card__loading">
             <span className="train-info-card__spinner" aria-hidden="true" />
-            最新情報を確認しています
+            {t("trainInfo.loading")}
           </div>
         )}
 
-        {notConfigured && <p>運行情報は現在準備中です。</p>}
+        {notConfigured && <p>{t("trainInfo.preparing")}</p>}
 
         {query.isError && !notConfigured && (
-          <p>運行情報を取得できませんでした。時間をおいて更新してください。</p>
+          <p>{t("trainInfo.failed")}</p>
         )}
 
         {query.isSuccess && query.data.items.length === 0 && (
-          <p>提供中の路線に運行情報はありません。</p>
+          <p>{t("trainInfo.none")}</p>
         )}
 
         {query.isSuccess && query.data.items.length > 0 && (
@@ -92,34 +94,35 @@ export function TrainInformation() {
       <div className="train-info-card__foot">
         {query.isSuccess && (
           <p>
-            更新:{" "}
-            {new Date(query.data.updatedAt).toLocaleTimeString("ja-JP", {
-              hour: "2-digit",
-              minute: "2-digit",
+            {t("trainInfo.updated", {
+              time: new Date(query.data.updatedAt).toLocaleTimeString(undefined, {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
             })}
           </p>
         )}
         <p>
-          公共交通データは{" "}
+          {t("trainInfo.creditBefore")}
           <a
             href="https://www.odpt.org/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            公共交通オープンデータセンター
-          </a>{" "}
-          提供。正確性・完全性は保証されません。
+            {t("trainInfo.creditProvider")}
+          </a>
+          {t("trainInfo.creditAfter")}
         </p>
         <p>
-          内容について交通事業者へ直接問い合わせず、
+          {t("trainInfo.contactBefore")}
           <a
             href="https://github.com/HR0101/EkiHub/issues"
             target="_blank"
             rel="noopener noreferrer"
           >
-            EkiHubへお問い合わせください
+            {t("trainInfo.contactLink")}
           </a>
-          。
+          {t("trainInfo.contactAfter")}
         </p>
       </div>
     </section>

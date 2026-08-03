@@ -8,6 +8,7 @@ import {
   useEkiHubStore,
   type StationInputRow as Row,
 } from "@/stores/useEkiHubStore";
+import { useTranslation } from "@/i18n/LocaleProvider";
 import type { Station } from "@/types/ekihub";
 
 interface Props {
@@ -26,6 +27,7 @@ const PEOPLE_MAX = 99;
  * 打鍵に合わせて候補を出し、↑↓で選んで Enter か Escape で閉じる。
  */
 export function StationInputRow({ row, index, stations }: Props) {
+  const { t } = useTranslation();
   const listId = useId();
   const rowCount = useEkiHubStore((state) => state.rows.length);
   const updateRow = useEkiHubStore((state) => state.updateRow);
@@ -107,8 +109,8 @@ export function StationInputRow({ row, index, stations }: Props) {
           type="text"
           className={`js-station ${inputClass}`}
           value={row.name}
-          placeholder="例）新宿、横浜、大宮…"
-          aria-label={`最寄駅 ${index}`}
+          placeholder={t("form.placeholder")}
+          aria-label={`${t("form.stationLabel")} ${index}`}
           role="combobox"
           aria-expanded={isOpen && matches.length > 0}
           aria-controls={listId}
@@ -152,7 +154,7 @@ export function StationInputRow({ row, index, stations }: Props) {
                     {parts.after}
                   </span>
                   {station.isMajor && (
-                    <span className="suggest__major">主要駅</span>
+                    <span className="suggest__major">{t("result.majorStation")}</span>
                   )}
                 </span>
                 <span className="suggest__sub">
@@ -176,8 +178,8 @@ export function StationInputRow({ row, index, stations }: Props) {
         min={PEOPLE_MIN}
         max={PEOPLE_MAX}
         value={row.people}
-        title="この駅から来る人数"
-        aria-label={`最寄駅 ${index} の人数`}
+        title={t("form.peopleLabel")}
+        aria-label={`${t("form.stationLabel")} ${index} — ${t("form.peopleLabel")}`}
         onChange={(event) => {
           const parsed = Number.parseInt(event.target.value, 10);
           updateRow(row.id, {
@@ -191,8 +193,8 @@ export function StationInputRow({ row, index, stations }: Props) {
       <button
         type="button"
         className="input-row__remove"
-        aria-label="この駅を削除"
-        title="この駅を削除"
+        aria-label={t("form.remove")}
+        title={t("form.remove")}
         disabled={rowCount <= MIN_INPUT_ROWS}
         onClick={() => removeRow(row.id)}
       >

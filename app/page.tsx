@@ -1,11 +1,12 @@
 import { HomeView } from "@/components/HomeView";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { Footer, Hero } from "@/components/PageChrome";
 
 /**
  * トップページ。
  *
- * 見出しまわりはサーバーコンポーネントのまま静的に返し、
- * 入力と結果表示（状態を持つ部分）だけをクライアントへ渡している。
+ * 骨組みはサーバーコンポーネントのまま返し、
+ * 文言の翻訳と状態を持つ部分だけをクライアントへ渡している。
+ * ツールバーは履歴と状態を共有する必要があるため HomeView 側で描く。
  */
 export default function HomePage() {
   return (
@@ -14,29 +15,12 @@ export default function HomePage() {
 
       <main className="app">
         <header className="hero">
-          <div className="toolbar" id="toolbar">
-            <a href="/howto" className="tool-btn">
-              使い方
-            </a>
-            <ThemeToggle />
-          </div>
-          <div className="hero__badge">EkiHub</div>
-          <h1 className="hero__title">
-            みんなの<span className="accent">中心駅</span>を探す
-          </h1>
-          <p className="hero__lead">
-            複数人の最寄駅を入力すると、全員が集まりやすい駅を提案します。
-          </p>
+          <Hero />
         </header>
 
         <HomeView />
 
-        <footer className="foot">
-          <p>
-            EkiHub — 重心＋移動時間補正アルゴリズムによる中心駅提案 / 地図データ
-            © OpenStreetMap contributors
-          </p>
-        </footer>
+        <Footer />
       </main>
     </>
   );

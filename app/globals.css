@@ -2452,3 +2452,53 @@ body {
   color: var(--danger);
   background: rgba(198, 40, 40, 0.1);
 }
+
+/* ===================================================================
+   言語切替
+   ------------------------------------------------------------------- */
+.locale-toggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  background: var(--nm-surface-sunken);
+  box-shadow: var(--nm-sunken);
+}
+
+.locale-toggle__option {
+  padding: 5px 10px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-faint);
+  font-family: inherit;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color var(--transition), background var(--transition);
+}
+
+.locale-toggle__option:hover {
+  color: var(--text-main);
+}
+
+/* 選択中はアクセント色の面で示す（他のトグルと同じ表し方） */
+.locale-toggle__option.is-active {
+  color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.locale-toggle__option:active {
+  transform: translateY(var(--nm-press-offset)) scale(0.97);
+  transition: transform var(--nm-press-time) ease-out;
+}
+
+/* ツールバーは折り返しても崩れないようにする */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}

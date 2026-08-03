@@ -9,6 +9,8 @@ import {
   selectFilledOrigins,
   useEkiHubStore,
 } from "@/stores/useEkiHubStore";
+import { useTranslation } from "@/i18n/LocaleProvider";
+import type { MessageKey } from "@/i18n";
 import type { Mode, Station } from "@/types/ekihub";
 
 interface Props {
@@ -20,25 +22,25 @@ interface Props {
   onSubmit: () => void;
 }
 
-/** 重視ポイントのスライダー位置を言葉にする */
-function weightLabel(percent: number): string {
-  if (percent <= 20) return "近さ最優先";
-  if (percent <= 40) return "やや近さ重視";
-  if (percent <= 60) return "バランス";
-  if (percent <= 80) return "やや公平さ重視";
-  return "公平さ最優先";
+/** 重視ポイントのスライダー位置に対応する文言のキー */
+function weightLabelKey(percent: number): MessageKey {
+  if (percent <= 20) return "form.weightLabels.nearest";
+  if (percent <= 40) return "form.weightLabels.nearer";
+  if (percent <= 60) return "form.weightLabels.balanced";
+  if (percent <= 80) return "form.weightLabels.fairer";
+  return "form.weightLabels.fairest";
 }
 
 /** 運賃をどれだけ効かせるか */
-function fareLabel(percent: number): string {
-  if (percent <= 33) return "重視しない";
-  if (percent <= 66) return "やや重視";
-  return "重視";
+function fareLabelKey(percent: number): MessageKey {
+  if (percent <= 33) return "form.fareLabels.low";
+  if (percent <= 66) return "form.fareLabels.mid";
+  return "form.fareLabels.high";
 }
 
-const MODE_OPTIONS: { value: Mode; main: string; sub: string }[] = [
-  { value: "A", main: "主要駅限定", sub: "新宿・渋谷など大規模駅" },
-  { value: "B", main: "規模不問", sub: "純粋に地理・時間の中心" },
+const MODE_OPTIONS: { value: Mode; mainKey: MessageKey; subKey: MessageKey }[] = [
+  { value: "A", mainKey: "form.modeAMain", subKey: "form.modeASub" },
+  { value: "B", mainKey: "form.modeBMain", subKey: "form.modeBSub" },
 ];
 
 /** 入力パネル。駅の入力から算出の実行までを受け持つ */
@@ -49,6 +51,7 @@ export function StationForm({
   currentStep,
   onSubmit,
 }: Props) {
+  const { t } = useTranslation();
   const rows = useEkiHubStore((state) => state.rows);
   const mode = useEkiHubStore((state) => state.mode);
   const fairnessWeight = useEkiHubStore((state) => state.fairnessWeight);
@@ -67,8 +70,8 @@ export function StationForm({
   const canSubmit = filledCount >= MIN_INPUT_ROWS && !isComputing;
 
   return (
-    <section className="panel" aria-label="入力フォーム">
-      <h2 className="panel__title">最寄駅を入力</h2>
+    <section className="panel" aria-label={t("form.panelTitle")}>
+      <h2 className="panel__title">{t("form.panelTitle")}</h2>
 
       <StepGuide currentIndex={currentStep} />
 
@@ -92,14 +95,14 @@ export function StationForm({
         </div>
 
         <button type="button" className="btn btn--ghost" onClick={addRow}>
-          ＋ 駅を追加
+          {t("form.addStation")}
         </button>
 
         <div className="mode">
           <div className="mode__head">
-            <span className="mode__label">候補の絞り込み</span>
+            <span className="mode__label">{t("form.modeTitle")}</span>
           </div>
-          <div className="toggle" role="tablist" aria-label="候補の絞り込み">
+          <div className="toggle" role="tablist" aria-label={t("form.modeTitle")}>
             {MODE_OPTIONS.map((option) => (
               <button
                 key={option.value}
@@ -109,8 +112,8 @@ export function StationForm({
                 className={`toggle__btn ${mode === option.value ? "is-active" : ""}`}
                 onClick={() => setMode(option.value)}
               >
-                <span className="toggle__main">{option.main}</span>
-                <span className="toggle__sub">{option.sub}</span>
+                <span className="toggle__main">{t(option.mainKey)}</span>
+                <span className="toggle__sub">{t(option.subKey)}</span>
               </button>
             ))}
             <span
@@ -122,8 +125,8 @@ export function StationForm({
 
         <div className="weight">
           <div className="weight__head">
-            <span className="mode__label">重視ポイント</span>
-            <span className="weight__hint">{weightLabel(weightPercent)}</span>
+            <span className="mode__label">{t("form.weightTitle")}</span>
+            <span className="weight__hint">{t(weightLabelKey(weightPercent))}</span>
           </div>
           <input
             type="range"
@@ -132,21 +135,21 @@ export function StationForm({
             max={100}
             step={5}
             value={weightPercent}
-            aria-label="重視ポイント（全員の公平さと近さのバランス）"
+            aria-label={t("form.weightAriaLabel")}
             onChange={(event) =>
               setFairnessWeight(Number(event.target.value) / 100)
             }
           />
           <div className="weight__labels">
-            <span>近さ重視</span>
-            <span>公平さ重視</span>
+            <span>{t("form.weightNear")}</span>
+            <span>{t("form.weightFair")}</span>
           </div>
         </div>
 
         <div className="weight">
           <div className="weight__head">
-            <span className="mode__label">運賃の重視度</span>
-            <span className="weight__hint">{fareLabel(farePercent)}</span>
+            <span className="mode__label">{t("form.fareTitle")}</span>
+            <span className="weight__hint">{t(fareLabelKey(farePercent))}</span>
           </div>
           <input
             type="range"
@@ -155,7 +158,7 @@ export function StationForm({
             max={100}
             step={10}
             value={farePercent}
-            aria-label="運賃の重視度"
+            aria-label={t("form.fareTitle")}
             onChange={(event) => setFareWeight(Number(event.target.value) / 100)}
           />
         </div>
@@ -166,7 +169,7 @@ export function StationForm({
           disabled={!canSubmit}
         >
           <span className="btn__label">
-            {isComputing ? "算出中…" : "中心駅を算出する"}
+            {isComputing ? t("form.computing") : t("form.submit")}
           </span>
           <span className="btn__spinner" aria-hidden="true" />
         </button>

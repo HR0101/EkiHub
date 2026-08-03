@@ -200,5 +200,15 @@ export const ja = {
   },
 } as const;
 
-/** 他の言語ファイルが従う形 */
-export type Messages = typeof ja;
+/**
+ * 他の言語ファイルが従う形。
+ *
+ * ja は `as const` で書いてあるため、そのまま型にすると
+ * 値まで日本語のリテラルとして固定されてしまう。
+ * ここで文字列へ緩めることで「キーの構造は同じ・中身は自由」にしている。
+ */
+type DeepString<T> = {
+  [K in keyof T]: T[K] extends string ? string : DeepString<T[K]>;
+};
+
+export type Messages = DeepString<typeof ja>;

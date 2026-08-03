@@ -12,6 +12,7 @@ import {
   useMap,
 } from "react-leaflet";
 
+import { useTranslation } from "@/i18n/LocaleProvider";
 import type { CenterResult, RankingEntry } from "@/types/ekihub";
 
 interface Props {
@@ -71,6 +72,7 @@ function FitBounds({ points }: { points: [number, number][] }) {
 
 /** 位置関係マップ。入力駅・候補駅・重心を1枚に重ねる */
 export function StationMap({ result, station }: Props) {
+  const { t } = useTranslation();
   const center = station ?? result?.best ?? null;
 
   const points = useMemo<[number, number][]>(() => {
@@ -92,7 +94,7 @@ export function StationMap({ result, station }: Props) {
       center={DEFAULT_CENTER}
       zoom={DEFAULT_ZOOM}
       scrollWheelZoom
-      aria-label="位置関係マップ"
+      aria-label={t("map.ariaLabel")}
     >
       <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} />
       <TileLayer
@@ -112,8 +114,9 @@ export function StationMap({ result, station }: Props) {
               <Popup>
                 <b>{origin.name}</b>
                 <br />
-                最寄駅 {index + 1}
-                {origin.people > 1 && ` ・${origin.people}人`}
+                {t("map.origin", { index: index + 1 })}
+                {origin.people > 1 &&
+                  t("map.originPeople", { count: origin.people })}
               </Popup>
             </Marker>
             <Polyline
@@ -129,12 +132,16 @@ export function StationMap({ result, station }: Props) {
       {center && (
         <Marker
           position={[center.lat, center.lng]}
-          icon={makePin(isTop ? "中心" : "候補", "pin--center", 38)}
+          icon={makePin(
+            t(isTop ? "map.pinCenter" : "map.pinCandidate"),
+            "pin--center",
+            38
+          )}
         >
           <Popup>
             <b>{center.name}</b>
             <br />
-            {isTop ? "提案された中心駅" : "選択中の候補駅"}
+            {t(isTop ? "map.centerBest" : "map.centerSelected")}
           </Popup>
         </Marker>
       )}
@@ -150,7 +157,7 @@ export function StationMap({ result, station }: Props) {
             weight: 1,
           }}
         >
-          <Popup>入力駅の地理的重心</Popup>
+          <Popup>{t("map.centroid")}</Popup>
         </CircleMarker>
       )}
 

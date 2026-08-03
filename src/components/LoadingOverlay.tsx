@@ -1,12 +1,14 @@
 "use client";
 
 import { useMinimumVisible } from "@/hooks/useMinimumVisible";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 /** 一瞬で終わっても点滅して見えないよう、最低これだけは出しておく */
 const MINIMUM_VISIBLE_MS = 550;
 
 /** 算出中に結果エリアへ重ねる表示 */
 export function LoadingOverlay({ isComputing }: { isComputing: boolean }) {
+  const { t } = useTranslation();
   const isVisible = useMinimumVisible(isComputing, MINIMUM_VISIBLE_MS);
   if (!isVisible) return null;
 
@@ -25,7 +27,7 @@ export function LoadingOverlay({ isComputing }: { isComputing: boolean }) {
           <div className="loading__rail" aria-hidden="true" />
         </div>
         <p className="loading__text">
-          ちょうどいい駅をさがしています
+          {t("loading.text")}
           <span className="loading__dots">
             <i>.</i>
             <i>.</i>

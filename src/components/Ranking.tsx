@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "@/i18n/LocaleProvider";
 import type { RankingEntry } from "@/types/ekihub";
 
 interface Props {
@@ -10,11 +11,12 @@ interface Props {
 
 /** 候補駅ランキング。1件しかないときは比較の意味がないので出さない */
 export function Ranking({ ranking, selectedName, onSelect }: Props) {
+  const { t } = useTranslation();
   if (ranking.length <= 1) return null;
 
   return (
     <div className="ranking">
-      <h4 className="ranking__title">候補駅ランキング（クリックで詳細を表示）</h4>
+      <h4 className="ranking__title">{t("ranking.title")}</h4>
       <ul>
         {ranking.map((entry, index) => {
           const fare =
@@ -35,7 +37,11 @@ export function Ranking({ ranking, selectedName, onSelect }: Props) {
                 <span className="ranking-item__rank">{index + 1}</span>
                 <span className="ranking-item__name">{entry.name}</span>
                 <span className="ranking-item__meta">
-                  {`平均${entry.averageMinutes}分 / ±${entry.fairness}${fare}`}
+                  {t("ranking.meta", {
+                    minutes: entry.averageMinutes,
+                    fairness: entry.fairness,
+                  })}
+                  {fare}
                 </span>
               </button>
             </li>

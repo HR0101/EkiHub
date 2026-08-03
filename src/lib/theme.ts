@@ -27,23 +27,6 @@ export type ThemeColor = (typeof THEME_COLORS)[number];
 export const DEFAULT_MODE: ThemeMode = "light";
 export const DEFAULT_COLOR: ThemeColor = "default";
 
-/** 設定画面に出す表示名 */
-export const MODE_LABELS: Record<ThemeMode, string> = {
-  light: "ライト",
-  dark: "ダーク",
-  auto: "端末に合わせる",
-};
-
-export const COLOR_LABELS: Record<ThemeColor, string> = {
-  default: "みどり",
-  sakura: "さくら",
-  forest: "もり",
-  ocean: "うみ",
-  sunset: "ゆうやけ",
-  autumn: "こうよう",
-  "high-contrast": "高コントラスト",
-};
-
 /** ブラウザUI（モバイルのアドレスバー等）の色。globals.css の --bg-base と揃える */
 const THEME_COLOR_LIGHT = "#f4f8f5";
 const THEME_COLOR_DARK = "#10151a";

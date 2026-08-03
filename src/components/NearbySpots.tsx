@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
+import { useTranslation } from "@/i18n/LocaleProvider";
 import { fetchSpotsWithFallback } from "@/lib/spots";
 import type { RankingEntry, SpotCategory } from "@/types/ekihub";
 
@@ -10,14 +11,15 @@ interface Props {
   station: RankingEntry;
 }
 
-const CATEGORIES: { value: SpotCategory; label: string }[] = [
-  { value: "cafe", label: "カフェ" },
-  { value: "restaurant", label: "レストラン" },
-  { value: "fastfood", label: "ファストフード" },
-  { value: "izakaya", label: "居酒屋・バー" },
-  { value: "karaoke", label: "カラオケ" },
-  { value: "convenience", label: "コンビニ" },
-  { value: "park", label: "公園" },
+/** 表示順（文言は辞書の spots.categories から引く） */
+const CATEGORIES: SpotCategory[] = [
+  "cafe",
+  "restaurant",
+  "fastfood",
+  "izakaya",
+  "karaoke",
+  "convenience",
+  "park",
 ];
 
 const RADIUS_OPTIONS = [400, 800, 1500] as const;
@@ -27,6 +29,7 @@ const MAX_VISIBLE = 20;
 
 /** 集合駅の周辺で集まれる場所を探す */
 export function NearbySpots({ station }: Props) {
+  const { t } = useTranslation();
   const [category, setCategory] = useState<SpotCategory | null>(null);
   const [radius, setRadius] = useState<number>(800);
 
@@ -35,7 +38,7 @@ export function NearbySpots({ station }: Props) {
     queryKey: ["spots", station.name, category, radius],
     queryFn: async ({ signal }) => {
       // enabled で null を弾いているので、ここに来る時点で必ず選ばれている
-      if (category === null) throw new Error("カテゴリが選ばれていません");
+      if (category === null) throw new Error("category is required");
       const result = await fetchSpotsWithFallback(
         { lat: station.lat, lng: station.lng, category, radius },
         signal
@@ -47,25 +50,25 @@ export function NearbySpots({ station }: Props) {
   });
 
   return (
-    <section className="fpanel" aria-label="周辺スポット">
-      <h3 className="fpanel__title">周辺スポット</h3>
+    <section className="fpanel" aria-label={t("spots.title")}>
+      <h3 className="fpanel__title">{t("spots.title")}</h3>
 
       <div className="spot-controls">
         {CATEGORIES.map((option) => (
           <button
-            key={option.value}
+            key={option}
             type="button"
-            className={`tool-btn ${category === option.value ? "is-active" : ""}`}
-            aria-pressed={category === option.value}
-            onClick={() => setCategory(option.value)}
+            className={`tool-btn ${category === option ? "is-active" : ""}`}
+            aria-pressed={category === option}
+            onClick={() => setCategory(option)}
           >
-            {option.label}
+            {t(`spots.categories.${option}`)}
           </button>
         ))}
       </div>
 
       <div className="spot-controls spot-controls--radius">
-        <span className="spot-controls__label">範囲</span>
+        <span className="spot-controls__label">{t("spots.radiusLabel")}</span>
         {RADIUS_OPTIONS.map((option) => (
           <button
             key={option}
@@ -80,21 +83,19 @@ export function NearbySpots({ station }: Props) {
       </div>
 
       {category === null && (
-        <p className="spot-note">カテゴリを選んでください</p>
+        <p className="spot-note">{t("spots.chooseCategory")}</p>
       )}
 
       {spotsQuery.isPending && category !== null && (
-        <p className="spot-note">探しています…</p>
+        <p className="spot-note">{t("spots.searching")}</p>
       )}
 
       {spotsQuery.isError && (
-        <p className="spot-note">
-          周辺スポットを取得できませんでした。時間をおいて試してください。
-        </p>
+        <p className="spot-note">{t("spots.failed")}</p>
       )}
 
       {spotsQuery.isSuccess && spotsQuery.data.length === 0 && (
-        <p className="spot-note">この範囲では見つかりませんでした。</p>
+        <p className="spot-note">{t("spots.empty")}</p>
       )}
 
       {spotsQuery.isSuccess && spotsQuery.data.length > 0 && (
@@ -113,8 +114,10 @@ export function NearbySpots({ station }: Props) {
           </ul>
           {spotsQuery.data.length > MAX_VISIBLE && (
             <p className="spot-note">
-              ほか {spotsQuery.data.length - MAX_VISIBLE} 件（上位
-              {MAX_VISIBLE}件のみ表示）
+              {t("spots.more", {
+                count: spotsQuery.data.length - MAX_VISIBLE,
+                limit: MAX_VISIBLE,
+              })}
             </p>
           )}
         </>

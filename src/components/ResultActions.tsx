@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { buildShareUrl } from "@/lib/shareUrl";
 import { buildSummaryText } from "@/lib/summary";
+import { useTranslation } from "@/i18n/LocaleProvider";
 import { useEkiHubStore } from "@/stores/useEkiHubStore";
 import type { RankingEntry } from "@/types/ekihub";
 
@@ -18,6 +19,7 @@ const QR_SIZE = 180;
 
 /** 結果カード下のアクション列。共有・コピー・印刷をまとめる */
 export function ResultActions({ station }: Props) {
+  const { t } = useTranslation();
   const rows = useEkiHubStore((state) => state.rows);
   const mode = useEkiHubStore((state) => state.mode);
   const fairnessWeight = useEkiHubStore((state) => state.fairnessWeight);
@@ -67,8 +69,8 @@ export function ResultActions({ station }: Props) {
   async function handleWebShare() {
     try {
       await navigator.share({
-        title: "EkiHub — みんなの中心駅",
-        text: `集合駅の候補: ${station.name}`,
+        title: t("actions.shareTitle"),
+        text: t("actions.shareText", { name: station.name }),
         url: currentShareUrl(),
       });
     } catch {
@@ -83,16 +85,18 @@ export function ResultActions({ station }: Props) {
         className="tool-btn"
         onClick={() => void urlCopy.copy(currentShareUrl())}
       >
-        {urlCopy.status === "copied"
-          ? "コピーしました"
-          : urlCopy.status === "failed"
-            ? "コピーできません"
-            : "URLをコピー"}
+        {t(
+          urlCopy.status === "copied"
+            ? "actions.copied"
+            : urlCopy.status === "failed"
+              ? "actions.copyFailed"
+              : "actions.copyUrl"
+        )}
       </button>
 
       {canWebShare && (
         <button type="button" className="tool-btn" onClick={() => void handleWebShare()}>
-          共有
+          {t("actions.share")}
         </button>
       )}
 
@@ -102,7 +106,7 @@ export function ResultActions({ station }: Props) {
         aria-expanded={isQrOpen}
         onClick={() => setIsQrOpen((current) => !current)}
       >
-        QR
+        {t("actions.qr")}
       </button>
 
       <button
@@ -110,15 +114,17 @@ export function ResultActions({ station }: Props) {
         className="tool-btn"
         onClick={() => void summaryCopy.copy(buildSummaryText(station))}
       >
-        {summaryCopy.status === "copied"
-          ? "コピーしました"
-          : summaryCopy.status === "failed"
-            ? "コピーできません"
-            : "結果をコピー"}
+        {t(
+          summaryCopy.status === "copied"
+            ? "actions.copied"
+            : summaryCopy.status === "failed"
+              ? "actions.copyFailed"
+              : "actions.copySummary"
+        )}
       </button>
 
       <button type="button" className="tool-btn" onClick={() => window.print()}>
-        印刷
+        {t("actions.print")}
       </button>
 
       {isQrOpen && (
@@ -128,16 +134,14 @@ export function ResultActions({ station }: Props) {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={qrDataUrl}
-              alt="この条件を開く共有リンクのQRコード"
+              alt={t("actions.qrAlt")}
               width={QR_SIZE}
               height={QR_SIZE}
             />
           ) : (
-            <p className="qr-panel__note">QRコードを準備しています…</p>
+            <p className="qr-panel__note">{t("actions.qrPreparing")}</p>
           )}
-          <p className="qr-panel__note">
-            スマートフォンで読み取ると、同じ条件で開けます。
-          </p>
+          <p className="qr-panel__note">{t("actions.qrNote")}</p>
         </div>
       )}
     </div>
