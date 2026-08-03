@@ -82,9 +82,10 @@ body {
 .app {
   position: relative;
   z-index: 1;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 48px 24px 32px;
+  /* 画面いっぱいまで使う。左右は操作しやすい最小限の余白だけ残す */
+  max-width: none;
+  margin: 0;
+  padding: 24px clamp(12px, 1.4vw, 28px);
 }
 
 /* トップナビゲーション */
@@ -151,11 +152,49 @@ body {
 }
 
 /* ===== レイアウト ===== */
+/* ===== 3段階のレイアウト =====
+   狭い順に 1 列 → 2 列 → 3 列。
+   どの段でも入力パネルは左に固定し、結果（main）と地図まわり（side）の
+   置き場所だけを組み替える。列の割り当ては grid-template-areas で
+   明示しているので、要素の並び順を変えても崩れない。 */
 .layout {
   display: grid;
-  grid-template-columns: minmax(320px, 400px) 1fr;
-  gap: 24px;
+  gap: 20px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "form"
+    "main"
+    "side";
   align-items: start;
+}
+
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+    grid-template-areas:
+      "form main"
+      "form side";
+  }
+}
+
+/* 3列に割ると地図と周辺スポットを結果の隣に置ける */
+@media (min-width: 1500px) {
+  .layout {
+    grid-template-columns: 340px minmax(0, 1fr) minmax(0, 1.05fr);
+    grid-template-areas: "form main side";
+  }
+}
+
+.layout > .sidebar {
+  grid-area: form;
+}
+
+.layout > .result--main {
+  grid-area: main;
+}
+
+.layout > .result--side {
+  grid-area: side;
 }
 
 .sidebar {
@@ -165,11 +204,7 @@ body {
   min-width: 0;
 }
 
-@media (max-width: 880px) {
-  .layout {
-    grid-template-columns: 1fr;
-  }
-}
+
 
 /* ===== パネル ===== */
 .panel {
@@ -595,6 +630,7 @@ body {
   flex-direction: column;
   gap: 18px;
   position: relative; /* ローディングオーバーレイの基準 */
+  min-width: 0; /* grid の子は既定で縮まないため、地図がはみ出さないよう明示する */
 }
 
 /* ===== 算出中ローディング（可愛い電車） ===== */
@@ -2501,4 +2537,36 @@ body {
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
+}
+
+/* 画面が高い・広いときは地図を大きく取る（3列時は結果と高さを揃えたい） */
+@media (min-width: 1500px) {
+  .map {
+    height: clamp(380px, 42vh, 560px);
+  }
+}
+
+/* ヒーローは主張しすぎないよう、広い画面では余白を詰める */
+@media (min-width: 900px) {
+  .hero {
+    margin-bottom: 24px;
+  }
+}
+
+/* 超広画面では入力パネルを少し広げ、地図をさらに大きく見せる
+   （列が間延びするより、地図に幅を回したほうが情報量が増える） */
+@media (min-width: 2000px) {
+  .layout {
+    grid-template-columns: 400px minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: 24px;
+  }
+
+  .map {
+    height: clamp(460px, 52vh, 760px);
+  }
+
+  /* 幅が余るので指標は1行に並べきる */
+  .metrics {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }

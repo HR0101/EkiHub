@@ -114,10 +114,13 @@ export function HomeView() {
           <TrainInformation />
         </div>
 
-        <section className="result" aria-label={t("result.eyebrowBest")}>
+        {/* 結果は「数字で読むもの」と「地図で見るもの」に分けてある。
+            広い画面ではこの2つが横に並び、狭い画面では縦に積まれる。 */}
+        <section
+          className="result result--main"
+          aria-label={t("result.eyebrowBest")}
+        >
           <ResultCard result={result} station={currentStation} />
-
-          <StationMap result={result} station={currentStation} />
 
           {currentStation && (
             <TravelList travelTimes={currentStation.travelTimes} />
@@ -131,9 +134,13 @@ export function HomeView() {
             />
           )}
 
-          {currentStation && <NearbySpots station={currentStation} />}
-
           <LoadingOverlay isComputing={centerMutation.isPending} />
+        </section>
+
+        <section className="result result--side" aria-label={t("map.ariaLabel")}>
+          <StationMap result={result} station={currentStation} />
+
+          {currentStation && <NearbySpots station={currentStation} />}
         </section>
       </div>
     </>
