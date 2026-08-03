@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { fetchSpots } from "@/lib/api";
+import { fetchSpotsWithFallback } from "@/lib/spots";
 import type { RankingEntry, SpotCategory } from "@/types/ekihub";
 
 interface Props {
@@ -33,11 +33,15 @@ export function NearbySpots({ station }: Props) {
   const spotsQuery = useQuery({
     // 駅・カテゴリ・半径の組み合わせごとにキャッシュする
     queryKey: ["spots", station.name, category, radius],
-    queryFn: ({ signal }) =>
-      fetchSpots(
-        { lat: station.lat, lng: station.lng, category: category!, radius },
+    queryFn: async ({ signal }) => {
+      // enabled で null を弾いているので、ここに来る時点で必ず選ばれている
+      if (category === null) throw new Error("カテゴリが選ばれていません");
+      const result = await fetchSpotsWithFallback(
+        { lat: station.lat, lng: station.lng, category, radius },
         signal
-      ),
+      );
+      return result.spots;
+    },
     // カテゴリを選ぶまでは問い合わせない
     enabled: category !== null,
   });
