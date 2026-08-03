@@ -1,22 +1,23 @@
-import { loadStations } from "@/server/stationRepository";
+import { HomeView } from "@/components/HomeView";
 
 /**
  * トップページ。
  *
- * いまは移行の土台が動くことを確かめるための最小構成で、
- * 駅マスタの読み込み（サーバー側）だけを行っている。
- * 入力フォーム・地図・結果表示はこのあとクライアントコンポーネントとして載せる。
+ * 見出しまわりはサーバーコンポーネントのまま静的に返し、
+ * 入力と結果表示（状態を持つ部分）だけをクライアントへ渡している。
  */
-export default async function HomePage() {
-  const stations = await loadStations();
-  const majorCount = stations.filter((station) => station.isMajor).length;
-
+export default function HomePage() {
   return (
     <>
       <div className="aurora" aria-hidden="true" />
 
       <main className="app">
         <header className="hero">
+          <div className="toolbar" id="toolbar">
+            <a href="/howto" className="tool-btn">
+              使い方
+            </a>
+          </div>
           <div className="hero__badge">EkiHub</div>
           <h1 className="hero__title">
             みんなの<span className="accent">中心駅</span>を探す
@@ -26,27 +27,14 @@ export default async function HomePage() {
           </p>
         </header>
 
-        <section className="panel" aria-label="移行状況">
-          <h2 className="panel__title">移行中です</h2>
+        <HomeView />
+
+        <footer className="foot">
           <p>
-            Next.js + TypeScript への移行を進めています。
-            サーバー側の駅マスタとAPIはすでに動いています。
+            EkiHub — 重心＋移動時間補正アルゴリズムによる中心駅提案 / 地図データ
+            © OpenStreetMap contributors
           </p>
-          <div className="metrics" style={{ marginTop: 18 }}>
-            <div className="metric">
-              <span className="metric__value">
-                {stations.length.toLocaleString("ja-JP")}
-              </span>
-              <span className="metric__label">読み込み済みの駅</span>
-            </div>
-            <div className="metric">
-              <span className="metric__value">
-                {majorCount.toLocaleString("ja-JP")}
-              </span>
-              <span className="metric__label">うち主要駅</span>
-            </div>
-          </div>
-        </section>
+        </footer>
       </main>
     </>
   );

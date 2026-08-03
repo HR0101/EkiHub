@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 
+import { Providers } from "@/components/Providers";
+
+// Leaflet の基本スタイル。自前のCSSより先に読み込んで上書きできるようにする
+import "leaflet/dist/leaflet.css";
 import "./globals.css";
 
 /**
@@ -66,7 +70,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ja" className={notoSansJp.variable}>
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
