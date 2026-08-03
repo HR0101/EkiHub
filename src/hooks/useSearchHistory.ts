@@ -87,6 +87,8 @@ export function useSearchHistory() {
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
 
   useEffect(() => {
+    // localStorage はサーバーで読めないため、マウント後に読み込む
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setEntries(readStored());
   }, []);
 

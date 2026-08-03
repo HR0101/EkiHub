@@ -34,9 +34,7 @@ const StationMap = dynamic(
 /** トップページの本体。入力・算出・結果表示をまとめる */
 export function HomeView() {
   const rows = useEkiHubStore((state) => state.rows);
-  const mode = useEkiHubStore((state) => state.mode);
-  const fairnessWeight = useEkiHubStore((state) => state.fairnessWeight);
-  const fareWeight = useEkiHubStore((state) => state.fareWeight);
+  // 算出時の条件は handleSubmit で getState() から直接読むので、ここでは購読しない
   const result = useEkiHubStore((state) => state.result);
   const selectedName = useEkiHubStore((state) => state.selectedName);
   const setResult = useEkiHubStore((state) => state.setResult);

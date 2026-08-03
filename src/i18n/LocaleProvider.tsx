@@ -38,7 +38,10 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
 
   useEffect(() => {
+    // localStorage はサーバーで読めない。初回描画を一致させるため、
+    // 保存済みの言語はマウント後に当てる（意図的な setState）
     const stored = readStoredLocale();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (stored !== DEFAULT_LOCALE) setLocaleState(stored);
   }, []);
 

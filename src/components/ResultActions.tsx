@@ -33,6 +33,8 @@ export function ResultActions({ station }: Props) {
 
   // navigator.share はサーバーで参照できないため、マウント後に判定する
   useEffect(() => {
+    // navigator はサーバーに無いので、判定はマウント後にしかできない
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCanWebShare(typeof navigator.share === "function");
   }, []);
 

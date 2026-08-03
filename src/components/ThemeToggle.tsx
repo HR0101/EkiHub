@@ -29,6 +29,8 @@ export function ThemeToggle() {
   // 保存済みの選択を読み直す（localStorage はサーバーで読めないのでマウント後）
   useEffect(() => {
     const stored = readStoredTheme();
+    // 描画前のスクリプトが既に当てた選択を、UI側へ読み直すだけ
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMode(stored.mode);
     setColor(stored.color);
   }, []);

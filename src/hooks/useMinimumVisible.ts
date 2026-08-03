@@ -13,6 +13,8 @@ export function useMinimumVisible(isActive: boolean, minMs: number): boolean {
 
   useEffect(() => {
     if (isActive) {
+      // 表示は即座に、非表示だけ遅らせる（点滅を防ぐための意図的な setState）
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsVisible(true);
       return;
     }
