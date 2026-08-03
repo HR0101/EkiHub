@@ -47,6 +47,18 @@
   --nm-sunken-xs:
     inset -2px -2px 4px var(--nm-light),
     inset 2px 2px 4px var(--nm-dark);
+
+  /* ===== 押し込み（プレス）演出 =====
+     押した瞬間は素早く沈み（--nm-press-time），指を離すと --transition でゆっくり戻す.
+     この非対称な速度差が「押して跳ね返る」物理的な手応えを生む.
+     沈み量・速度をここで一括管理し，各ボタンは変数だけを参照すること. */
+  --nm-press-offset: 2px;   /* 押下時に下へ沈む距離 */
+  --nm-press-scale: 0.985;  /* 押下時の縮み率 */
+  --nm-press-time: 90ms;    /* 沈みきるまでの時間（戻りは --transition） */
+  /* 通常の沈み（--nm-sunken）より 1.5 倍深くして，押された面であることを強調する */
+  --nm-pressed:
+    inset calc(var(--nm-offset-sm) * -1.5) calc(var(--nm-offset-sm) * -1.5) calc(var(--nm-blur-sm) * 1.15) var(--nm-light),
+    inset calc(var(--nm-offset-sm) * 1.5) calc(var(--nm-offset-sm) * 1.5) calc(var(--nm-blur-sm) * 1.15) var(--nm-dark);
 }
 
 * {
@@ -124,10 +136,7 @@ body {
 .nav-link:hover {
   color: var(--text-main);
 }
-
-.nav-link:active {
-  box-shadow: var(--nm-sunken);
-}
+/* :active の押し込みは末尾「押し込み（プレス）演出」セクションで一括定義 */
 
 /* ===== ヒーロー ===== */
 .hero {
@@ -397,10 +406,6 @@ body {
   color: var(--accent);
 }
 
-.btn--ghost:active {
-  box-shadow: var(--nm-sunken);
-}
-
 .btn--primary {
   width: 100%;
   margin-top: 8px;
@@ -419,10 +424,6 @@ body {
 .btn--primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 18px 40px rgba(94, 123, 255, 0.45);
-}
-
-.btn--primary:active {
-  transform: translateY(0);
 }
 
 .btn--primary:disabled {
@@ -1340,10 +1341,7 @@ body {
   color: var(--accent);
 }
 
-/* 押している間は面が沈む */
-.tool-btn:active {
-  box-shadow: var(--nm-sunken);
-}
+/* :active の押し込みは末尾「押し込み（プレス）演出」セクションで一括定義 */
 
 /* 機能モジュールが使う共通パネル */
 .fpanel {
@@ -1985,5 +1983,79 @@ body {
   100% {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/* ===================================================================
+   押し込み（プレス）演出
+   -------------------------------------------------------------------
+   ネオモーフィズムの面を「指で実際に押し込んだ」ように見せる.
+   ポイントは沈みと戻りの速度を変えること.
+     押下時 … --nm-press-time（90ms）で素早く沈む
+     離す時 … --transition（0.28s）でゆっくり戻る
+   この非対称さが物理的な反発の手応えを生む.
+   :active の定義はここに集約しているので，個々のボタン定義側には書かないこと.
+   =================================================================== */
+
+/* 押し込み対象の共通トランジション（戻りの動き） */
+.btn--ghost,
+.tool-btn,
+.nav-link,
+.toggle__btn,
+.input-row__remove {
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background var(--transition),
+    color var(--transition);
+}
+
+/* --- 面を持つボタン：沈みの影＋わずかな縮み --- */
+.btn--ghost:active:not(:disabled),
+.tool-btn:active:not(:disabled),
+.nav-link:active {
+  transform: translateY(var(--nm-press-offset)) scale(var(--nm-press-scale));
+  box-shadow: var(--nm-pressed);
+  transition:
+    transform var(--nm-press-time) ease-out,
+    box-shadow var(--nm-press-time) ease-out;
+}
+
+/* --- 算出ボタン：グラデーション面なので落ち影を縮め，内側に影を差す --- */
+.btn--primary:active:not(:disabled) {
+  transform: translateY(var(--nm-press-offset)) scale(var(--nm-press-scale));
+  box-shadow:
+    0 4px 12px rgba(94, 123, 255, 0.22),
+    inset 0 3px 9px rgba(0, 0, 0, 0.34),
+    inset 0 -2px 6px rgba(255, 255, 255, 0.14);
+  transition:
+    transform var(--nm-press-time) ease-out,
+    box-shadow var(--nm-press-time) ease-out;
+}
+
+/* --- 背景が透明な要素：影を出すと浮いて見えるため縮みだけで表現 --- */
+.toggle__btn:active,
+.input-row__remove:active {
+  transform: scale(0.94);
+  transition: transform var(--nm-press-time) ease-out;
+}
+
+/* 高コントラストでは影で輪郭を作れないため，枠線を残したまま縮みだけ効かせる */
+[data-color="high-contrast"] .btn--ghost:active:not(:disabled),
+[data-color="high-contrast"] .tool-btn:active:not(:disabled),
+[data-color="high-contrast"] .nav-link:active {
+  box-shadow: none;
+  background: var(--nm-surface-sunken);
+}
+
+/* 動きが苦手なユーザーには位置の変化を与えず，沈みの影だけで押下を伝える */
+@media (prefers-reduced-motion: reduce) {
+  .btn--ghost:active:not(:disabled),
+  .tool-btn:active:not(:disabled),
+  .nav-link:active,
+  .btn--primary:active:not(:disabled),
+  .toggle__btn:active,
+  .input-row__remove:active {
+    transform: none;
   }
 }
