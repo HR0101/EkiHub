@@ -44,8 +44,8 @@ export const zh: Messages = {
       mid: "稍微重视",
       high: "重视",
     },
-    submit: "计算中心车站",
-    computing: "计算中…",
+    submit: "搜索中心车站",
+    computing: "搜索中…",
     stationsError: "无法载入车站数据，请重新载入页面。",
   },
 
@@ -53,15 +53,15 @@ export const zh: Messages = {
     ariaLabel: "操作步骤",
     origins: "最近车站",
     originsHint: "请输入两个以上参加者的最近车站。",
-    compute: "计算",
-    computeHint: "车站已齐全，请点击「计算中心车站」。",
+    compute: "搜索",
+    computeHint: "车站已齐全，请点击「搜索中心车站」。",
     tune: "调整",
     tuneHint: "更改候选范围或优先事项，可重新选择结果。",
   },
 
   result: {
     emptyLine1: "输入两个以上的车站后，",
-    emptyLine2: "请点击「计算」。",
+    emptyLine2: "请点击「搜索」。",
     emptyTitle: "为大家找出中心车站",
     emptyLead: "根据全员的移动时间与票价，推荐容易集合的车站。",
     emptyPoint1: "抑制移动时间的差距，避免某个人特别远",
@@ -148,8 +148,8 @@ export const zh: Messages = {
 
   history: {
     button: "历史记录",
-    dialogLabel: "计算历史",
-    empty: "计算后会在此保留记录。",
+    dialogLabel: "搜索历史",
+    empty: "搜索后会在此保留记录。",
     addFavorite: "加入收藏",
     removeFavorite: "取消收藏",
     remove: "删除此记录",

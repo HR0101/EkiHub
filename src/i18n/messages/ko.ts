@@ -44,8 +44,8 @@ export const ko: Messages = {
       mid: "조금 중시",
       high: "중시",
     },
-    submit: "중심역 계산하기",
-    computing: "계산 중…",
+    submit: "중심역 검색하기",
+    computing: "검색 중…",
     stationsError: "역 데이터를 불러오지 못했습니다. 페이지를 새로고침해 주세요.",
   },
 
@@ -53,15 +53,15 @@ export const ko: Messages = {
     ariaLabel: "이용 순서",
     origins: "가까운 역",
     originsHint: "모이는 사람 각자의 가까운 역을 2개 이상 입력해 주세요.",
-    compute: "계산",
-    computeHint: "역이 모두 입력되었습니다. “중심역 계산하기”를 눌러 주세요.",
+    compute: "검색",
+    computeHint: "역이 모두 입력되었습니다. “중심역 검색하기”를 눌러 주세요.",
     tune: "조정",
     tuneHint: "후보 범위나 중시할 점을 바꾸면 결과를 다시 고를 수 있습니다.",
   },
 
   result: {
     emptyLine1: "역을 2개 이상 입력한 뒤",
-    emptyLine2: "“계산하기”를 눌러 주세요.",
+    emptyLine2: "“검색하기”를 눌러 주세요.",
     emptyTitle: "모두의 중심역을 찾아 드립니다",
     emptyLead: "전원의 이동 시간과 요금을 바탕으로 모이기 좋은 역을 제안합니다.",
     emptyPoint1: "이동 시간의 편차를 줄여, 혼자만 멀어지지 않게 합니다",
@@ -148,8 +148,8 @@ export const ko: Messages = {
 
   history: {
     button: "기록",
-    dialogLabel: "계산 기록",
-    empty: "계산하면 여기에 기록이 남습니다.",
+    dialogLabel: "검색 기록",
+    empty: "검색하면 여기에 기록이 남습니다.",
     addFavorite: "즐겨찾기에 추가",
     removeFavorite: "즐겨찾기에서 제거",
     remove: "이 기록 삭제",

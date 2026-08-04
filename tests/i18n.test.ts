@@ -35,7 +35,7 @@ describe("辞書", () => {
 
 describe("translate", () => {
   it("キーに対応する文言を返す", () => {
-    expect(translate("ja", "form.submit")).toBe("中心駅を算出する");
+    expect(translate("ja", "form.submit")).toBe("中心駅を検索する");
     expect(translate("en", "form.submit")).toBe("Find the midpoint station");
   });
 

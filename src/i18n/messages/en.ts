@@ -45,7 +45,7 @@ export const en: Messages = {
       high: "A lot",
     },
     submit: "Find the midpoint station",
-    computing: "Calculating…",
+    computing: "Searching…",
     stationsError: "Could not load station data. Please reload the page.",
   },
 
@@ -53,7 +53,7 @@ export const en: Messages = {
     ariaLabel: "Steps",
     origins: "Stations",
     originsHint: "Enter at least two nearest stations, one per person.",
-    compute: "Calculate",
+    compute: "Search",
     computeHint: "Stations are ready. Press “Find the midpoint station”.",
     tune: "Adjust",
     tuneHint: "Change the filter or priorities to pick a different result.",
@@ -61,7 +61,7 @@ export const en: Messages = {
 
   result: {
     emptyLine1: "Enter at least two stations,",
-    emptyLine2: "then press Calculate.",
+    emptyLine2: "then press Search.",
     emptyTitle: "Find where everyone should meet",
     emptyLead: "We suggest a station based on everyone's travel time and fare.",
     emptyPoint1: "Keeps the travel time even, so nobody is left far away",
@@ -148,8 +148,8 @@ export const en: Messages = {
 
   history: {
     button: "History",
-    dialogLabel: "Calculation history",
-    empty: "Your calculations will appear here.",
+    dialogLabel: "Search history",
+    empty: "Your searches will appear here.",
     addFavorite: "Add to favourites",
     removeFavorite: "Remove from favourites",
     remove: "Delete this entry",

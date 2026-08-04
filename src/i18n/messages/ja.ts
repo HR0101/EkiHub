@@ -48,8 +48,8 @@ export const ja = {
       mid: "やや重視",
       high: "重視",
     },
-    submit: "中心駅を算出する",
-    computing: "算出中…",
+    submit: "中心駅を検索する",
+    computing: "検索中…",
     stationsError: "駅データを読み込めませんでした。ページを再読み込みしてください。",
   },
 
@@ -57,15 +57,15 @@ export const ja = {
     ariaLabel: "操作の手順",
     origins: "最寄駅",
     originsHint: "集まる人それぞれの最寄駅を、2駅以上入力してください。",
-    compute: "算出",
-    computeHint: "駅が揃いました。「中心駅を算出する」を押してください。",
+    compute: "検索",
+    computeHint: "駅が揃いました。「中心駅を検索する」を押してください。",
     tune: "調整",
     tuneHint: "候補の絞り込みや重視ポイントを変えると、結果を選び直せます。",
   },
 
   result: {
     emptyLine1: "最寄駅を2駅以上入力して",
-    emptyLine2: "「算出する」を押してください。",
+    emptyLine2: "「検索する」を押してください。",
     emptyTitle: "みんなの中心駅を見つけます",
     emptyLead: "全員の移動時間と運賃から、集まりやすい駅を提案します。",
     emptyPoint1: "遠い人が出ないよう、移動時間のばらつきを抑えます",
@@ -152,8 +152,8 @@ export const ja = {
 
   history: {
     button: "履歴",
-    dialogLabel: "算出履歴",
-    empty: "算出するとここに履歴が残ります。",
+    dialogLabel: "検索履歴",
+    empty: "検索するとここに履歴が残ります。",
     addFavorite: "お気に入りに追加",
     removeFavorite: "お気に入りから外す",
     remove: "この履歴を削除",

@@ -48,7 +48,7 @@ export function HowToEn() {
         </li>
       </ul>
 
-      <h3>4. Calculate</h3>
+      <h3>4. Search</h3>
       <p>
         Press “Find the midpoint station”. The suggestion appears on the right,
         along with travel time from each station and a map of the relative
