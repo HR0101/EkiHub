@@ -13,22 +13,22 @@
    =================================================================== */
 :root {
   /* ---- ブランドカラー：入れ替えるならこの5行 ---- */
-  --brand-accent: #0284c7;         /* 主アクセント（水色） */
-  --brand-accent-strong: #0369a1;  /* ホバー・押下の一段濃い色 */
-  --brand-accent-support: #0e7490; /* 補助（達成表示など） */
-  --brand-accent-wash: #e8f4fb;    /* 選択中・強調の淡い面 */
-  --brand-tint: #dbecf8;           /* 背景上端の色 */
+  --brand-accent: #22aee0;         /* 主アクセント（澄んだ水色。明るいが彩度は落とさない） */
+  --brand-accent-strong: #0d8fbf;  /* ホバー・押下の一段濃い色 */
+  --brand-accent-support: #f2699f; /* 補助（鮮やかなピンク。差し色に使う） */
+  --brand-accent-wash: #e0f5fd;    /* 選択中・強調の淡い面 */
+  --brand-tint: #d2eefb;           /* 背景上端の色 */
 
   /* ---- 地の色：明るさのトーンを決める ---- */
-  --brand-page: #f3f7fa;    /* ページ背景 */
+  --brand-page: #f2fbfe;    /* ページ背景（うっすら水色を残す） */
   --brand-surface: #ffffff; /* 面 */
-  --brand-sunken: #f6fafc;  /* 一段沈んだ面 */
-  --brand-line: #d8e0e7;    /* 面の輪郭・区切り線 */
-  --brand-line-strong: #c3cfd8;
-  --brand-ink: #1c2733;     /* 本文 */
-  --brand-ink-sub: #56646f;
-  --brand-ink-faint: #8593a0;
-  --brand-danger: #c62828;
+  --brand-sunken: #f3fafe;  /* 一段沈んだ面 */
+  --brand-line: #d9eaf3;    /* 面の輪郭・区切り線 */
+  --brand-line-strong: #bcd9e6;
+  --brand-ink: #26343f;     /* 本文（真っ黒にせず、青みのグレーで和らげる） */
+  --brand-ink-sub: #5f727e;
+  --brand-ink-faint: #94a7b3;
+  --brand-danger: #f2607a;
 }
 
 :root {
@@ -56,8 +56,8 @@
   --shadow-ink: var(--brand-ink);
   --shadow-lg: 0 8px 24px color-mix(in srgb, var(--shadow-ink) 10%, transparent);
 
-  --radius: 10px;
-  --radius-sm: 6px;
+  --radius: 14px;
+  --radius-sm: 9px;
   --radius-pill: 999px;      /* 主要ボタンの角丸 */
   --transition: 0.18s ease;
 
@@ -1712,25 +1712,26 @@ body {
    ここのセレクタと対応が崩れないよう両方を揃えて変更すること. */
 [data-mode="dark"] {
   /* ---- 暗い側のブランドカラー：入れ替えるならこの5行 ---- */
-  --brand-accent: #38bdf8;
-  --brand-accent-strong: #0ea5e9;
-  --brand-accent-support: #22d3ee;
-  --brand-accent-wash: color-mix(in srgb, var(--brand-accent) 16%, transparent);
-  --brand-tint: #141f2a;
+  --brand-accent: #4fd0f5;
+  --brand-accent-strong: #22b6e4;
+  --brand-accent-support: #ff8ec0;
+  --brand-accent-wash: color-mix(in srgb, var(--brand-accent) 18%, transparent);
+  --brand-tint: #1a2530;
 
-  /* ---- 地の色 ---- */
-  --brand-page: #0f1620;
-  --brand-surface: #161e28;
-  --brand-sunken: #121a23;
-  --brand-line: #2a343f;
-  --brand-line-strong: #39454f;
-  --brand-ink: #e7edf2;
-  --brand-ink-sub: #98a6b2;
-  --brand-ink-faint: #6d7c88;
+  /* ---- 地の色（真っ黒にせず、少し青みを残して柔らかくする） ---- */
+  --brand-page: #171f28;
+  --brand-surface: #1e2832;
+  --brand-sunken: #1a232c;
+  --brand-line: #313d49;
+  --brand-line-strong: #42505d;
+  --brand-ink: #e9eff4;
+  --brand-ink-sub: #a2b0bb;
+  --brand-ink-faint: #78868f;
+  --brand-danger: #ff8199;
 
   /* 暗い面では影を黒で落とす */
   --shadow-ink: #000000;
-  --shadow-lg: 0 8px 24px color-mix(in srgb, var(--shadow-ink) 45%, transparent);
+  --shadow-lg: 0 8px 24px color-mix(in srgb, var(--shadow-ink) 40%, transparent);
 }
 
 [data-mode="dark"] .leaflet-container {
