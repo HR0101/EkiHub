@@ -8,7 +8,19 @@ import type { CenterResult, RankingEntry } from "@/types/ekihub";
 interface Props {
   result: CenterResult | null;
   station: RankingEntry | null;
+  /** 空の状態から例をすぐ試せるようにする */
+  onQuickStart: (origins: string[]) => void;
 }
+
+/**
+ * 空のときに出す試し打ち用の組み合わせ。
+ * どれも駅マスタに必ずある主要駅から選んでいる。
+ */
+const QUICK_STARTS: string[][] = [
+  ["新宿", "横浜"],
+  ["渋谷", "大宮"],
+  ["東京", "川崎", "船橋"],
+];
 
 /** 円マーク付きの金額。0 円のときは「—」 */
 function formatYen(value: number): string {
@@ -26,7 +38,7 @@ function routingSourceKey(
 }
 
 /** 提案された中心駅（またはランキングから選んだ候補駅）を表示する */
-export function ResultCard({ result, station }: Props) {
+export function ResultCard({ result, station, onQuickStart }: Props) {
   const { t } = useTranslation();
 
   /** 駅の見出し行（読みがな・規模） */
@@ -41,14 +53,43 @@ export function ResultCard({ result, station }: Props) {
     return parts.join(" ・");
   }
 
+  // 空の状態は「何ができるか」を伝えて、そのまま試せる場にしている
   if (!result || !station) {
     return (
       <div className="result-card is-empty">
         <div className="result-card__empty">
-          <div className="result-card__icon">🗾</div>
-          <p>
+          <div className="result-card__icon" aria-hidden="true">
+            🗾
+          </div>
+          <h3 className="result-card__empty-title">{t("result.emptyTitle")}</h3>
+          <p className="result-card__empty-lead">{t("result.emptyLead")}</p>
+
+          <ul className="result-card__points">
+            <li>{t("result.emptyPoint1")}</li>
+            <li>{t("result.emptyPoint2")}</li>
+            <li>{t("result.emptyPoint3")}</li>
+          </ul>
+
+          <div className="quick-start">
+            <span className="quick-start__label">
+              {t("result.quickStartLabel")}
+            </span>
+            <div className="quick-start__items">
+              {QUICK_STARTS.map((origins) => (
+                <button
+                  key={origins.join("-")}
+                  type="button"
+                  className="tool-btn"
+                  onClick={() => onQuickStart(origins)}
+                >
+                  {origins.join(" × ")}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <p className="result-card__empty-hint">
             {t("result.emptyLine1")}
-            <br />
             {t("result.emptyLine2")}
           </p>
         </div>

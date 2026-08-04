@@ -2601,3 +2601,82 @@ body {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+/* ===================================================================
+   結果カードの空状態
+   -------------------------------------------------------------------
+   まだ何も算出していない画面。何ができるかを伝えたうえで、
+   例からそのまま試せるようにしている。
+   =================================================================== */
+.result-card__empty-title {
+  margin-top: 14px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.result-card__empty-lead {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: var(--text-sub);
+  line-height: 1.7;
+}
+
+.result-card__points {
+  margin: 18px auto 0;
+  padding: 0;
+  max-width: 30rem;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  text-align: left;
+}
+
+.result-card__points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--nm-surface-sunken);
+  font-size: 0.84rem;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+
+/* 行頭の点はアクセント色。中身の文字と揃うよう少し下げる */
+.result-card__points li::before {
+  content: "";
+  flex: 0 0 6px;
+  height: 6px;
+  margin-top: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.quick-start {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-soft);
+}
+
+.quick-start__label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-sub);
+}
+
+.quick-start__items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.result-card__empty-hint {
+  margin-top: 16px;
+  font-size: 0.76rem;
+  color: var(--text-faint);
+}

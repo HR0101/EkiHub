@@ -88,6 +88,15 @@ export function HomeView() {
   // 共有リンクで開かれた場合は条件を復元してそのまま算出する
   useShareParams(handleSubmit);
 
+  /** 例の組み合わせを入力欄へ流し込み、そのまま算出する */
+  const handleQuickStart = useCallback(
+    (origins: string[]) => {
+      setRows(origins.map((name) => ({ name, people: 1 })));
+      handleSubmit();
+    },
+    [setRows, handleSubmit]
+  );
+
   return (
     <>
       <Toolbar
@@ -120,7 +129,11 @@ export function HomeView() {
           className="result result--main"
           aria-label={t("result.eyebrowBest")}
         >
-          <ResultCard result={result} station={currentStation} />
+          <ResultCard
+            result={result}
+            station={currentStation}
+            onQuickStart={handleQuickStart}
+          />
 
           {currentStation && (
             <TravelList travelTimes={currentStation.travelTimes} />

@@ -62,6 +62,12 @@ export const en: Messages = {
   result: {
     emptyLine1: "Enter at least two stations,",
     emptyLine2: "then press Calculate.",
+    emptyTitle: "Find where everyone should meet",
+    emptyLead: "We suggest a station based on everyone's travel time and fare.",
+    emptyPoint1: "Keeps the travel time even, so nobody is left far away",
+    emptyPoint2: "Shows estimated fares and whether a direct train exists",
+    emptyPoint3: "Finds places to gather around the chosen station",
+    quickStartLabel: "Try an example",
     eyebrowBest: "Suggested midpoint station",
     eyebrowSelected: "Selected candidate",
     majorStation: "Major terminal",

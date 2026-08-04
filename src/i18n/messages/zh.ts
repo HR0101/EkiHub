@@ -62,6 +62,12 @@ export const zh: Messages = {
   result: {
     emptyLine1: "输入两个以上的车站后，",
     emptyLine2: "请点击「计算」。",
+    emptyTitle: "为大家找出中心车站",
+    emptyLead: "根据全员的移动时间与票价，推荐容易集合的车站。",
+    emptyPoint1: "抑制移动时间的差距，避免某个人特别远",
+    emptyPoint2: "显示票价估算，以及能否直达",
+    emptyPoint3: "可在选定的车站周边寻找集合地点",
+    quickStartLabel: "用示例试试",
     eyebrowBest: "推荐的中心车站",
     eyebrowSelected: "已选择的候选车站",
     majorStation: "主要枢纽车站",

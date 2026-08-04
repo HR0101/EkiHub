@@ -66,6 +66,12 @@ export const ja = {
   result: {
     emptyLine1: "最寄駅を2駅以上入力して",
     emptyLine2: "「算出する」を押してください。",
+    emptyTitle: "みんなの中心駅を見つけます",
+    emptyLead: "全員の移動時間と運賃から、集まりやすい駅を提案します。",
+    emptyPoint1: "遠い人が出ないよう、移動時間のばらつきを抑えます",
+    emptyPoint2: "運賃の概算と、直通で行けるかどうかも表示します",
+    emptyPoint3: "決まった駅の周辺から、集まれる場所を探せます",
+    quickStartLabel: "例で試す",
     eyebrowBest: "提案された中心駅",
     eyebrowSelected: "選択中の候補駅",
     majorStation: "主要ターミナル駅",

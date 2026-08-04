@@ -62,6 +62,12 @@ export const ko: Messages = {
   result: {
     emptyLine1: "역을 2개 이상 입력한 뒤",
     emptyLine2: "“계산하기”를 눌러 주세요.",
+    emptyTitle: "모두의 중심역을 찾아 드립니다",
+    emptyLead: "전원의 이동 시간과 요금을 바탕으로 모이기 좋은 역을 제안합니다.",
+    emptyPoint1: "이동 시간의 편차를 줄여, 혼자만 멀어지지 않게 합니다",
+    emptyPoint2: "요금 추정과 직통 여부도 함께 보여 줍니다",
+    emptyPoint3: "정해진 역 주변에서 모일 만한 장소를 찾을 수 있습니다",
+    quickStartLabel: "예시로 시험해 보기",
     eyebrowBest: "제안된 중심역",
     eyebrowSelected: "선택한 후보역",
     majorStation: "주요 터미널역",
