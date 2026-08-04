@@ -982,7 +982,9 @@ body {
 .pin--center {
   width: 38px;
   height: 38px;
-  background: linear-gradient(135deg, var(--accent-3), #2bbf9e);
+  /* 提案された駅は主色で塗る。補助色や固定の緑を混ぜると
+     テーマを変えたときに1つだけ色が取り残される */
+  background: var(--accent);
 }
 
 /* ===== 所要時間リスト ===== */
