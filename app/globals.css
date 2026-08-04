@@ -337,7 +337,7 @@ body {
 }
 
 .input-row input.is-valid {
-  border-color: color-mix(in srgb, var(--accent-3) 60%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 .input-row input.is-invalid {
@@ -1081,13 +1081,13 @@ body {
 
 /* 現在カードに表示中の候補をハイライト */
 .ranking-item.is-selected {
-  border-color: var(--accent-3);
-  background: color-mix(in srgb, var(--accent-3) 12%, transparent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .ranking-item.is-selected .ranking-item__rank {
-  background: color-mix(in srgb, var(--accent-3) 22%, transparent);
-  color: var(--accent-3);
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--accent);
 }
 
 .ranking-item__rank {
@@ -2422,7 +2422,7 @@ body {
 }
 
 .sg-step.is-done .sg-step__num {
-  background: var(--accent-3);
+  background: var(--accent);
   box-shadow: none;
   color: #ffffff;
 }
