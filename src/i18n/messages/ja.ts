@@ -164,7 +164,7 @@ export const ja = {
       auto: "端末に合わせる",
     },
     colors: {
-      default: "みずいろ",
+      default: "そら",
       sakura: "さくら",
       forest: "もり",
       ocean: "うみ",
