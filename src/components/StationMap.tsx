@@ -13,6 +13,7 @@ import {
 } from "react-leaflet";
 
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { readThemeColors } from "@/lib/cssVar";
 import type { CenterResult, RankingEntry } from "@/types/ekihub";
 
 interface Props {
@@ -35,9 +36,8 @@ const DEFAULT_CENTER: [number, number] = [35.681382, 139.766084];
 const DEFAULT_ZOOM = 10;
 const MAX_FIT_ZOOM = 14;
 
-/** 入力駅と候補駅を結ぶ点線 */
-const LINK_LINE_STYLE = {
-  color: "#0284c7",
+/** 入力駅と候補駅を結ぶ点線。色は CSS 変数から取る（テーマに追従させるため） */
+const LINK_LINE_SHAPE = {
   weight: 1.5,
   opacity: 0.4,
   dashArray: "4 6",
@@ -73,6 +73,8 @@ function FitBounds({ points }: { points: [number, number][] }) {
 /** 位置関係マップ。入力駅・候補駅・重心を1枚に重ねる */
 export function StationMap({ result, station }: Props) {
   const { t } = useTranslation();
+  // 色は globals.css の :root が唯一の定義。ここでは読むだけ
+  const colors = readThemeColors();
   const center = station ?? result?.best ?? null;
 
   const points = useMemo<[number, number][]>(() => {
@@ -124,7 +126,7 @@ export function StationMap({ result, station }: Props) {
                 [origin.lat, origin.lng],
                 [center.lat, center.lng],
               ]}
-              pathOptions={LINK_LINE_STYLE}
+              pathOptions={{ ...LINK_LINE_SHAPE, color: colors.accent }}
             />
           </div>
         ))}
@@ -151,8 +153,8 @@ export function StationMap({ result, station }: Props) {
           center={[result.centroid.lat, result.centroid.lng]}
           radius={5}
           pathOptions={{
-            color: "#0e7490",
-            fillColor: "#0e7490",
+            color: colors.accentSupport,
+            fillColor: colors.accentSupport,
             fillOpacity: 0.6,
             weight: 1,
           }}

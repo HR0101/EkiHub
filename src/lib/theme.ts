@@ -7,6 +7,8 @@
  * どちらかを変えるときは必ず両方を揃えること。
  */
 
+import { cssVar } from "@/lib/cssVar";
+
 export const MODE_STORAGE_KEY = "ekihub-mode";
 export const COLOR_STORAGE_KEY = "ekihub-color";
 
@@ -27,10 +29,14 @@ export type ThemeColor = (typeof THEME_COLORS)[number];
 export const DEFAULT_MODE: ThemeMode = "light";
 export const DEFAULT_COLOR: ThemeColor = "default";
 
-/** ブラウザUI（モバイルのアドレスバー等）の色。globals.css の --bg-base と揃える */
-const THEME_COLOR_LIGHT = "#f3f7fa";
-const THEME_COLOR_DARK = "#0f1620";
-const THEME_COLOR_HIGH_CONTRAST = "#000000";
+/**
+ * ブラウザUI（モバイルのアドレスバー等）の色。
+ * data 属性を当てた直後の --bg-base を読むので、
+ * globals.css 側で背景色を変えれば自動で追従する。
+ */
+function currentThemeColor(): string {
+  return cssVar("--bg-base", "#f3f7fa");
+}
 
 /** auto を実際の配色へ解決する */
 export function resolveMode(mode: ThemeMode): "light" | "dark" {
@@ -57,16 +63,8 @@ export function applyTheme(mode: ThemeMode, color: ThemeColor): void {
   root.style.colorScheme = isDarkSurface ? "dark" : "light";
 
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) {
-    meta.setAttribute(
-      "content",
-      color === "high-contrast"
-        ? THEME_COLOR_HIGH_CONTRAST
-        : effective === "dark"
-          ? THEME_COLOR_DARK
-          : THEME_COLOR_LIGHT
-    );
-  }
+  // data 属性を当てたあとに読むので、そのテーマの背景色がそのまま入る
+  if (meta) meta.setAttribute("content", currentThemeColor());
 }
 
 /** localStorage から許可値だけを読む（使えない環境では既定値） */

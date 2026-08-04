@@ -1,38 +1,73 @@
 /* ===== EkiHub スタイル（白基調・フラット・情報の並びを最優先） ===== */
 
+/* ===================================================================
+   配色の起点
+   -------------------------------------------------------------------
+   ここ（--brand-*）だけを書き換えれば、画面全体の色が変わる。
+   個々の要素は下の「用途別トークン」を参照し、色そのものは書かない。
+   半透明が要る場面も rgba を直書きせず、color-mix() で
+   --accent などから作ること（アクセントを変えたときに取り残されるため）。
+
+   TypeScript 側（地図のピン、ブラウザUIの色）は
+   src/lib/cssVar.ts でこの変数を読むので、二重に定義しなくてよい。
+   =================================================================== */
 :root {
-  /* ===== カラートークン =====
-     白い面 / ごく薄い水色の背景 / 濃い水色のアクセント.
-     面の立体は影ではなく 1px の輪郭で表す（--nm-* 参照）. */
-  --bg-base: #f3f7fa;        /* ページ背景 */
-  --bg-panel: #ffffff;       /* 面。半透明は使わず輪郭で区切る */
-  --bg-panel-solid: #ffffff;
-  --bg-input: #ffffff;
-  --border-soft: #d8e0e7;    /* 面の輪郭・区切り線 */
-  --border-strong: #c3cfd8;  /* 押し出したい輪郭（選択中の枠など） */
-  --border-focus: #0284c7;
-  --text-main: #1c2733;
-  --text-sub: #56646f;
-  --text-faint: #8593a0;
-  --accent: #0284c7;         /* 主アクセント（水色） */
-  --accent-2: #0369a1;       /* ホバー・押下の濃い水色 */
-  --accent-3: #0e7490;       /* 補助（青緑寄り。達成表示などに使う） */
-  --accent-soft: #e8f4fb;    /* 選択中・強調の淡い面 */
-  --danger: #c62828;
-  --shadow-lg: 0 8px 24px rgba(28, 39, 51, 0.10);
+  /* ---- ブランドカラー：入れ替えるならこの5行 ---- */
+  --brand-accent: #0284c7;         /* 主アクセント（水色） */
+  --brand-accent-strong: #0369a1;  /* ホバー・押下の一段濃い色 */
+  --brand-accent-support: #0e7490; /* 補助（達成表示など） */
+  --brand-accent-wash: #e8f4fb;    /* 選択中・強調の淡い面 */
+  --brand-tint: #dbecf8;           /* 背景上端の色 */
+
+  /* ---- 地の色：明るさのトーンを決める ---- */
+  --brand-page: #f3f7fa;    /* ページ背景 */
+  --brand-surface: #ffffff; /* 面 */
+  --brand-sunken: #f6fafc;  /* 一段沈んだ面 */
+  --brand-line: #d8e0e7;    /* 面の輪郭・区切り線 */
+  --brand-line-strong: #c3cfd8;
+  --brand-ink: #1c2733;     /* 本文 */
+  --brand-ink-sub: #56646f;
+  --brand-ink-faint: #8593a0;
+  --brand-danger: #c62828;
+}
+
+:root {
+  /* ===== 用途別トークン =====
+     要素側はこちらを参照する。値は上のブランドカラーから引くだけで、
+     ここに新しい色を書き足さないこと. */
+  --bg-base: var(--brand-page);
+  --bg-panel: var(--brand-surface);
+  --bg-panel-solid: var(--brand-surface);
+  --bg-input: var(--brand-surface);
+  --border-soft: var(--brand-line);
+  --border-strong: var(--brand-line-strong);
+  --border-focus: var(--brand-accent);
+  --text-main: var(--brand-ink);
+  --text-sub: var(--brand-ink-sub);
+  --text-faint: var(--brand-ink-faint);
+  --accent: var(--brand-accent);
+  --accent-2: var(--brand-accent-strong);
+  --accent-3: var(--brand-accent-support);
+  --accent-soft: var(--brand-accent-wash);
+  --danger: var(--brand-danger);
+  --aurora-tint: var(--brand-tint);
+
+  /* 影に混ぜる色。地の明るさに合わせて変える */
+  --shadow-ink: var(--brand-ink);
+  --shadow-lg: 0 8px 24px color-mix(in srgb, var(--shadow-ink) 10%, transparent);
+
   --radius: 10px;
   --radius-sm: 6px;
   --radius-pill: 999px;      /* 主要ボタンの角丸 */
   --transition: 0.18s ease;
-  --aurora-tint: #dbecf8;    /* 背景上端の色（.aurora が参照） */
 
   /* ===== 面の表現 =====
-     もとはネオモーフィズム（影による浮き沈み）だったが，
-     情報量が増えて画面が読みづらくなったため 1px の輪郭へ置き換えた.
-     変数名は各所から参照されているので維持し，中身だけを差し替えている.
+     もとはネオモーフィズム（影による浮き沈み）だったが、
+     情報量が増えて画面が読みづらくなったため 1px の輪郭へ置き換えた。
+     変数名は各所から参照されているので維持し、中身だけを差し替えている。
      新しく面を作るときも影を足さず、この変数を参照すること. */
-  --nm-surface: #ffffff;         /* 通常の面 */
-  --nm-surface-sunken: #f6fafc; /* 一段沈んだ面（溝・トグルの受け皿など） */
+  --nm-surface: var(--brand-surface);
+  --nm-surface-sunken: var(--brand-sunken);
   --nm-light: transparent;       /* 旧ハイライト（フラット化で不使用） */
   --nm-dark: transparent;        /* 旧影（フラット化で不使用） */
   --nm-raised: 0 0 0 1px var(--border-soft);
@@ -41,7 +76,7 @@
   --nm-sunken-xs: 0 0 0 1px var(--border-soft);
 
   /* ===== 押し込み（プレス）演出 =====
-     フラットなので沈みは輪郭の色が締まることで表す.
+     フラットなので沈みは輪郭の色が締まることで表す。
      押下は --nm-press-time で速く、戻りは --transition でゆっくり. */
   --nm-press-offset: 1px;   /* 押下時に下へ沈む距離 */
   --nm-press-scale: 0.995;  /* 押下時の縮み率 */
@@ -268,7 +303,7 @@ body {
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--accent);
-  background: rgba(2, 132, 199, 0.12);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
   border-radius: 50%;
 }
 
@@ -298,11 +333,11 @@ body {
 .input-row input:focus {
   outline: none;
   border-color: var(--border-focus);
-  box-shadow: var(--nm-sunken), 0 0 0 3px rgba(2, 132, 199, 0.28);
+  box-shadow: var(--nm-sunken), 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent);
 }
 
 .input-row input.is-valid {
-  border-color: rgba(14, 116, 144, 0.6);
+  border-color: color-mix(in srgb, var(--accent-3) 60%, transparent);
 }
 
 .input-row input.is-invalid {
@@ -323,7 +358,7 @@ body {
 
 .input-row__remove:hover {
   color: var(--danger);
-  background: rgba(198, 40, 40, 0.1);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
 }
 
 /* オートコンプリート候補 */
@@ -358,7 +393,7 @@ body {
 
 .suggest__item:hover,
 .suggest__item.is-active {
-  background: rgba(2, 132, 199, 0.16);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
 .suggest__main {
@@ -382,7 +417,7 @@ body {
 }
 
 .suggest__hl {
-  background: rgba(2, 132, 199, 0.28);
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
   color: inherit;
   border-radius: 2px;
   font-style: normal;
@@ -590,7 +625,7 @@ body {
   border-radius: 50%;
   background: #fff;
   border: 3px solid var(--accent);
-  box-shadow: 0 1px 4px rgba(28, 39, 51, 0.22);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--shadow-ink) 22%, transparent);
   transition: transform var(--transition);
 }
 
@@ -604,7 +639,7 @@ body {
   border-radius: 50%;
   background: #fff;
   border: 3px solid var(--accent);
-  box-shadow: 0 1px 4px rgba(28, 39, 51, 0.22);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--shadow-ink) 22%, transparent);
 }
 
 .weight__labels {
@@ -706,7 +741,7 @@ body {
   inset: 0 0 6px 0;
   border-radius: 10px 15px 8px 8px;
   background: linear-gradient(120deg, var(--accent), var(--accent-2));
-  box-shadow: 0 5px 14px rgba(2, 132, 199, 0.4);
+  box-shadow: 0 5px 14px color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 .train__window {
@@ -932,7 +967,7 @@ body {
   font-weight: 700;
   color: #fff;
   border: 2px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 1px 4px rgba(28, 39, 51, 0.28);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--shadow-ink) 28%, transparent);
 }
 
 .pin--origin {
@@ -1047,11 +1082,11 @@ body {
 /* 現在カードに表示中の候補をハイライト */
 .ranking-item.is-selected {
   border-color: var(--accent-3);
-  background: rgba(14, 116, 144, 0.12);
+  background: color-mix(in srgb, var(--accent-3) 12%, transparent);
 }
 
 .ranking-item.is-selected .ranking-item__rank {
-  background: rgba(14, 116, 144, 0.22);
+  background: color-mix(in srgb, var(--accent-3) 22%, transparent);
   color: var(--accent-3);
 }
 
@@ -1063,7 +1098,7 @@ body {
   border-radius: 50%;
   font-size: 0.8rem;
   font-weight: 700;
-  background: rgba(2, 132, 199, 0.18);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
   color: var(--accent-2);
 }
 
@@ -1133,15 +1168,15 @@ body {
 }
 
 .badge--direct {
-  background: rgba(14, 116, 144, 0.16);
+  background: color-mix(in srgb, var(--accent-3) 16%, transparent);
   color: var(--accent-3);
-  border: 1px solid rgba(14, 116, 144, 0.4);
+  border: 1px solid color-mix(in srgb, var(--accent-3) 40%, transparent);
 }
 
 .badge--transfer {
-  background: rgba(2, 132, 199, 0.16);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
   color: #b6c4ff;
-  border: 1px solid rgba(2, 132, 199, 0.4);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 .travel-item__fare {
@@ -1414,7 +1449,7 @@ body {
   height: 7px;
   border-radius: 50%;
   background: var(--accent-3);
-  box-shadow: 0 0 0 4px rgba(14, 116, 144, 0.12);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-3) 12%, transparent);
 }
 
 .train-info-card__title {
@@ -1468,19 +1503,19 @@ body {
   gap: 12px;
   margin-bottom: 12px;
   padding: 11px 12px;
-  border: 1px solid rgba(14, 116, 144, 0.22);
+  border: 1px solid color-mix(in srgb, var(--accent-3) 22%, transparent);
   border-radius: 12px;
-  background: rgba(14, 116, 144, 0.07);
+  background: color-mix(in srgb, var(--accent-3) 7%, transparent);
 }
 
 .train-info-card__summary.has-alert {
-  border-color: rgba(198, 40, 40, 0.28);
-  background: rgba(198, 40, 40, 0.08);
+  border-color: color-mix(in srgb, var(--danger) 28%, transparent);
+  background: color-mix(in srgb, var(--danger) 8%, transparent);
 }
 
 .train-info-card__summary.has-ended {
   border-color: var(--border-soft);
-  background: rgba(28, 39, 51, 0.07);
+  background: color-mix(in srgb, var(--shadow-ink) 7%, transparent);
 }
 
 .train-info-card__summary-main {
@@ -1528,9 +1563,9 @@ body {
 .train-info-card__badge {
   flex: 0 0 auto;
   padding: 2px 7px;
-  border: 1px solid rgba(14, 116, 144, 0.28);
+  border: 1px solid color-mix(in srgb, var(--accent-3) 28%, transparent);
   border-radius: 999px;
-  background: rgba(14, 116, 144, 0.08);
+  background: color-mix(in srgb, var(--accent-3) 8%, transparent);
   color: var(--accent-3);
   font-size: 0.65rem;
   font-weight: 700;
@@ -1538,14 +1573,14 @@ body {
 }
 
 .train-info-card__item.has-alert .train-info-card__badge {
-  border-color: rgba(198, 40, 40, 0.34);
-  background: rgba(198, 40, 40, 0.1);
+  border-color: color-mix(in srgb, var(--danger) 34%, transparent);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
   color: var(--danger);
 }
 
 .train-info-card__item.is-ended .train-info-card__badge {
   border-color: var(--border-soft);
-  background: rgba(28, 39, 51, 0.08);
+  background: color-mix(in srgb, var(--shadow-ink) 8%, transparent);
   color: var(--text-faint);
 }
 
@@ -1636,7 +1671,7 @@ body {
     max-height: calc(100dvh - 24px);
     overflow-y: auto;
     background: var(--bg-panel-solid);
-    box-shadow: 0 12px 40px rgba(28, 39, 51, 0.18);
+    box-shadow: 0 12px 40px color-mix(in srgb, var(--shadow-ink) 18%, transparent);
   }
 
   .train-info-card__close {
@@ -1676,25 +1711,26 @@ body {
    themeBoot.js は light のとき data-mode を付けない（= :root が既定）ので、
    ここのセレクタと対応が崩れないよう両方を揃えて変更すること. */
 [data-mode="dark"] {
-  --bg-base: #0f1620;
-  --bg-panel: #161e28;
-  --bg-panel-solid: #161e28;
-  --bg-input: #161e28;
-  --border-soft: #2a343f;
-  --border-strong: #39454f;
-  --border-focus: #38bdf8;
-  --text-main: #e7edf2;
-  --text-sub: #98a6b2;
-  --text-faint: #6d7c88;
-  --accent: #38bdf8;
-  --accent-2: #0ea5e9;
-  --accent-3: #22d3ee;
-  --accent-soft: rgba(56, 189, 248, 0.16);
-  --aurora-tint: #141f2a;
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.45);
+  /* ---- 暗い側のブランドカラー：入れ替えるならこの5行 ---- */
+  --brand-accent: #38bdf8;
+  --brand-accent-strong: #0ea5e9;
+  --brand-accent-support: #22d3ee;
+  --brand-accent-wash: color-mix(in srgb, var(--brand-accent) 16%, transparent);
+  --brand-tint: #141f2a;
 
-  --nm-surface: #161e28;
-  --nm-surface-sunken: #121a23;
+  /* ---- 地の色 ---- */
+  --brand-page: #0f1620;
+  --brand-surface: #161e28;
+  --brand-sunken: #121a23;
+  --brand-line: #2a343f;
+  --brand-line-strong: #39454f;
+  --brand-ink: #e7edf2;
+  --brand-ink-sub: #98a6b2;
+  --brand-ink-faint: #6d7c88;
+
+  /* 暗い面では影を黒で落とす */
+  --shadow-ink: #000000;
+  --shadow-lg: 0 8px 24px color-mix(in srgb, var(--shadow-ink) 45%, transparent);
 }
 
 [data-mode="dark"] .leaflet-container {
@@ -1718,52 +1754,47 @@ body {
 
 /* サクラ */
 [data-color="sakura"] {
-  --accent: #d6336c;
-  --accent-2: #ab2554;
-  --accent-3: #c2185b;
-  --accent-soft: #fdeef4;
-  --aurora-tint: #fbe4ee;
-  --border-focus: #d6336c;
+  --brand-accent: #d6336c;
+  --brand-accent-strong: #ab2554;
+  --brand-accent-support: #c2185b;
+  --brand-accent-wash: #fdeef4;
+  --brand-tint: #fbe4ee;
 }
 
 /* 森 */
 [data-color="forest"] {
-  --accent: #2f7d32;
-  --accent-2: #235f26;
-  --accent-3: #1b7a5a;
-  --accent-soft: #ecf5ec;
-  --aurora-tint: #e3f0e4;
-  --border-focus: #2f7d32;
+  --brand-accent: #2f7d32;
+  --brand-accent-strong: #235f26;
+  --brand-accent-support: #1b7a5a;
+  --brand-accent-wash: #ecf5ec;
+  --brand-tint: #e3f0e4;
 }
 
 /* 海 */
 [data-color="ocean"] {
-  --accent: #0b7285;
-  --accent-2: #085a69;
-  --accent-3: #11698c;
-  --accent-soft: #e8f4f7;
-  --aurora-tint: #ddeef3;
-  --border-focus: #0b7285;
+  --brand-accent: #0b7285;
+  --brand-accent-strong: #085a69;
+  --brand-accent-support: #11698c;
+  --brand-accent-wash: #e8f4f7;
+  --brand-tint: #ddeef3;
 }
 
 /* 夕焼け */
 [data-color="sunset"] {
-  --accent: #c2410c;
-  --accent-2: #9a340a;
-  --accent-3: #b45309;
-  --accent-soft: #fdf0e7;
-  --aurora-tint: #fbe7d8;
-  --border-focus: #c2410c;
+  --brand-accent: #c2410c;
+  --brand-accent-strong: #9a340a;
+  --brand-accent-support: #b45309;
+  --brand-accent-wash: #fdf0e7;
+  --brand-tint: #fbe7d8;
 }
 
 /* 紅葉 */
 [data-color="autumn"] {
-  --accent: #b4232a;
-  --accent-2: #8f1c22;
-  --accent-3: #a3541b;
-  --accent-soft: #fdeeee;
-  --aurora-tint: #fae2e2;
-  --border-focus: #b4232a;
+  --brand-accent: #b4232a;
+  --brand-accent-strong: #8f1c22;
+  --brand-accent-support: #a3541b;
+  --brand-accent-wash: #fdeeee;
+  --brand-tint: #fae2e2;
 }
 
 /* ===== ハイコントラスト（data-color="high-contrast"）弱視対応・WCAG AA 準拠 ===== */
@@ -2486,7 +2517,7 @@ body {
 
 .history__icon--remove:hover {
   color: var(--danger);
-  background: rgba(198, 40, 40, 0.1);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
 }
 
 /* ===================================================================
