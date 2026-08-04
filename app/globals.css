@@ -2793,3 +2793,26 @@ body {
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* ===================================================================
+   大きく出る文字だけ丸ゴシックにする
+   -------------------------------------------------------------------
+   本文まで丸くすると長文が読みづらくなるので、
+   見出し・駅名・指標の数値など「面積の大きい文字」に限って当てる。
+   =================================================================== */
+.hero__title,
+.hero__badge,
+.result-card__name,
+.result-card__empty-title,
+.metric__value,
+.panel__title,
+.result-card__eyebrow,
+.travel-list__title,
+.ranking__title,
+.fpanel__title,
+.travel-item__min,
+.ranking-item__rank,
+.input-row__index,
+.sg-step__num {
+  font-family: var(--font-rounded), "Noto Sans JP", system-ui, sans-serif;
+}

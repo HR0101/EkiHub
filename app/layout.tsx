@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Sans_JP } from "next/font/google";
+import { M_PLUS_Rounded_1c, Noto_Sans_JP } from "next/font/google";
 
 import { Providers } from "@/components/Providers";
 import { THEME_BOOT_SCRIPT } from "@/lib/theme";
@@ -12,6 +12,17 @@ import "./globals.css";
  * 本文フォント。next/font が自ホストするので、
  * Google Fonts への外部リクエストは発生しない（CSP を絞れる）。
  */
+/**
+ * 見出しや数字など、大きく出る文字だけに使う丸ゴシック。
+ * 本文まで丸くすると読みづらくなるので、適用先は CSS 側で絞っている。
+ */
+const roundedJp = M_PLUS_Rounded_1c({
+  subsets: ["latin"],
+  weight: ["700", "800"],
+  display: "swap",
+  variable: "--font-rounded",
+});
+
 const notoSansJp = Noto_Sans_JP({
   subsets: ["latin"],
   weight: ["400", "500", "700", "900"],
@@ -70,7 +81,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ja" className={notoSansJp.variable} suppressHydrationWarning>
+    <html lang="ja" className={`${notoSansJp.variable} ${roundedJp.variable}`} suppressHydrationWarning>
       <head>
         {/*
           保存済みテーマを描画前に当てる。React のマウントを待つと
