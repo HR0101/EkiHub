@@ -58,8 +58,8 @@
   --shadow-ink: var(--brand-ink);
   --shadow-lg: 0 8px 24px color-mix(in srgb, var(--shadow-ink) 10%, transparent);
 
-  --radius: 14px;
-  --radius-sm: 9px;
+  --radius: 18px;
+  --radius-sm: 12px;
   --radius-pill: 999px;      /* 主要ボタンの角丸 */
   --transition: 0.18s ease;
 
@@ -279,7 +279,7 @@ body {
   flex: 0 0 4px;
   align-self: stretch;
   min-height: 1.15em;
-  border-radius: 2px;
+  border-radius: var(--radius-pill);
   background: var(--accent);
 }
 
@@ -316,10 +316,10 @@ body {
 
 .input-row input {
   width: 100%;
-  padding: 12px 14px;
+  padding: 12px 16px;
   background: var(--nm-surface-sunken);
   border: 1px solid transparent;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   box-shadow: var(--nm-sunken);
   color: var(--text-main);
   font-size: 0.98rem;
@@ -459,6 +459,7 @@ body {
   width: 100%;
   margin-top: 14px;
   padding: 11px;
+  border-radius: var(--radius-pill);
   background: var(--nm-surface);
   border: none;
   box-shadow: var(--nm-raised-sm);
@@ -913,7 +914,7 @@ body {
 }
 
 .metric {
-  background: var(--nm-surface-sunken);
+  background: var(--accent-soft);
   border-radius: var(--radius-sm);
   box-shadow: var(--nm-sunken);
   padding: 16px 12px;
@@ -2206,7 +2207,7 @@ body {
   flex: 0 0 4px;
   align-self: stretch;
   min-height: 1.15em;
-  border-radius: 2px;
+  border-radius: var(--radius-pill);
   background: var(--accent);
 }
 
@@ -2763,4 +2764,32 @@ body {
   margin-top: 16px;
   font-size: 0.76rem;
   color: var(--text-faint);
+}
+
+/* ツールバーと補助のボタンも丸く揃える（形だけで印象を柔らかくする） */
+.tool-btn {
+  border-radius: var(--radius-pill);
+}
+
+/* 入力行の番号は少し大きくして、丸さを目立たせる */
+.input-row__index {
+  flex: 0 0 30px;
+  height: 30px;
+}
+
+/* 人数欄は幅が狭い。数値入力の上下ボタンが幅を食って数字が隠れるため、
+   ボタンを消して中央寄せにする（増減はキーボードでできる） */
+.input-row__people {
+  padding-left: 6px;
+  padding-right: 6px;
+  min-width: 58px;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.input-row__people::-webkit-outer-spin-button,
+.input-row__people::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
