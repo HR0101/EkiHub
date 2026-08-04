@@ -1797,6 +1797,56 @@ body {
   --brand-tint: #fae2e2;
 }
 
+
+/* ===================================================================
+   暗い面でのカラーバリエーション
+   -------------------------------------------------------------------
+   上のカラー定義は「白い面に文字として載る」前提の濃さなので、
+   暗い面にそのまま置くと沈んで読めない。
+   ダークのときだけ明るい側へ振り直す。
+   淡い面（--brand-accent-wash）も白のままだと暗い画面で浮くため、
+   アクセントから作った半透明に置き換える。
+   =================================================================== */
+[data-mode="dark"][data-color="sakura"] {
+  --brand-accent: #f472b6;
+  --brand-accent-strong: #ec4899;
+  --brand-accent-support: #fb7185;
+  --brand-accent-wash: color-mix(in srgb, var(--brand-accent) 16%, transparent);
+  --brand-tint: #241a20;
+}
+
+[data-mode="dark"][data-color="forest"] {
+  --brand-accent: #4ade80;
+  --brand-accent-strong: #22c55e;
+  --brand-accent-support: #34d399;
+  --brand-accent-wash: color-mix(in srgb, var(--brand-accent) 16%, transparent);
+  --brand-tint: #16241c;
+}
+
+[data-mode="dark"][data-color="ocean"] {
+  --brand-accent: #22d3ee;
+  --brand-accent-strong: #06b6d4;
+  --brand-accent-support: #67e8f9;
+  --brand-accent-wash: color-mix(in srgb, var(--brand-accent) 16%, transparent);
+  --brand-tint: #142329;
+}
+
+[data-mode="dark"][data-color="sunset"] {
+  --brand-accent: #fb923c;
+  --brand-accent-strong: #f97316;
+  --brand-accent-support: #fbbf24;
+  --brand-accent-wash: color-mix(in srgb, var(--brand-accent) 16%, transparent);
+  --brand-tint: #251c14;
+}
+
+[data-mode="dark"][data-color="autumn"] {
+  --brand-accent: #f87171;
+  --brand-accent-strong: #ef4444;
+  --brand-accent-support: #fb923c;
+  --brand-accent-wash: color-mix(in srgb, var(--brand-accent) 16%, transparent);
+  --brand-tint: #251818;
+}
+
 /* ===== ハイコントラスト（data-color="high-contrast"）弱視対応・WCAG AA 準拠 ===== */
 [data-color="high-contrast"] {
   --bg-base: #000000;
