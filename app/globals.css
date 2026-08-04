@@ -1760,6 +1760,10 @@ body {
   --brand-accent-support: #c2185b;
   --brand-accent-wash: #fdeef4;
   --brand-tint: #fbe4ee;
+  /* 地の色も色相へ寄せる（アクセントだけ変えると背景が取り残される） */
+  --brand-page: #fff4f8;
+  --brand-sunken: #fff7fa;
+  --brand-line: #f6d8e4;
 }
 
 /* 森 */
@@ -1769,6 +1773,10 @@ body {
   --brand-accent-support: #1b7a5a;
   --brand-accent-wash: #ecf5ec;
   --brand-tint: #e3f0e4;
+  /* 地の色も色相へ寄せる（アクセントだけ変えると背景が取り残される） */
+  --brand-page: #f0fdf4;
+  --brand-sunken: #f3fdf6;
+  --brand-line: #cbe9d5;
 }
 
 /* 海 */
@@ -1778,6 +1786,10 @@ body {
   --brand-accent-support: #11698c;
   --brand-accent-wash: #e8f4f7;
   --brand-tint: #ddeef3;
+  /* 地の色も色相へ寄せる（アクセントだけ変えると背景が取り残される） */
+  --brand-page: #ecfbfe;
+  --brand-sunken: #f0fcfe;
+  --brand-line: #c2e7f0;
 }
 
 /* 夕焼け */
@@ -1787,6 +1799,10 @@ body {
   --brand-accent-support: #b45309;
   --brand-accent-wash: #fdf0e7;
   --brand-tint: #fbe7d8;
+  /* 地の色も色相へ寄せる（アクセントだけ変えると背景が取り残される） */
+  --brand-page: #fff7ef;
+  --brand-sunken: #fff9f3;
+  --brand-line: #f7dccc;
 }
 
 /* 紅葉 */
@@ -1796,6 +1812,10 @@ body {
   --brand-accent-support: #a3541b;
   --brand-accent-wash: #fdeeee;
   --brand-tint: #fae2e2;
+  /* 地の色も色相へ寄せる（アクセントだけ変えると背景が取り残される） */
+  --brand-page: #fff4f3;
+  --brand-sunken: #fff7f6;
+  --brand-line: #f6d7d4;
 }
 
 
