@@ -18,6 +18,7 @@
   --brand-accent-support: #ff4d94; /* 補助（鮮やかなピンク。差し色に使う） */
   --brand-accent-wash: #d6f3ff;    /* 選択中・強調の淡い面 */
   --brand-tint: #c2ecff;           /* 背景上端の色 */
+  --brand-accent-complement: #ec3600; /* 補色。数値や状態を主色から切り離して読ませる */
 
   /* ---- 地の色：明るさのトーンを決める ---- */
   --brand-page: #eefaff;    /* ページ背景（うっすら水色を残す） */
@@ -49,6 +50,7 @@
   --accent-2: var(--brand-accent-strong);
   --accent-3: var(--brand-accent-support);
   --accent-soft: var(--brand-accent-wash);
+  --accent-complement: var(--brand-accent-complement);
   --danger: var(--brand-danger);
   --aurora-tint: var(--brand-tint);
 
@@ -603,7 +605,7 @@ body {
 .weight__hint {
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--accent-3);
+  color: var(--accent-complement);
 }
 
 .slider {
@@ -1041,7 +1043,7 @@ body {
   text-align: right;
   font-size: 0.86rem;
   font-weight: 700;
-  color: var(--accent-3);
+  color: var(--accent-complement);
 }
 
 /* ===== ランキング ===== */
@@ -1168,9 +1170,9 @@ body {
 }
 
 .badge--direct {
-  background: color-mix(in srgb, var(--accent-3) 16%, transparent);
-  color: var(--accent-3);
-  border: 1px solid color-mix(in srgb, var(--accent-3) 40%, transparent);
+  background: color-mix(in srgb, var(--accent-complement) 14%, transparent);
+  color: var(--accent-complement);
+  border: 1px solid color-mix(in srgb, var(--accent-complement) 38%, transparent);
 }
 
 .badge--transfer {
@@ -1717,6 +1719,7 @@ body {
   --brand-accent-support: #ff5fae;
   --brand-accent-wash: color-mix(in srgb, var(--brand-accent) 18%, transparent);
   --brand-tint: #1a2530;
+  --brand-accent-complement: #ff512a;
 
   /* ---- 地の色（真っ黒にせず、少し青みを残して柔らかくする） ---- */
   --brand-page: #171f28;
@@ -1764,6 +1767,7 @@ body {
   --brand-page: #fff4f8;
   --brand-sunken: #fff7fa;
   --brand-line: #f6d8e4;
+  --brand-accent-complement: #33d69d;
 }
 
 /* 森 */
@@ -1777,6 +1781,7 @@ body {
   --brand-page: #f0fdf4;
   --brand-sunken: #f3fdf6;
   --brand-line: #cbe9d5;
+  --brand-accent-complement: #7d2f7a;
 }
 
 /* 海 */
@@ -1790,6 +1795,7 @@ body {
   --brand-page: #ecfbfe;
   --brand-sunken: #f0fcfe;
   --brand-line: #c2e7f0;
+  --brand-accent-complement: #851e0b;
 }
 
 /* 夕焼け */
@@ -1803,6 +1809,7 @@ body {
   --brand-page: #fff7ef;
   --brand-sunken: #fff9f3;
   --brand-line: #f7dccc;
+  --brand-accent-complement: #0c8dc2;
 }
 
 /* 紅葉 */
@@ -1816,6 +1823,7 @@ body {
   --brand-page: #fff4f3;
   --brand-sunken: #fff7f6;
   --brand-line: #f6d7d4;
+  --brand-accent-complement: #23b4ad;
 }
 
 
@@ -1834,6 +1842,7 @@ body {
   --brand-accent-support: #fb7185;
   --brand-accent-wash: color-mix(in srgb, var(--brand-accent) 16%, transparent);
   --brand-tint: #241a20;
+  --brand-accent-complement: #72f4b0;
 }
 
 [data-mode="dark"][data-color="forest"] {
@@ -1842,6 +1851,7 @@ body {
   --brand-accent-support: #34d399;
   --brand-accent-wash: color-mix(in srgb, var(--brand-accent) 16%, transparent);
   --brand-tint: #16241c;
+  --brand-accent-complement: #de4aa8;
 }
 
 [data-mode="dark"][data-color="ocean"] {
@@ -1850,6 +1860,7 @@ body {
   --brand-accent-support: #67e8f9;
   --brand-accent-wash: color-mix(in srgb, var(--brand-accent) 16%, transparent);
   --brand-tint: #142329;
+  --brand-accent-complement: #ee3d22;
 }
 
 [data-mode="dark"][data-color="sunset"] {
@@ -1858,6 +1869,7 @@ body {
   --brand-accent-support: #fbbf24;
   --brand-accent-wash: color-mix(in srgb, var(--brand-accent) 16%, transparent);
   --brand-tint: #251c14;
+  --brand-accent-complement: #3ca5fb;
 }
 
 [data-mode="dark"][data-color="autumn"] {
@@ -1866,6 +1878,7 @@ body {
   --brand-accent-support: #fb923c;
   --brand-accent-wash: color-mix(in srgb, var(--brand-accent) 16%, transparent);
   --brand-tint: #251818;
+  --brand-accent-complement: #71f8f8;
 }
 
 /* ===== ハイコントラスト（data-color="high-contrast"）弱視対応・WCAG AA 準拠 ===== */
