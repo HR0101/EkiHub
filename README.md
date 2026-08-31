@@ -62,6 +62,95 @@
 | CDN / セキュリティ | Cloudflare | WAF・DDoS防御・オリジンIP秘匿・SSL/TLS |
 | CI/CD | GitHub Actions | push時に自動テスト＆デプロイ（OCI CLIで動的ファイアウォール制御） |
 
+### サーバー構成（リクエストの流れ）
+
+Next.js（App Router）の1プロセスが，画面の配信と `/api/*` の応答を兼ねます．算出ロジックは `lib/` にフレームワーク非依存のまま置き，APIルートは入力の検証と整形だけを担当します．
+
+```mermaid
+flowchart TB
+  subgraph B["ブラウザ"]
+    UI["React コンポーネント（src/components/）<br/>Zustand で状態保持・React Query で取得"]
+  end
+
+  subgraph SV["Next.js サーバー（App Router / Node.js 20+）"]
+    PG["app/page.tsx ・ app/howto/page.tsx<br/>HTML をサーバー側で組み立てて返す"]
+
+    subgraph RT["APIルート（app/api/*/route.ts）"]
+      R1["GET /api/stations<br/>駅マスタ（補完に必要な項目だけ）"]
+      R2["POST /api/center<br/>中心駅の算出"]
+      R3["GET /api/spots<br/>GET /api/spot-categories"]
+      R4["GET /api/train-information"]
+      R5["GET /api/health<br/>デプロイ後の疎通確認に使用"]
+    end
+
+    subgraph LG["ドメインロジック（src/server/ ・ lib/）"]
+      REPO["stationRepository<br/>3ソースをマージ＋乗降客数を適用<br/>プロセス内にキャッシュ"]
+      CTR["centerLogic<br/>重心 → 候補絞込 → 複合スコア → 上位8駅を精緻化"]
+      GRF["stationGraph<br/>近接グラフ＋ダイクストラ法<br/>エッジ上限 12km"]
+      FRE["fareEstimate<br/>距離からの運賃概算"]
+      RPV["routeProvider<br/>経路APIの差し替え口<br/>未設定なら距離概算へ"]
+      POI["poiService<br/>Overpass クエリ組立・整形"]
+      ODP["odptTrainInformation<br/>正規化＋キャッシュ"]
+    end
+  end
+
+  subgraph DT["同梱データ（data/・起動後は常駐）"]
+    D1["stations.js<br/>手動キュレーションの主要駅"]
+    D2["stations-osm.json<br/>全国 約8,200駅"]
+    D3["ridership.json<br/>駅名 → 乗降客数（S12）"]
+  end
+
+  subgraph EX["外部API（すべて任意・失敗時はフォールバック）"]
+    E1["ODPT<br/>駅データ拡張・鉄道運行情報"]
+    E2["Overpass API<br/>周辺スポット"]
+    E3["OpenTripPlanner<br/>実所要時間・運賃・乗換回数"]
+  end
+
+  PG --> UI
+  UI --> R1
+  UI --> R2
+  UI --> R4
+  UI -. "ブラウザから直接叩けない時だけ" .-> R3
+  UI -. "既定はブラウザから直接取得" .-> E2
+
+  R1 --> REPO
+  R2 --> REPO
+  R2 --> CTR
+  R3 --> POI
+  R4 --> ODP
+
+  CTR --> GRF
+  CTR --> FRE
+  CTR -. "上位8駅のみ・設定時" .-> RPV
+
+  REPO --> D1
+  REPO --> D2
+  REPO --> D3
+  REPO -. "ODPT_TOKEN があれば全国へ拡張" .-> E1
+
+  POI --> E2
+  ODP --> E1
+  RPV -. "ROUTING_PROVIDER=otp" .-> E3
+
+  classDef client fill:#eef2f7,stroke:#94a3b8,color:#0f172a
+  classDef route fill:#e6f0fb,stroke:#5b8db8,color:#123a5c
+  classDef logic fill:#e3f5f3,stroke:#4aa3a0,color:#0d3d3b
+  classDef data fill:#f3eefb,stroke:#9b83c9,color:#332154
+  classDef ext fill:#fdf3e3,stroke:#d0a24c,color:#4a3410
+
+  class UI,PG client
+  class R1,R2,R3,R4,R5 route
+  class REPO,CTR,GRF,FRE,RPV,POI,ODP logic
+  class D1,D2,D3 data
+  class E1,E2,E3 ext
+```
+
+要点は次の3つです．
+
+- **外部APIは無くても動く**：`data/` の同梱データと距離概算へ自動フォールバックするため，トークン未設定でも全機能が成立します．
+- **重い処理は1回だけ**：駅マスタのマージと駅グラフの構築は初回リクエストで作ってプロセス内に保持し，以降は使い回します．
+- **周辺スポットはブラウザ優先**：既定ではブラウザから Overpass を直接叩き（サーバーの帯域とレート制限を使わない），塞がれている環境でだけ `/api/spots` へ落とします．
+
 ### アーキテクチャ（コア + 機能モジュール）
 
 ```
@@ -176,8 +265,38 @@ npm run dev        # ファイル監視つき起動（開発用）
 
 ### インフラ構成
 
-```
-[ブラウザ] ──HTTPS──> [Cloudflare CDN/WAF] ──> [nginx :443] ──proxy──> [Node/Express :3000（PM2常駐）]
+```mermaid
+flowchart LR
+  U["ブラウザ<br/>PC・スマートフォン"]
+  CF["Cloudflare<br/>CDN・WAF・DDoS防御<br/>SSL/TLS終端・オリジンIP秘匿"]
+
+  subgraph VM["Oracle Cloud VM（Always Free / ap-tokyo-1）"]
+    direction LR
+    NG["nginx :443<br/>リバースプロキシ<br/>Let's Encrypt で証明書を自動更新"]
+    APP["アプリ本体 :3000<br/>PM2 で常駐・自動再起動"]
+    NG -- "proxy_pass<br/>Host ・ X-Forwarded-* を転送" --> APP
+  end
+
+  EX["外部API<br/>ODPT ・ Overpass ・ OpenTripPlanner"]
+  GH["GitHub Actions<br/>main への push で<br/>テスト → デプロイ"]
+
+  U -- "HTTPS" --> CF
+  CF -- "HTTPS" --> NG
+  APP -- "タイムアウト＋キャッシュ＋失敗時フォールバック" --> EX
+  U -. "周辺スポットはブラウザから直接" .-> EX
+  GH -. "SSHを一時開放 → git reset → 再起動 → ヘルスチェック" .-> VM
+
+  classDef client fill:#eef2f7,stroke:#94a3b8,color:#0f172a
+  classDef net fill:#e6f0fb,stroke:#5b8db8,color:#123a5c
+  classDef app fill:#e3f5f3,stroke:#4aa3a0,color:#0d3d3b
+  classDef ext fill:#fdf3e3,stroke:#d0a24c,color:#4a3410
+  classDef ci fill:#f3eefb,stroke:#9b83c9,color:#332154
+
+  class U client
+  class CF,NG net
+  class APP app
+  class EX ext
+  class GH ci
 ```
 
 - **Cloudflare**：CDN・WAF・DDoS防御・オリジンIP秘匿・SSL/TLS終端
