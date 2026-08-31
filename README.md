@@ -66,52 +66,50 @@
 
 Next.js（App Router）の1プロセスが，画面の配信と `/api/*` の応答を兼ねます．算出ロジックは `lib/` にフレームワーク非依存のまま置き，APIルートは入力の検証と整形だけを担当します．
 
+<!-- diagram: architecture-server -->
 ```mermaid
-flowchart TB
+%%{init: {"theme":"base","themeVariables":{"textColor":"#1f2937","lineColor":"#94a3b8","clusterBkg":"#f8fafc","clusterBorder":"#cbd5e1","edgeLabelBackground":"#f8fafc"},"flowchart":{"curve":"basis","wrappingWidth":400,"nodeSpacing":40,"rankSpacing":70}}}%%
+flowchart LR
   subgraph B["ブラウザ"]
-    UI["React コンポーネント（src/components/）<br/>Zustand で状態保持・React Query で取得"]
+    UI["React コンポーネント<br/>src/components/<br/>Zustand・React Query"]
   end
 
-  subgraph SV["Next.js サーバー（App Router / Node.js 20+）"]
-    PG["app/page.tsx ・ app/howto/page.tsx<br/>HTML をサーバー側で組み立てて返す"]
+  subgraph SV["Next.js サーバー（App Router）"]
+    PG["app/page.tsx<br/>app/howto/page.tsx<br/>HTML をサーバーで組み立て"]
 
-    subgraph RT["APIルート（app/api/*/route.ts）"]
-      R1["GET /api/stations<br/>駅マスタ（補完に必要な項目だけ）"]
+    subgraph RT["APIルート app/api/*/route.ts"]
+      R1["GET /api/stations<br/>駅マスタ"]
       R2["POST /api/center<br/>中心駅の算出"]
       R3["GET /api/spots<br/>GET /api/spot-categories"]
       R4["GET /api/train-information"]
-      R5["GET /api/health<br/>デプロイ後の疎通確認に使用"]
+      R5["GET /api/health<br/>デプロイ後の疎通確認"]
     end
 
-    subgraph LG["ドメインロジック（src/server/ ・ lib/）"]
-      REPO["stationRepository<br/>3ソースをマージ＋乗降客数を適用<br/>プロセス内にキャッシュ"]
-      CTR["centerLogic<br/>重心 → 候補絞込 → 複合スコア → 上位8駅を精緻化"]
-      GRF["stationGraph<br/>近接グラフ＋ダイクストラ法<br/>エッジ上限 12km"]
-      FRE["fareEstimate<br/>距離からの運賃概算"]
-      RPV["routeProvider<br/>経路APIの差し替え口<br/>未設定なら距離概算へ"]
-      POI["poiService<br/>Overpass クエリ組立・整形"]
-      ODP["odptTrainInformation<br/>正規化＋キャッシュ"]
+    subgraph LG["ドメインロジック src/server/ ・ lib/"]
+      REPO["stationRepository<br/>3ソースをマージ<br/>プロセス内キャッシュ"]
+      CTR["centerLogic<br/>重心 → 絞込 → スコア → 精緻化"]
+      GRF["stationGraph<br/>ダイクストラ法<br/>エッジ上限 12km"]
+      FRE["fareEstimate<br/>運賃の概算"]
+      RPV["routeProvider<br/>経路APIの差し替え口"]
+      POI["poiService<br/>Overpass クエリ組立"]
+      ODP["odptTrainInformation<br/>正規化・キャッシュ"]
     end
   end
 
-  subgraph DT["同梱データ（data/・起動後は常駐）"]
-    D1["stations.js<br/>手動キュレーションの主要駅"]
-    D2["stations-osm.json<br/>全国 約8,200駅"]
-    D3["ridership.json<br/>駅名 → 乗降客数（S12）"]
-  end
+  D["同梱データ data/<br/>stations.js（主要駅・手動）<br/>stations-osm.json（約8,200駅）<br/>ridership.json（乗降客数 S12）"]
 
-  subgraph EX["外部API（すべて任意・失敗時はフォールバック）"]
-    E1["ODPT<br/>駅データ拡張・鉄道運行情報"]
+  subgraph EX["外部API（すべて任意）"]
+    E1["ODPT<br/>駅データ拡張・運行情報"]
     E2["Overpass API<br/>周辺スポット"]
-    E3["OpenTripPlanner<br/>実所要時間・運賃・乗換回数"]
+    E3["OpenTripPlanner<br/>所要時間・運賃"]
   end
 
-  PG --> UI
+  UI -- "ページ要求" --> PG
   UI --> R1
   UI --> R2
   UI --> R4
-  UI -. "ブラウザから直接叩けない時だけ" .-> R3
-  UI -. "既定はブラウザから直接取得" .-> E2
+  UI -. "直接叩けない時だけ" .-> R3
+  UI -. "既定は直接取得" .-> E2
 
   R1 --> REPO
   R2 --> REPO
@@ -121,12 +119,10 @@ flowchart TB
 
   CTR --> GRF
   CTR --> FRE
-  CTR -. "上位8駅のみ・設定時" .-> RPV
+  CTR -. "上位8駅のみ" .-> RPV
 
-  REPO --> D1
-  REPO --> D2
-  REPO --> D3
-  REPO -. "ODPT_TOKEN があれば全国へ拡張" .-> E1
+  REPO --> D
+  REPO -. "ODPT_TOKEN 設定時" .-> E1
 
   POI --> E2
   ODP --> E1
@@ -137,13 +133,16 @@ flowchart TB
   classDef logic fill:#e3f5f3,stroke:#4aa3a0,color:#0d3d3b
   classDef data fill:#f3eefb,stroke:#9b83c9,color:#332154
   classDef ext fill:#fdf3e3,stroke:#d0a24c,color:#4a3410
+  classDef ci fill:#fbeef4,stroke:#c98bab,color:#4a1730
 
   class UI,PG client
   class R1,R2,R3,R4,R5 route
   class REPO,CTR,GRF,FRE,RPV,POI,ODP logic
-  class D1,D2,D3 data
+  class D data
   class E1,E2,E3 ext
 ```
+
+> Mermaid が描画されない環境向けに，同じ図の画像も置いています：[SVG](assets/architecture-server.svg) ／ [PNG](assets/architecture-server.png)
 
 要点は次の3つです．
 
@@ -195,7 +194,9 @@ EkiHub/
 │   ├── buildRidership.js      # S12のGeoJSONから乗降客数マップを生成
 │   ├── generateKana.js        # kuromojiでkana未登録駅の読みを補完
 │   ├── testRouting.js         # 経路精緻化ロジックの単体テスト
+│   ├── renderDiagrams.mjs     # READMEの構成図をSVG/PNGへ書き出す
 │   └── smoke*.js              # ブラウザ起動スモークテスト（puppeteer・別途インストール要）
+├── assets/                    # 構成図の画像（renderDiagrams.mjs の生成物）
 └── public/
     ├── index.html             # トップページ（拡張枠つき）
     ├── howto.html             # 使い方ガイド
@@ -265,39 +266,43 @@ npm run dev        # ファイル監視つき起動（開発用）
 
 ### インフラ構成
 
+<!-- diagram: architecture-infra -->
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"textColor":"#1f2937","lineColor":"#94a3b8","clusterBkg":"#f8fafc","clusterBorder":"#cbd5e1","edgeLabelBackground":"#f8fafc"},"flowchart":{"curve":"basis","wrappingWidth":400,"nodeSpacing":40,"rankSpacing":70}}}%%
 flowchart LR
   U["ブラウザ<br/>PC・スマートフォン"]
   CF["Cloudflare<br/>CDN・WAF・DDoS防御<br/>SSL/TLS終端・オリジンIP秘匿"]
 
   subgraph VM["Oracle Cloud VM（Always Free / ap-tokyo-1）"]
-    direction LR
-    NG["nginx :443<br/>リバースプロキシ<br/>Let's Encrypt で証明書を自動更新"]
+    NG["nginx :443<br/>リバースプロキシ<br/>Let's Encrypt で証明書更新"]
     APP["アプリ本体 :3000<br/>PM2 で常駐・自動再起動"]
-    NG -- "proxy_pass<br/>Host ・ X-Forwarded-* を転送" --> APP
+    NG -- "proxy_pass<br/>X-Forwarded-* を転送" --> APP
   end
 
-  EX["外部API<br/>ODPT ・ Overpass ・ OpenTripPlanner"]
+  EX["外部API<br/>ODPT・Overpass<br/>OpenTripPlanner"]
   GH["GitHub Actions<br/>main への push で<br/>テスト → デプロイ"]
 
   U -- "HTTPS" --> CF
   CF -- "HTTPS" --> NG
-  APP -- "タイムアウト＋キャッシュ＋失敗時フォールバック" --> EX
-  U -. "周辺スポットはブラウザから直接" .-> EX
-  GH -. "SSHを一時開放 → git reset → 再起動 → ヘルスチェック" .-> VM
+  APP -- "タイムアウト＋キャッシュ<br/>失敗時フォールバック" --> EX
+  U -. "周辺スポットは直接取得" .-> EX
+  GH -. "SSH一時開放 → 再起動 → 疎通確認" .-> VM
 
   classDef client fill:#eef2f7,stroke:#94a3b8,color:#0f172a
-  classDef net fill:#e6f0fb,stroke:#5b8db8,color:#123a5c
-  classDef app fill:#e3f5f3,stroke:#4aa3a0,color:#0d3d3b
+  classDef route fill:#e6f0fb,stroke:#5b8db8,color:#123a5c
+  classDef logic fill:#e3f5f3,stroke:#4aa3a0,color:#0d3d3b
+  classDef data fill:#f3eefb,stroke:#9b83c9,color:#332154
   classDef ext fill:#fdf3e3,stroke:#d0a24c,color:#4a3410
-  classDef ci fill:#f3eefb,stroke:#9b83c9,color:#332154
+  classDef ci fill:#fbeef4,stroke:#c98bab,color:#4a1730
 
   class U client
-  class CF,NG net
-  class APP app
+  class CF,NG route
+  class APP logic
   class EX ext
   class GH ci
 ```
+
+> 画像版：[SVG](assets/architecture-infra.svg) ／ [PNG](assets/architecture-infra.png)
 
 - **Cloudflare**：CDN・WAF・DDoS防御・オリジンIP秘匿・SSL/TLS終端
 - **nginx**：リバースプロキシ（`Host` / `X-Forwarded-Proto` を転送し，OGP の絶対URLを正しく生成）
