@@ -36,7 +36,6 @@
 | メンバー名・人数 | 各駅にメンバー名と人数を設定．人数で重心・平均を重み付け． |
 | 重視ポイント | 「近さ ⇄ 公平さ」スライダーに加え，**運賃の重視度**スライダー． |
 | 運賃概算・直通可能性 | 距離から普通運賃を概算し表示．同一路線なら「直通」を表示． |
-| 現在地から最寄駅 | Geolocation APIで現在地を取得し，最寄駅を入力欄へ自動挿入． |
 | 共有URL・QR | 入力・条件をURL化してコピー／Web共有／QRコード表示．開くと自動復元． |
 | 結果コピー | 集合駅と各メンバーの所要時間・運賃をテキストでクリップボードにコピー． |
 | 集合時刻・出発逆算 | 集合時刻から各メンバーの出発時刻を逆算．`.ics`でカレンダー登録． |
@@ -62,6 +61,94 @@
 | ホスティング | Oracle Cloud VM + nginx + PM2 | Always Free枠で無期限無料．Let's EncryptでHTTPS化 |
 | CDN / セキュリティ | Cloudflare | WAF・DDoS防御・オリジンIP秘匿・SSL/TLS |
 | CI/CD | GitHub Actions | push時に自動テスト＆デプロイ（OCI CLIで動的ファイアウォール制御） |
+
+### サーバー構成（リクエストの流れ）
+
+Next.js（App Router）の1プロセスが，画面の配信と `/api/*` の応答を兼ねます．算出ロジックは `lib/` にフレームワーク非依存のまま置き，APIルートは入力の検証と整形だけを担当します．
+
+<!-- diagram: architecture-server -->
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"textColor":"#1f2937","lineColor":"#94a3b8","clusterBkg":"#f8fafc","clusterBorder":"#cbd5e1","edgeLabelBackground":"#f8fafc"},"flowchart":{"curve":"basis","wrappingWidth":400,"nodeSpacing":40,"rankSpacing":70}}}%%
+flowchart LR
+  subgraph B["ブラウザ"]
+    UI["React コンポーネント<br/>src/components/<br/>Zustand・React Query"]
+  end
+
+  subgraph SV["Next.js サーバー（App Router）"]
+    PG["app/page.tsx<br/>app/howto/page.tsx<br/>HTML をサーバーで組み立て"]
+
+    subgraph RT["APIルート app/api/*/route.ts"]
+      R1["GET /api/stations<br/>駅マスタ"]
+      R2["POST /api/center<br/>中心駅の算出"]
+      R3["GET /api/spots<br/>GET /api/spot-categories"]
+      R4["GET /api/train-information"]
+      R5["GET /api/health<br/>デプロイ後の疎通確認"]
+    end
+
+    subgraph LG["ドメインロジック src/server/ ・ lib/"]
+      REPO["stationRepository<br/>3ソースをマージ<br/>プロセス内キャッシュ"]
+      CTR["centerLogic<br/>重心 → 絞込 → スコア → 精緻化"]
+      GRF["stationGraph<br/>ダイクストラ法<br/>エッジ上限 12km"]
+      FRE["fareEstimate<br/>運賃の概算"]
+      RPV["routeProvider<br/>経路APIの差し替え口"]
+      POI["poiService<br/>Overpass クエリ組立"]
+      ODP["odptTrainInformation<br/>正規化・キャッシュ"]
+    end
+  end
+
+  D["同梱データ data/<br/>stations.js（主要駅・手動）<br/>stations-osm.json（約8,200駅）<br/>ridership.json（乗降客数 S12）"]
+
+  subgraph EX["外部API（すべて任意）"]
+    E1["ODPT<br/>駅データ拡張・運行情報"]
+    E2["Overpass API<br/>周辺スポット"]
+    E3["OpenTripPlanner<br/>所要時間・運賃"]
+  end
+
+  UI -- "ページ要求" --> PG
+  UI --> R1
+  UI --> R2
+  UI --> R4
+  UI -. "直接叩けない時だけ" .-> R3
+  UI -. "既定は直接取得" .-> E2
+
+  R1 --> REPO
+  R2 --> REPO
+  R2 --> CTR
+  R3 --> POI
+  R4 --> ODP
+
+  CTR --> GRF
+  CTR --> FRE
+  CTR -. "上位8駅のみ" .-> RPV
+
+  REPO --> D
+  REPO -. "ODPT_TOKEN 設定時" .-> E1
+
+  POI --> E2
+  ODP --> E1
+  RPV -. "ROUTING_PROVIDER=otp" .-> E3
+
+  classDef client fill:#eef2f7,stroke:#94a3b8,color:#0f172a
+  classDef route fill:#e6f0fb,stroke:#5b8db8,color:#123a5c
+  classDef logic fill:#e3f5f3,stroke:#4aa3a0,color:#0d3d3b
+  classDef data fill:#f3eefb,stroke:#9b83c9,color:#332154
+  classDef ext fill:#fdf3e3,stroke:#d0a24c,color:#4a3410
+  classDef ci fill:#fbeef4,stroke:#c98bab,color:#4a1730
+
+  class UI,PG client
+  class R1,R2,R3,R4,R5 route
+  class REPO,CTR,GRF,FRE,RPV,POI,ODP logic
+  class D data
+  class E1,E2,E3 ext
+```
+
+> Mermaid が描画されない環境向けに，同じ図の画像も置いています：[SVG](assets/architecture-server.svg) ／ [PNG](assets/architecture-server.png)
+
+要点は次の3つです．
+
+- **外部APIは無くても動く**：`data/` の同梱データと距離概算へ自動フォールバックするため，トークン未設定でも全機能が成立します．
+- **重い処理は1回だけ**：駅マスタのマージと駅グラフの構築は初回リクエストで作ってプロセス内に保持し，以降は使い回します．
+- **周辺スポットはブラウザ優先**：既定ではブラウザから Overpass を直接叩き（サーバーの帯域とレート制限を使わない），塞がれている環境でだけ `/api/spots` へ落とします．
 
 ### アーキテクチャ（コア + 機能モジュール）
 
@@ -107,7 +194,9 @@ EkiHub/
 │   ├── buildRidership.js      # S12のGeoJSONから乗降客数マップを生成
 │   ├── generateKana.js        # kuromojiでkana未登録駅の読みを補完
 │   ├── testRouting.js         # 経路精緻化ロジックの単体テスト
+│   ├── renderDiagrams.mjs     # READMEの構成図をSVG/PNGへ書き出す
 │   └── smoke*.js              # ブラウザ起動スモークテスト（puppeteer・別途インストール要）
+├── assets/                    # 構成図の画像（renderDiagrams.mjs の生成物）
 └── public/
     ├── index.html             # トップページ（拡張枠つき）
     ├── howto.html             # 使い方ガイド
@@ -118,7 +207,6 @@ EkiHub/
     └── js/features/           # 機能モジュール（各機能が独立した1ファイル）
         ├── themeToggle.js     # テーマ切替（モード＋カラー）
         ├── i18n.js            # 多言語切替（日/英/中/韓）
-        ├── geolocation.js     # 現在地から最寄駅
         ├── fareWeight.js      # 運賃の重視度スライダー
         ├── shareLink.js       # 共有URLのコピー/共有
         ├── qrShare.js         # 共有URLのQRコード
@@ -178,9 +266,43 @@ npm run dev        # ファイル監視つき起動（開発用）
 
 ### インフラ構成
 
+<!-- diagram: architecture-infra -->
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"textColor":"#1f2937","lineColor":"#94a3b8","clusterBkg":"#f8fafc","clusterBorder":"#cbd5e1","edgeLabelBackground":"#f8fafc"},"flowchart":{"curve":"basis","wrappingWidth":400,"nodeSpacing":40,"rankSpacing":70}}}%%
+flowchart LR
+  U["ブラウザ<br/>PC・スマートフォン"]
+  CF["Cloudflare<br/>CDN・WAF・DDoS防御<br/>SSL/TLS終端・オリジンIP秘匿"]
+
+  subgraph VM["Oracle Cloud VM（Always Free / ap-tokyo-1）"]
+    NG["nginx :443<br/>リバースプロキシ<br/>Let's Encrypt で証明書更新"]
+    APP["アプリ本体 :3000<br/>PM2 で常駐・自動再起動"]
+    NG -- "proxy_pass<br/>X-Forwarded-* を転送" --> APP
+  end
+
+  EX["外部API<br/>ODPT・Overpass<br/>OpenTripPlanner"]
+  GH["GitHub Actions<br/>main への push で<br/>テスト → デプロイ"]
+
+  U -- "HTTPS" --> CF
+  CF -- "HTTPS" --> NG
+  APP -- "タイムアウト＋キャッシュ<br/>失敗時フォールバック" --> EX
+  U -. "周辺スポットは直接取得" .-> EX
+  GH -. "SSH一時開放 → 再起動 → 疎通確認" .-> VM
+
+  classDef client fill:#eef2f7,stroke:#94a3b8,color:#0f172a
+  classDef route fill:#e6f0fb,stroke:#5b8db8,color:#123a5c
+  classDef logic fill:#e3f5f3,stroke:#4aa3a0,color:#0d3d3b
+  classDef data fill:#f3eefb,stroke:#9b83c9,color:#332154
+  classDef ext fill:#fdf3e3,stroke:#d0a24c,color:#4a3410
+  classDef ci fill:#fbeef4,stroke:#c98bab,color:#4a1730
+
+  class U client
+  class CF,NG route
+  class APP logic
+  class EX ext
+  class GH ci
 ```
-[ブラウザ] ──HTTPS──> [Cloudflare CDN/WAF] ──> [nginx :443] ──proxy──> [Node/Express :3000（PM2常駐）]
-```
+
+> 画像版：[SVG](assets/architecture-infra.svg) ／ [PNG](assets/architecture-infra.png)
 
 - **Cloudflare**：CDN・WAF・DDoS防御・オリジンIP秘匿・SSL/TLS終端
 - **nginx**：リバースプロキシ（`Host` / `X-Forwarded-Proto` を転送し，OGP の絶対URLを正しく生成）

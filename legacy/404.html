@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>ページが見つかりません — EkiHub</title>
+    <meta name="theme-color" content="#0a0e1a" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0e1a'/%3E%3Ccircle cx='32' cy='28' r='13' fill='none' stroke='%2346e0c8' stroke-width='5'/%3E%3Cpath d='M32 41 L32 56' stroke='%235e7bff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
+    <!-- このページは任意のパス（例: /foo/bar）で表示されるため、参照はすべて絶対パスにすること -->
+    <link rel="stylesheet" href="/style.css" />
+    <!-- テーマ復元（CSPでインラインJSは禁止のため外部ファイル。描画前に適用するので defer を付けない） -->
+    <script src="/js/themeBoot.js"></script>
+    <style>
+      /* themeBoot.js が上書きするが、読み込めなかった場合の既定として宣言しておく */
+      :root {
+        color-scheme: light;
+      }
+      /* 404 は中央寄せの独自レイアウトなので style.css の body 定義を上書きする */
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: var(--bg-base);
+        color: var(--text-main);
+        font-family: "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+        text-align: center;
+      }
+      /* 背景の色帯（.aurora）は position:fixed のため、本文を positioned にして前面へ出す */
+      .box {
+        position: relative;
+        z-index: 1;
+        max-width: 440px;
+      }
+      .code {
+        font-size: 88px;
+        font-weight: 900;
+        line-height: 1;
+        margin: 0;
+        background: linear-gradient(120deg, var(--accent-3), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      /* ライトモードでは accent-3 が白背景に溶けるため、濃い側の2色を暗く混ぜて描く
+         （color-mix 非対応環境は 1つ目の宣言にフォールバックする） */
+      [data-mode="light"]:not([data-color="high-contrast"]) .code {
+        background: linear-gradient(120deg, var(--accent), var(--accent-2));
+        background: linear-gradient(
+          120deg,
+          color-mix(in srgb, var(--accent) 72%, #000),
+          color-mix(in srgb, var(--accent-2) 72%, #000)
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+      h1 {
+        font-size: 22px;
+        font-weight: 700;
+        margin: 16px 0 8px;
+      }
+      p {
+        color: var(--text-sub);
+        line-height: 1.7;
+        margin: 0 0 28px;
+      }
+      .home {
+        display: inline-block;
+        padding: 12px 28px;
+        border-radius: 999px;
+        font-weight: 700;
+        text-decoration: none;
+        /* 背景のグラデーションはどのテーマでも明るいため、文字は固定の濃色にする */
+        color: #0a0e1a;
+        background: linear-gradient(120deg, var(--accent-3), var(--accent));
+      }
+      .home:hover {
+        opacity: 0.9;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="aurora" aria-hidden="true"></div>
+
+    <main class="box">
+      <p class="code">404</p>
+      <h1>ページが見つかりませんでした</h1>
+      <p>
+        お探しのページは移動または削除された可能性があります。<br />
+        トップページから中心駅を探してみてください。
+      </p>
+      <a class="home" href="/">トップへ戻る</a>
+    </main>
+
+  </body>
+</html>

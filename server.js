@@ -141,7 +141,8 @@ app.use((_req, res, next) => {
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   res.setHeader(
     "Permissions-Policy",
-    "geolocation=(self), camera=(), microphone=(), payment=()"
+    // 現在地の取得機能を廃止したため geolocation も閉じている
+    "geolocation=(), camera=(), microphone=(), payment=()"
   );
   // HTTPS接続を強制（本番HTTPS前提。HTTPでは各ブラウザが無視する）
   res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
