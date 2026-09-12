@@ -9,6 +9,10 @@ on:
   # push なしで main を再デプロイするための手動実行口
   workflow_dispatch:
 
+env:
+  # ビルド成果物を1ファイルにまとめて運ぶ
+  BUNDLE: ekihub-standalone.tar.gz
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -17,6 +21,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: npm
       - run: npm ci
       - run: npm test
       - run: node scripts/testRouting.js
@@ -28,6 +33,32 @@ jobs:
     if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      # ビルドは必ずここで行う。
+      # 本番VMはメモリ954MiB・スワップ無しで next build が OOM するため、
+      # VM へは出来上がった standalone だけを送る。
+      - name: Build (standalone)
+        run: |
+          npm ci
+          npm run build
+
+      # standalone には静的ファイルが同梱されないので、手で1つの塊にする。
+      #   .next/static … クライアント用の JS/CSS
+      #   public       … favicon / OGP 画像など
+      #   data         … 駅マスタ（実行時に process.cwd()/data から読む）
+      - name: Assemble bundle
+        run: |
+          cp -r .next/static .next/standalone/.next/static
+          cp -r public .next/standalone/public
+          cp -r data/. .next/standalone/data/
+          tar -czf "$BUNDLE" -C .next/standalone .
+          ls -lh "$BUNDLE"
+
       - name: Get runner public IP
         id: runner-ip
         run: echo "ip=$(curl -s ifconfig.me)" >> "$GITHUB_OUTPUT"
@@ -77,31 +108,73 @@ jobs:
 
           sleep 10
 
-      - name: Deploy via SSH
+      - name: Upload bundle
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          scp -o StrictHostKeyChecking=no -o ConnectTimeout=20 -i ~/.ssh/deploy_key \
+            "$BUNDLE" \
+            "${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/tmp/$BUNDLE"
+
+      - name: Swap in and restart
         uses: appleboy/ssh-action@v1.2.0
         env:
           ODPT_TOKEN: ${{ secrets.ODPT_TOKEN }}
-          DEPLOY_BRANCH: ${{ github.ref_name }}
+          BUNDLE: ekihub-standalone.tar.gz
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: ODPT_TOKEN,DEPLOY_BRANCH
+          envs: ODPT_TOKEN,BUNDLE
           script: |
             set -e
-            cd ~/ekihub-app/EkiHub
-            git fetch origin "$DEPLOY_BRANCH"
-            git reset --hard "origin/$DEPLOY_BRANCH"
-            npm install --omit=dev
-            pm2 restart ekihub --update-env
+            RELEASE="$HOME/ekihub-app/ekihub-next"
+
+            # 隣に展開してから入れ替える。展開に失敗しても現行は壊れない。
+            rm -rf "$RELEASE.new"
+            mkdir -p "$RELEASE.new"
+            tar -xzf "/tmp/$BUNDLE" -C "$RELEASE.new"
+            rm -f "/tmp/$BUNDLE"
+
+            rm -rf "$RELEASE.prev"
+            if [ -d "$RELEASE" ]; then mv "$RELEASE" "$RELEASE.prev"; fi
+            mv "$RELEASE.new" "$RELEASE"
+
+            # 起動コマンドを毎回明示して登録し直す。
+            # 以前は `pm2 start npm --name ekihub -- start` で登録されていたため、
+            # package.json の start が next start へ変わった瞬間に
+            # 「.next が無い」で落ち続ける状態になった（2026-08-31〜09-12の停止）。
+            pm2 delete ekihub > /dev/null 2>&1 || true
+            cd "$RELEASE"
+            PORT=3000 NODE_ENV=production ODPT_TOKEN="$ODPT_TOKEN" \
+              pm2 start server.js --name ekihub --cwd "$RELEASE" --update-env
+            pm2 save
+
+            # 外から見る前に VM の中で確かめる（nginx より手前か後ろかを切り分けるため）
+            for i in $(seq 1 10); do
+              sleep 2
+              if curl -fsS --max-time 5 http://127.0.0.1:3000/api/health > /dev/null; then
+                echo "VM内ヘルスチェック: ok"
+                exit 0
+              fi
+            done
+            echo "VM内ヘルスチェックが通りませんでした"
+            pm2 logs ekihub --lines 40 --nostream || true
+            exit 1
 
       - name: Health check
         run: |
-          sleep 5
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 15 https://ekihub.jp)
-          echo "Health check status: $STATUS"
+          STATUS=000
+          for i in $(seq 1 12); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 https://ekihub.jp || echo 000)
+            echo "try $i: $STATUS"
+            [ "$STATUS" = "200" ] && break
+            sleep 5
+          done
           [ "$STATUS" = "200" ] || exit 1
           HEALTH=$(curl -fsS --connect-timeout 15 https://ekihub.jp/api/health)
+          echo "$HEALTH"
           echo "$HEALTH" | jq -e '.status == "ok" and .odptEnabled == true' > /dev/null
 
       - name: Close SSH for this runner
