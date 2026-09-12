@@ -34,6 +34,13 @@ function contentSecurityPolicy(isDev: boolean): string {
 const nextConfig: NextConfig = {
   // Oracle VM へは .next/standalone をそのまま置いて node server.js で起動する
   output: "standalone",
+
+  // standalone の出力位置を固定する。
+  // 上位ディレクトリに別の package-lock.json があると Next はそこを
+  // workspace root と誤検出し、成果物が .next/standalone/<リポジトリ名>/ の
+  // 下へ潜ってしまう。配送スクリプトがパスを取り違えるので、
+  // このプロジェクト自身を root と明示しておく。
+  outputFileTracingRoot: process.cwd(),
   reactStrictMode: true,
 
   // 旧 server.js のセキュリティヘッダをそのまま引き継ぐ

@@ -306,7 +306,7 @@ flowchart LR
 
 - **Cloudflare**：CDN・WAF・DDoS防御・オリジンIP秘匿・SSL/TLS終端
 - **nginx**：リバースプロキシ（`Host` / `X-Forwarded-Proto` を転送し，OGP の絶対URLを正しく生成）
-- **Node.js + Express**：アプリ本体（:3000）を **PM2** で常駐・自動再起動
+- **Next.js（standalone 出力）**：アプリ本体（:3000）を **PM2** で常駐・自動再起動
 - **Let's Encrypt（certbot）**：TLS証明書を取得し，自動更新
 
 ### CI/CD（GitHub Actions）
@@ -314,12 +314,15 @@ flowchart LR
 `main` ブランチへの push で自動的にテスト＆デプロイが走ります（`.github/workflows/deploy.yml`）．
 
 ```
-push → テスト（testRouting.js）
+push → テスト（vitest / testRouting.js）
+     → Actions 上で next build（standalone 出力を生成）
      → OCI CLIでSSHファイアウォールを一時開放
-     → SSH接続してgit fetch & reset → npm install → pm2 restart
-     → ヘルスチェック（curl ekihub.jp）
+     → 成果物を scp で配送 → 隣に展開して入れ替え → pm2 へ登録し直して起動
+     → ヘルスチェック（VM内の :3000 → 外から ekihub.jp）
      → ファイアウォールを自動クローズ
 ```
+
+**ビルドは VM ではなく Actions 側で行います**．本番VMはメモリ954MiB・スワップ無しで，`next build` が OOM するためです．VM は出来上がった `standalone` を受け取って起動するだけにしてあります．
 
 SSHポートは通常自宅IPのみに制限しており，デプロイ時のみ GitHub Actions ランナーのIPを動的に許可→完了後に自動削除します．認証情報はすべて GitHub Secrets に格納しています．
 
