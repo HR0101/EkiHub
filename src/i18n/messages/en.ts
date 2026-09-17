@@ -137,6 +137,8 @@ export const en: Messages = {
     preparing: "Service status is not available yet.",
     failed: "Could not load service status. Please refresh later.",
     none: "No disruptions on the covered lines.",
+    normalSummary: "{count} other lines running normally",
+    allNormal: "All {count} covered lines are running normally",
     updated: "Updated: {time}",
     creditProvider: "Public Transportation Open Data Center",
     creditBefore: "Transit data provided by ",

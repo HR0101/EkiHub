@@ -137,6 +137,8 @@ export const zh: Messages = {
     preparing: "运行信息正在准备中。",
     failed: "无法获取运行信息，请稍后更新。",
     none: "所提供的线路没有异常信息。",
+    normalSummary: "其他{count}条线路正常运行",
+    allNormal: "所提供的{count}条线路均正常运行",
     updated: "更新：{time}",
     creditProvider: "公共交通开放数据中心",
     creditBefore: "公共交通数据由 ",

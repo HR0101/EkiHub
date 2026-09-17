@@ -137,6 +137,8 @@ export const ko: Messages = {
     preparing: "운행 정보는 현재 준비 중입니다.",
     failed: "운행 정보를 가져오지 못했습니다. 잠시 후 갱신해 주세요.",
     none: "제공 중인 노선에 운행 정보가 없습니다.",
+    normalSummary: "다른 {count}개 노선은 정상 운행",
+    allNormal: "제공 중인 {count}개 노선 모두 정상 운행",
     updated: "갱신: {time}",
     creditProvider: "공공교통 오픈데이터 센터",
     creditBefore: "대중교통 데이터는 ",
