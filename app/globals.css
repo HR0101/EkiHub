@@ -2036,6 +2036,7 @@ body {
 .tool-btn,
 .nav-link,
 .toggle__btn,
+.train-info-normal__toggle,
 .input-row__remove {
   transition:
     transform var(--transition),
@@ -2047,6 +2048,7 @@ body {
 /* --- 面を持つボタン：沈みの影＋わずかな縮み --- */
 .btn--ghost:active:not(:disabled),
 .tool-btn:active:not(:disabled),
+.train-info-normal__toggle:active,
 .nav-link:active {
   transform: translateY(var(--nm-press-offset)) scale(var(--nm-press-scale));
   box-shadow: var(--nm-pressed);
@@ -2375,6 +2377,50 @@ body {
   font-size: 0.76rem;
   color: var(--text-sub);
   line-height: 1.6;
+}
+
+/* 平常運転の路線は1行に畳む。
+   21路線中18が「平常運転」という日が普通で、それを全部カードで積むと
+   このカードだけが入力パネルの2倍以上（約1960px）へ伸び、
+   3列・2列のときに隣の列が空白になってしまう。
+   件数だけ見せて、必要な人が開ける形にしている。 */
+.train-info-normal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 乱れている路線の一覧が上にあるときだけ間隔を空ける */
+.train-info-list + .train-info-normal {
+  margin-top: 8px;
+}
+
+.train-info-normal__toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--nm-surface-sunken);
+  color: var(--text-sub);
+  font: inherit;
+  font-size: 0.8rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* :active の押し込みは末尾「押し込み（プレス）演出」セクションで一括定義 */
+
+.train-info-normal__caret {
+  color: var(--accent);
+  transition: transform var(--transition);
+}
+
+.train-info-normal__toggle[aria-expanded="true"] .train-info-normal__caret {
+  transform: rotate(90deg);
 }
 
 /* ===================================================================
