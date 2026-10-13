@@ -204,6 +204,16 @@ export const ja = {
   footer: {
     text: "EkiHub — 重心＋移動時間補正アルゴリズムによる中心駅提案 / 地図データ © OpenStreetMap contributors",
   },
+
+  // 規約ページの名前はフッターのリンクとページ見出しで共用する
+  legal: {
+    terms: "利用規約",
+    privacy: "プライバシーポリシー",
+    credits: "データ出典・ライセンス",
+    linksLabel: "規約とデータ出典",
+    // 本文は日本語のみ。日本語表示中は出さないが、他言語の型の基準として置く
+    japaneseOnly: "このページは日本語のみで提供しています。",
+  },
 } as const;
 
 /**

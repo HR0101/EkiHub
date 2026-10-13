@@ -1125,6 +1125,24 @@ body {
   font-size: 0.76rem;
 }
 
+/* 規約ページへのリンク。本文より目立たせず、押せることだけ下線で示す */
+.foot__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 18px;
+  margin-bottom: 6px;
+}
+
+.foot__links a {
+  color: var(--text-sub);
+  text-underline-offset: 2px;
+}
+
+.foot__links a:hover {
+  color: var(--text-main);
+}
+
 /* ===== 入力行: 人数 ===== */
 .input-row {
   flex-wrap: wrap;
@@ -2243,6 +2261,186 @@ body {
 
 /* 高コントラストでは影による輪郭が判別しづらいため枠線に戻す */
 [data-color="high-contrast"] .howto-content {
+  background: var(--bg-panel-solid);
+  border: 2px solid var(--border-soft);
+  box-shadow: none;
+}
+
+/* ===================================================================
+   規約ページ（/terms・/privacy・/credits）
+   -------------------------------------------------------------------
+   面は使い方ページの .howto-content を流用し、ここでは長文を読むための
+   行幅・条文の見出し・表だけを足す. */
+.legal-content,
+.legal-notice {
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 条文の見出しは使い方ページの h3 と同じ縦バーで示す（h1 の直下なので要素は h2） */
+.legal-content h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 36px;
+  margin-bottom: 12px;
+  font-size: 1.15rem;
+}
+
+.legal-content h2::before {
+  content: "";
+  flex: 0 0 4px;
+  align-self: stretch;
+  min-height: 1.15em;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+}
+
+/* 条文の中の小見出しは、縦バーを重ねると騒がしいので文字だけにする */
+.legal-content h3 {
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.legal-content h3::before {
+  content: none;
+}
+
+.legal-content ol {
+  padding-left: 24px;
+  margin-bottom: 24px;
+}
+
+.legal-content li > ul {
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.legal-content a {
+  color: var(--text-main);
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+/* 提供元が表示を求める文言。引用だと分かるよう沈んだ面に置く */
+.legal-quote {
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  background: var(--nm-surface-sunken);
+  box-shadow: var(--nm-sunken);
+}
+
+.legal-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.legal-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.legal-content caption {
+  caption-side: top;
+  text-align: left;
+  margin-bottom: 6px;
+  color: var(--text-sub);
+  font-size: 0.85rem;
+}
+
+.legal-content th,
+.legal-content td {
+  padding: 10px 12px;
+  border: 1px solid var(--border-soft);
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.7;
+}
+
+.legal-content th {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.legal-content td {
+  color: var(--text-sub);
+}
+
+.legal-content thead th {
+  background: var(--nm-surface-sunken);
+  white-space: nowrap;
+}
+
+.legal-meta {
+  margin-top: 40px;
+  text-align: right;
+}
+
+/* 日本語以外を選んでいるときの「日本語のみ」の案内 */
+.legal-notice {
+  margin-bottom: 16px;
+  padding: 12px 18px;
+  border-radius: var(--radius-sm);
+  background: var(--nm-surface);
+  box-shadow: var(--nm-raised-sm);
+  color: var(--text-main);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  .legal-content {
+    padding: 24px 18px;
+  }
+
+  /* 3列の表はスマホ幅だと右の列が画面外に隠れるため、1行を1枚の枠にして縦に並べる.
+     列見出しは各セルの data-label から出すので、表の見出し行は隠す */
+  .legal-table--stack,
+  .legal-table--stack caption,
+  .legal-table--stack tbody,
+  .legal-table--stack tr,
+  .legal-table--stack th,
+  .legal-table--stack td {
+    display: block;
+  }
+
+  .legal-table--stack thead {
+    display: none;
+  }
+
+  .legal-table--stack tr {
+    margin-bottom: 10px;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .legal-content .legal-table--stack th,
+  .legal-content .legal-table--stack td {
+    border: none;
+  }
+
+  .legal-content .legal-table--stack th {
+    background: var(--nm-surface-sunken);
+  }
+
+  .legal-content .legal-table--stack td + td {
+    border-top: 1px solid var(--border-soft);
+  }
+
+  .legal-table--stack td::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--text-main);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+}
+
+[data-color="high-contrast"] .legal-notice {
   background: var(--bg-panel-solid);
   border: 2px solid var(--border-soft);
   box-shadow: none;

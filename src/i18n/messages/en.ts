@@ -200,4 +200,13 @@ export const en: Messages = {
   footer: {
     text: "EkiHub — midpoint suggestions from centroid and travel-time correction / Map data © OpenStreetMap contributors",
   },
+
+  legal: {
+    terms: "Terms of Use",
+    privacy: "Privacy Policy",
+    credits: "Data Sources & Licenses",
+    linksLabel: "Terms and data sources",
+    japaneseOnly:
+      "This page is available in Japanese only. The Japanese text is the official version.",
+  },
 };
