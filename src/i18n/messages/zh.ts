@@ -200,4 +200,12 @@ export const zh: Messages = {
   footer: {
     text: "EkiHub — 基于重心与移动时间修正算法的中心车站推荐 / 地图数据 © OpenStreetMap contributors",
   },
+
+  legal: {
+    terms: "使用条款",
+    privacy: "隐私政策",
+    credits: "数据来源与许可",
+    linksLabel: "条款与数据来源",
+    japaneseOnly: "本页面仅提供日文版本，以日文原文为准。",
+  },
 };

@@ -67,6 +67,11 @@ export function Footer() {
 
   return (
     <footer className="foot">
+      <nav className="foot__links" aria-label={t("legal.linksLabel")}>
+        <Link href="/terms">{t("legal.terms")}</Link>
+        <Link href="/privacy">{t("legal.privacy")}</Link>
+        <Link href="/credits">{t("legal.credits")}</Link>
+      </nav>
       <p>{t("footer.text")}</p>
     </footer>
   );

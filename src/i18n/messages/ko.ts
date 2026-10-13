@@ -200,4 +200,12 @@ export const ko: Messages = {
   footer: {
     text: "EkiHub — 무게중심과 이동시간 보정 알고리즘에 의한 중심역 제안 / 지도 데이터 © OpenStreetMap contributors",
   },
+
+  legal: {
+    terms: "이용약관",
+    privacy: "개인정보처리방침",
+    credits: "데이터 출처 및 라이선스",
+    linksLabel: "약관 및 데이터 출처",
+    japaneseOnly: "이 페이지는 일본어로만 제공되며, 일본어 원문이 정본입니다.",
+  },
 };
