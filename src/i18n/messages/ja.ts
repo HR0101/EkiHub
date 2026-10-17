@@ -141,6 +141,8 @@ export const ja = {
     preparing: "運行情報は現在準備中です。",
     failed: "運行情報を取得できませんでした。時間をおいて更新してください。",
     none: "提供中の路線に運行情報はありません。",
+    normalSummary: "他{count}路線は平常運転",
+    allNormal: "提供中の{count}路線はすべて平常運転",
     updated: "更新: {time}",
     creditProvider: "公共交通オープンデータセンター",
     creditBefore: "公共交通データは ",
