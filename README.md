@@ -414,3 +414,9 @@ node scripts/generateKana.js
 - 駅位置情報：© OpenStreetMap contributors（ODbL）
 - 乗降客数：国土交通省「国土数値情報（駅別乗降客数データ）」
 - 地図タイル：© CARTO
+
+## GitHubの言語集計について
+
+`legacy/` は移行前の実装を参照用に保存したディレクトリです。
+現行アプリの構成を言語集計に反映するため、`.gitattributes` でこのディレクトリだけを集計対象外にしています。
+現行のJavaScriptは集計対象のままです。この設定は実行時の動作やビルドには影響せず、JavaScriptからTypeScriptへの移行完了を意味するものではありません。
