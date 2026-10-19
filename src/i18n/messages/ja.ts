@@ -151,6 +151,20 @@ export const ja = {
     more: "ほか {count} 件（上位{limit}件のみ表示）",
   },
 
+  meetingPoints: {
+    title: "待ち合わせスポット",
+    types: {
+      statue: "像・モニュメント",
+      plaza: "広場",
+      gate: "改札・出入口",
+      building: "建物・施設",
+      landmark: "ランドマーク",
+    },
+    exit: "最寄り: {exit}",
+    distance: "約{meters}m（徒歩約{minutes}分）",
+    source: "出典",
+  },
+
   trainInfo: {
     detailsLabel: "提供元・お問い合わせ",
     title: "鉄道の運行情報",
@@ -179,6 +193,7 @@ export const ja = {
   },
 
   theme: {
+    randomHint: "ページを開くたびにランダムで選びます。ここから切り替えられます。",
     button: "テーマ",
     dialogLabel: "テーマ設定",
     brightness: "明るさ",

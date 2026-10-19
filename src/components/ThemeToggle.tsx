@@ -1,114 +1,118 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-
+import { useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
-  THEME_COLORS,
-  THEME_MODES,
-  applyTheme,
-  readStoredTheme,
-  storeTheme,
-  type ThemeColor,
-  type ThemeMode,
-} from "@/lib/theme";
+  DESIGN_THEMES,
+  applyDesignTheme,
+  readDesignTheme,
+  type DesignTheme,
+} from "@/lib/designTheme";
 
-/**
- * テーマの切替。
- *
- * 初期表示は <head> の同期スクリプトが済ませているので、
- * ここは「いま何が選ばれているか」を読み直して操作を受け付けるだけ。
- */
 export function ThemeToggle() {
   const { t } = useTranslation();
-  const [mode, setMode] = useState<ThemeMode>("light");
-  const [color, setColor] = useState<ThemeColor>("default");
+  const [design, setDesign] = useState<DesignTheme | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelId = useId();
 
-  // 保存済みの選択を読み直す（localStorage はサーバーで読めないのでマウント後）
   useEffect(() => {
-    const stored = readStoredTheme();
-    // 描画前のスクリプトが既に当てた選択を、UI側へ読み直すだけ
+    const id = readDesignTheme();
+    applyDesignTheme(id);
+    // Read the pre-paint choice without changing it on route remounts.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMode(stored.mode);
-    setColor(stored.color);
+    setDesign(id);
   }, []);
 
-  // 「端末に合わせる」を選んでいる間は OS の切替に追従する
-  useEffect(() => {
-    if (mode !== "auto") return;
-    const query = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = () => applyTheme("auto", color);
-    query.addEventListener("change", handleChange);
-    return () => query.removeEventListener("change", handleChange);
-  }, [mode, color]);
-
-  // パネルの外を押したら閉じる
   useEffect(() => {
     if (!isOpen) return;
-    function handlePointerDown(event: MouseEvent) {
+    function outside(event: PointerEvent) {
       if (!wrapperRef.current?.contains(event.target as Node)) setIsOpen(false);
     }
-    document.addEventListener("mousedown", handlePointerDown);
-    return () => document.removeEventListener("mousedown", handlePointerDown);
+    function escape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+        triggerRef.current?.focus();
+      }
+    }
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", escape);
+    return () => {
+      document.removeEventListener("pointerdown", outside);
+      document.removeEventListener("keydown", escape);
+    };
   }, [isOpen]);
-
-  function update(nextMode: ThemeMode, nextColor: ThemeColor) {
-    setMode(nextMode);
-    setColor(nextColor);
-    applyTheme(nextMode, nextColor);
-    storeTheme(nextMode, nextColor);
-  }
 
   return (
     <div className="theme-toggle" ref={wrapperRef}>
       <button
+        ref={triggerRef}
         type="button"
         className="tool-btn"
+        aria-label={t("theme.button")}
         aria-expanded={isOpen}
         aria-haspopup="dialog"
+        aria-controls={panelId}
         onClick={() => setIsOpen((current) => !current)}
       >
         {t("theme.button")}
-        <span className="theme-toggle__dot" aria-hidden="true" />
+        {design && (
+          <span className="design-picker__current" aria-hidden="true">
+            {
+              DESIGN_THEMES.find((theme) => theme.id === design)?.name.split(
+                " / ",
+              )[0]
+            }
+          </span>
+        )}
       </button>
-
       {isOpen && (
-        <div className="theme-toggle__panel" role="dialog" aria-label={t("theme.dialogLabel")}>
-          <fieldset className="theme-toggle__group">
-            <legend className="theme-toggle__legend">{t("theme.brightness")}</legend>
-            <div className="theme-toggle__options">
-              {THEME_MODES.map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  className={`theme-toggle__option ${mode === option ? "is-active" : ""}`}
-                  aria-pressed={mode === option}
-                  onClick={() => update(option, color)}
+        <div
+          id={panelId}
+          className="theme-toggle__panel"
+          role="dialog"
+          aria-label={t("theme.dialogLabel")}
+        >
+          <p className="design-picker__note">{t("theme.randomHint")}</p>
+          <div className="design-picker__options">
+            {DESIGN_THEMES.map((theme) => (
+              <button
+                key={theme.id}
+                type="button"
+                aria-label={theme.name}
+                className={`theme-toggle__option design-picker__option ${design === theme.id ? "is-active" : ""}`}
+                aria-pressed={design === theme.id}
+                onClick={() => {
+                  applyDesignTheme(theme.id);
+                  setDesign(theme.id);
+                }}
+              >
+                <span
+                  className={`design-preview design-preview--${theme.id}`}
+                  aria-hidden="true"
                 >
-                  {t(`theme.modes.${option}`)}
-                </button>
-              ))}
-            </div>
-          </fieldset>
-
-          <fieldset className="theme-toggle__group">
-            <legend className="theme-toggle__legend">{t("theme.color")}</legend>
-            <div className="theme-toggle__options">
-              {THEME_COLORS.map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  className={`theme-toggle__option ${color === option ? "is-active" : ""}`}
-                  aria-pressed={color === option}
-                  onClick={() => update(mode, option)}
-                >
-                  {t(`theme.colors.${option}`)}
-                </button>
-              ))}
-            </div>
-          </fieldset>
+                  <span className="design-preview__heading" />
+                  <span className="design-preview__workspace">
+                    <span className="design-preview__form">
+                      <i />
+                      <i />
+                      <b />
+                    </span>
+                    <span className="design-preview__result">
+                      <i />
+                      <b />
+                      <i />
+                    </span>
+                  </span>
+                </span>
+                <span className="design-picker__name">{theme.name}</span>
+                <span className="design-picker__check" aria-hidden="true">
+                  {design === theme.id ? "✓" : ""}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>

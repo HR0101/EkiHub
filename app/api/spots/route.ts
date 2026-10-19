@@ -22,7 +22,7 @@ export async function GET(request: Request): Promise<Response> {
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
       return Response.json(
         { error: "緯度経度を指定してください." } satisfies ApiError,
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -30,21 +30,24 @@ export async function GET(request: Request): Promise<Response> {
     if (!isSpotCategory(rawCategory)) {
       return Response.json(
         { error: "未対応のカテゴリです: " + rawCategory } satisfies ApiError,
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const radius = Math.min(
       RADIUS_MAX,
-      Math.max(RADIUS_MIN, Number(params.get("radius")) || RADIUS_DEFAULT)
+      Math.max(RADIUS_MIN, Number(params.get("radius")) || RADIUS_DEFAULT),
     );
 
-    const spots = await fetchNearbySpots({
-      lat,
-      lng,
-      category: rawCategory,
-      radius,
-    });
+    const spots = await fetchNearbySpots(
+      {
+        lat,
+        lng,
+        category: rawCategory,
+        radius,
+      },
+      request.signal,
+    );
     return Response.json({
       count: spots.length,
       category: rawCategory,
@@ -55,9 +58,10 @@ export async function GET(request: Request): Promise<Response> {
     console.error("周辺スポットの取得に失敗:", error);
     return Response.json(
       {
-        error: "周辺スポットの取得に失敗しました。時間をおいて再度お試しください。",
+        error:
+          "周辺スポットの取得に失敗しました。時間をおいて再度お試しください。",
       } satisfies ApiError,
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useTransition } from "react";
 
 import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { MeetingPoints } from "@/components/MeetingPoints";
 import { NearbySpots } from "@/components/NearbySpots";
 import { Hero, Toolbar } from "@/components/PageChrome";
 import { Ranking } from "@/components/Ranking";
 import { ResultCard } from "@/components/ResultCard";
 import { StationForm } from "@/components/StationForm";
+import { ThemeArtwork } from "@/components/ThemeArtwork";
 import { TrainInformation } from "@/components/TrainInformation";
 import { TravelList } from "@/components/TravelList";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -222,6 +224,7 @@ export function HomeView({ page = "input" }: { page?: "input" | "results" }) {
         <div className="hero">
           <Hero />
         </div>
+        <ThemeArtwork />
         <Toolbar
           history={{
             entries: history.entries,
@@ -377,6 +380,7 @@ export function HomeView({ page = "input" }: { page?: "input" | "results" }) {
               />
             )}
 
+            {currentStation && <MeetingPoints station={currentStation} />}
             {currentStation && <NearbySpots station={currentStation} />}
 
             <div className="result-service">

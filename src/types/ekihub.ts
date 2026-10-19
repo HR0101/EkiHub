@@ -179,3 +179,35 @@ export interface ApiError {
   /** 未登録の駅名（/api/center のみ） */
   unknown?: string[];
 }
+
+/** 待ち合わせスポットの種別 */
+export type MeetingPointType =
+  | "statue"
+  | "plaza"
+  | "gate"
+  | "building"
+  | "landmark";
+
+/** データの信頼度 */
+export type MeetingPointConfidence = "high" | "medium" | "low";
+
+/** 待ち合わせスポット1件 */
+export interface MeetingPoint {
+  name: string;
+  kana?: string;
+  lat: number;
+  lng: number;
+  type: MeetingPointType;
+  description: string;
+  exit?: string | null;
+  confidence: MeetingPointConfidence;
+  sourceUrl?: string;
+}
+
+/** 駅ごとの待ち合わせスポット定義（data/meetingPoints.json の要素） */
+export interface StationMeetingPoints {
+  station: string;
+  stationHint?: string;
+  meetingPoints: MeetingPoint[];
+}
+

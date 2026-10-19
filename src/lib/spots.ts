@@ -31,15 +31,16 @@ export interface SpotResult {
 
 export async function fetchSpotsWithFallback(
   query: SpotQuery,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<SpotResult> {
   try {
-    const spots = await fetchNearbySpots(query);
+    const spots = await fetchNearbySpots(query, signal);
     return { spots, source: "browser" };
   } catch (browserError) {
+    signal?.throwIfAborted();
     console.warn(
       "Overpassへ直接アクセスできなかったため、サーバー経由で取得します:",
-      (browserError as Error).message
+      (browserError as Error).message,
     );
     const spots = await fetchSpotsViaServer(query, signal);
     return { spots, source: "server" };

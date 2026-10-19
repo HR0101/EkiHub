@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { useState } from "react";
 
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -35,7 +36,7 @@ export function NearbySpots({ station }: Props) {
 
   const spotsQuery = useQuery({
     // 駅・カテゴリ・半径の組み合わせごとにキャッシュする
-    queryKey: ["spots", station.name, category, radius],
+    queryKey: ["spots", station.lat, station.lng, category, radius],
     queryFn: async ({ signal }) => {
       // enabled で null を弾いているので、ここに来る時点で必ず選ばれている
       if (category === null) throw new Error("category is required");
@@ -47,6 +48,8 @@ export function NearbySpots({ station }: Props) {
     },
     // カテゴリを選ぶまでは問い合わせない
     enabled: category !== null,
+    retry: false,
+    staleTime: 30 * 60 * 1000,
   });
 
   return (
@@ -89,7 +92,7 @@ export function NearbySpots({ station }: Props) {
         )}
 
         {spotsQuery.isPending && category !== null && (
-          <p className="spot-note">{t("spots.searching")}</p>
+          <LoadingIndicator label={t("spots.searching")} />
         )}
 
         {spotsQuery.isError && <p className="spot-note">{t("spots.failed")}</p>}

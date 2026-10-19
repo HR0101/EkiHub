@@ -1,7 +1,7 @@
 "use client";
 
 import L from "leaflet";
-import { Fragment, useEffect, useMemo } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import {
   CircleMarker,
   MapContainer,
@@ -105,8 +105,13 @@ function FitBounds({ points }: { points: [number, number][] }) {
 /** 位置関係マップ。入力駅・候補駅・重心を1枚に重ねる */
 export function StationMap({ result, station }: Props) {
   const { t } = useTranslation();
-  // 色は globals.css の :root が唯一の定義。ここでは読むだけ
-  const colors = readThemeColors();
+  // Repaint vector overlays as soon as the user switches designs.
+  const [colors, setColors] = useState(readThemeColors);
+  useEffect(() => {
+    const update = () => setColors(readThemeColors());
+    window.addEventListener("ekihub-design-change", update);
+    return () => window.removeEventListener("ekihub-design-change", update);
+  }, []);
   const center = station ?? result?.best ?? null;
 
   const points = useMemo<[number, number][]>(() => {

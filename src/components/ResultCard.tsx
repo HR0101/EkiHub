@@ -123,11 +123,13 @@ export function ResultCard({ result, station, onQuickStart }: Props) {
   return (
     <div className="result-card">
       <div className="result-card__content">
-        <span className="result-card__eyebrow">
-          {t(isTop ? "result.eyebrowBest" : "result.eyebrowSelected")}
-        </span>
-        <h3 className="result-card__name">{station.name}</h3>
-        <p className="result-card__kana">{stationSubtitle(station)}</p>
+        <div className="result-card__identity">
+          <span className="result-card__eyebrow">
+            {t(isTop ? "result.eyebrowBest" : "result.eyebrowSelected")}
+          </span>
+          <h3 className="result-card__name">{station.name}</h3>
+          <p className="result-card__kana">{stationSubtitle(station)}</p>
+        </div>
 
         <ul className="chips">
           {station.lines.map((line) => (

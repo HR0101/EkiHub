@@ -147,6 +147,20 @@ export const zh: Messages = {
     more: "另有 {count} 处（仅显示前 {limit} 处）",
   },
 
+  meetingPoints: {
+    title: "集合地点",
+    types: {
+      statue: "雕像·纪念碑",
+      plaza: "广场",
+      gate: "检票口·出入口",
+      building: "建筑物·设施",
+      landmark: "地标",
+    },
+    exit: "最近出口: {exit}",
+    distance: "约 {meters}m（步行约 {minutes} 分钟）",
+    source: "来源",
+  },
+
   trainInfo: {
     detailsLabel: "数据来源与联系",
     title: "铁路运行信息",
@@ -175,6 +189,7 @@ export const zh: Messages = {
   },
 
   theme: {
+    randomHint: "每次打开页面时随机选择，也可以在此切换。",
     button: "主题",
     dialogLabel: "主题设置",
     brightness: "明暗",

@@ -1,0 +1,338 @@
+/* VIOLET — palette, material and component styling. */
+html[data-design="violet"] {
+  --brand-page: #ede9f5;
+  --brand-surface: #ffffff;
+  --brand-sunken: #f3eff9;
+  --brand-line: #30243d;
+  --brand-ink: #29223a;
+  --brand-ink-sub: #60526f;
+  --brand-ink-faint: #6d5c7c;
+  --brand-accent: #7350b5;
+  --brand-accent-wash: #e9dff9;
+  --design-radius: 12px;
+  --design-border: 2px solid var(--text-main);
+  --design-shadow: 5px 5px 0 var(--text-main);
+  --design-button-border: 2px solid var(--text-main);
+  --design-button-shadow: 3px 3px 0 var(--text-main);
+  --design-header:
+    radial-gradient(circle, #7350b52e 1px, transparent 1.5px) 0 0 / 12px 12px,
+    var(--nm-surface);
+}
+
+/* Soft pop: sticker labels, confident ink and a graphic rhythm. */
+html[data-design="violet"] .home-app .home-header {
+  border-radius: 16px;
+  border-width: 3px;
+}
+html[data-design="violet"] .home-app .hero__badge {
+  padding: 7px 14px;
+  letter-spacing: 0.03em;
+  border-width: 2px;
+}
+html[data-design="violet"] .home-app .hero__title {
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  line-height: 1.5;
+}
+html[data-design="violet"] .home-app .hero__lead {
+  font-weight: 500;
+  color: #473953;
+}
+html[data-design="violet"] .home-app .toolbar {
+  border-top: 2px solid #29223a;
+}
+html[data-design="violet"]
+  .home-app
+  :is(.tool-btn, .locale-toggle, .btn--ghost) {
+  border: 2px solid #29223a;
+  border-radius: 7px;
+  font-weight: 700;
+  background: #fff;
+}
+html[data-design="violet"] .home-app .tool-btn:hover {
+  box-shadow: 2px 2px 0 #29223a;
+  transform: translate(-1px, -1px);
+}
+html[data-design="violet"] .home-app .tool-btn:active {
+  box-shadow: none;
+  transform: translate(1px, 1px);
+}
+html[data-design="violet"] .home-app .panel__title {
+  border-bottom: 2px solid #29223a;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+html[data-design="violet"] .home-app .panel__title::before {
+  content: "";
+  width: 11px;
+  height: 20px;
+  display: block;
+  background: #bb9ce4;
+  border: 2px solid #29223a;
+  transform: skew(-10deg);
+  border-radius: 0;
+}
+html[data-design="violet"] .home-app .input-row input {
+  border: 2px solid #29223a;
+  border-radius: 6px;
+  background: #fcfaff;
+}
+html[data-design="violet"] .home-app .input-row input:focus {
+  box-shadow: 3px 3px 0 #7350b5;
+}
+html[data-design="violet"] .home-app .input-row__index {
+  background: #29223a;
+  color: #fff;
+  border-radius: 5px;
+  font-weight: 900;
+}
+html[data-design="violet"] .home-app .toggle {
+  border: 2px solid #29223a;
+  padding: 5px;
+  border-radius: 7px;
+  background: #f3eff9;
+}
+html[data-design="violet"] .home-app .toggle__slider {
+  background: #d8c4f1;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 2px #29223a;
+}
+html[data-design="violet"] .home-app .btn--primary:enabled {
+  border: 2px solid #29223a;
+  border-radius: 6px;
+  box-shadow: 4px 4px 0 #29223a;
+}
+html[data-design="violet"] .home-app .btn--primary:enabled:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 6px 6px 0 #29223a;
+}
+html[data-design="violet"] .home-app .btn--primary:enabled:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 #29223a;
+}
+html[data-design="violet"] .home-app .result-card__eyebrow {
+  display: inline-block;
+  padding: 5px 12px;
+  border: 2px solid #29223a;
+  border-radius: 5px;
+  background: #e9dff9;
+  color: #503277;
+  font-size: 0.85rem;
+  transform: rotate(-2deg);
+}
+html[data-design="violet"] .home-app .result-card__name {
+  font-weight: 900;
+  text-shadow: 3px 3px 0 #d8c4f1;
+}
+html[data-design="violet"] .home-app .result-sheet .metric {
+  padding: 16px;
+  border: 2px solid #29223a;
+  border-radius: 9px;
+  background: #f3eff9;
+}
+html[data-design="violet"] .home-app .result-sheet .metric:first-child {
+  background: #e1d0f3;
+  box-shadow: 3px 3px 0 #29223a;
+}
+html[data-design="violet"] .home-app .metric__value {
+  font-weight: 900;
+}
+html[data-design="violet"] .home-app .metric__label {
+  font-size: 0.85rem;
+}
+html[data-design="violet"] .home-app .result-sheet .chips li {
+  padding: 4px 9px;
+  border: 1px solid #29223a;
+  border-radius: 5px;
+  background: #fff;
+  font-size: 0.85rem;
+}
+html[data-design="violet"] .home-app .result-sheet .map {
+  border: 2px solid #29223a;
+  border-radius: 9px;
+}
+html[data-design="violet"] .home-app .ranking-table thead th {
+  background: #d8c4f1;
+  border-block: 2px solid #29223a;
+  color: #29223a;
+  font-weight: 800;
+}
+html[data-design="violet"] .home-app .ranking-mobile__row.is-selected {
+  border: 2px solid #29223a;
+  border-radius: 7px;
+  box-shadow: 3px 3px 0 #29223a;
+}
+html[data-design="violet"] .home-app .travel-item__bar {
+  height: 8px;
+  border: 1px solid #29223a;
+  border-radius: 3px;
+  background: #e9dff9;
+}
+html[data-design="violet"] .home-app .travel-item__fill {
+  background: #9f7bcb;
+  border-radius: 0;
+}
+html[data-design="violet"] .home-app .result-card__icon {
+  width: 80px;
+  height: 80px;
+  background: #d8c4f1;
+  border: 2px solid #29223a;
+  box-shadow: 4px 4px 0 #29223a;
+}
+html[data-design="violet"] .home-app .result-card__empty-title {
+  font-weight: 900;
+  font-size: 1.6rem;
+}
+
+html[data-design="violet"] .home-app .hero__badge {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 6px;
+  transform: rotate(-2deg);
+  box-shadow: 3px 3px 0 var(--text-main);
+}
+html[data-design="violet"] .home-app .hero__title .accent {
+  text-shadow:
+    2px 2px 0 var(--nm-surface),
+    4px 4px 0 var(--text-main);
+}
+html[data-design="violet"] .home-app .result-card__icon {
+  transform: rotate(-6deg);
+}
+@media (max-width: 600px) {
+  html[data-design="violet"] {
+    --design-shadow: 3px 3px 0 var(--text-main);
+  }
+  html[data-design="violet"] .home-app .hero__title .accent {
+    text-shadow:
+      1px 1px 0 var(--nm-surface),
+      3px 3px 0 var(--text-main);
+  }
+}
+html[data-design="violet"] .home-app .hero__badge {
+  border: 2px solid #29223a;
+}
+
+/* Composition: an oversized headline and a sticker-like station poster. */
+html[data-design="violet"] .home-app .home-header {
+  grid-template-columns: minmax(0, 1fr) minmax(200px, 26%);
+  border-radius: 16px 16px 44px 16px;
+  padding: clamp(24px, 3.5vw, 44px);
+}
+html[data-design="violet"] .home-app .hero__title {
+  font-size: clamp(2.3rem, 4.7vw, 4.5rem);
+  line-height: 1.3;
+}
+html[data-design="violet"] .home-app .hero__lead {
+  max-width: 40rem;
+}
+html[data-design="violet"] .home-app .theme-art {
+  transform: rotate(6deg);
+}
+html[data-design="violet"] .home-app .result-card__identity {
+  border: 2px solid #29223a;
+  border-radius: 9px;
+  padding: 24px;
+  background: linear-gradient(135deg, #e1d0f3 0 65%, #f1e9fb 65%);
+  box-shadow: 4px 4px 0 #29223a;
+  margin: 0 4px 6px 0;
+}
+html[data-design="violet"]
+  .home-app
+  .result-card__identity
+  .result-card__eyebrow {
+  background: #fff;
+  transform: rotate(-3deg);
+  box-shadow: 2px 2px 0 #29223a;
+}
+html[data-design="violet"] .home-app .result-card__name {
+  font-size: clamp(2.6rem, 5vw, 4.1rem);
+  margin-top: 12px;
+  line-height: 1.25;
+  text-shadow: 2px 2px 0 #fff;
+}
+html[data-design="violet"] .home-app .result-card__kana {
+  color: #503d67;
+  margin-top: 12px;
+  font-size: 0.85rem;
+}
+html[data-design="violet"] .home-app .result-navigation {
+  border: 0;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+html[data-design="violet"] .home-app .result-navigation :is(a, button) {
+  padding: 8px 12px;
+  background: #f3eff9;
+  border: 2px solid #29223a;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  color: #503277;
+  box-shadow: 2px 2px 0 #29223a;
+}
+html[data-design="violet"] .home-app .result-navigation a:hover {
+  text-decoration: none;
+  background: #d8c4f1;
+}
+html[data-design="violet"] .home-app .result-navigation a:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+html[data-design="violet"]
+  .home-app
+  :is(.travel-list__title, .ranking__title, .result-map__title) {
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+html[data-design="violet"]
+  .home-app
+  .quick-start__items
+  .tool-btn:nth-child(2) {
+  transform: rotate(-2deg);
+}
+html[data-design="violet"]
+  .home-app
+  .quick-start__items
+  .tool-btn:nth-child(3) {
+  transform: rotate(1deg);
+}
+html[data-design="violet"] .home-app .form-guide {
+  border-bottom: 2px dashed #b29acb;
+}
+html[data-design="violet"] .home-app .search-preferences {
+  border-block: 2px dashed #b29acb;
+}
+html[data-design="violet"] .home-app .suggest {
+  border: 2px solid #29223a;
+  border-radius: 7px;
+  box-shadow: 4px 4px 0 #29223a;
+}
+html[data-design="violet"] .home-app .suggest__item.is-active {
+  background: #d8c4f1;
+  box-shadow: inset 4px 0 #7350b5;
+}
+html[data-design="violet"] .home-app .result-card__range {
+  border-left: 4px solid #7350b5;
+  padding-left: 14px;
+  font-size: 0.85rem;
+}
+@media (max-width: 899px) {
+  html[data-design="violet"] .home-app .home-header {
+    grid-template-columns: minmax(0, 1fr) 150px;
+  }
+}
+@media (max-width: 600px) {
+  html[data-design="violet"] .home-app .home-header {
+    grid-template-columns: minmax(0, 1fr);
+    border-radius: 12px 12px 28px 12px;
+    padding: 24px 20px;
+  }
+  html[data-design="violet"] .home-app .hero__title {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+  html[data-design="violet"] .home-app .result-card__identity {
+    padding: 20px 16px;
+  }
+}
