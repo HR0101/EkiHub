@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import sampleData from "./fixtures/sampleMeetingPoints.json";
 import {
+  MAX_DISTANCE_FROM_STATION_METERS,
   calculateDistanceMeters,
   estimateWalkingMinutes,
   getMeetingPoints,
@@ -141,17 +142,105 @@ describe("getMeetingPoints", () => {
       expect(jrPoints[0]?.name).toBe("JR府中駅前広場");
     });
 
-    it("路線が指定されない・一致しない場合でも落ちずに最初の候補を返す", () => {
-      const fallback = getMeetingPoints("府中", [], multiStationData);
-      expect(fallback).toHaveLength(1);
-      expect(fallback[0]?.name).toBe("府中駅南口ペデストリアンデッキ");
+    it("路線が不明（空）のときは照合できないため、先頭の候補を返す", () => {
+      const unknown = getMeetingPoints("府中", [], multiStationData);
+      expect(unknown).toHaveLength(1);
+      expect(unknown[0]?.name).toBe("府中駅南口ペデストリアンデッキ");
+    });
 
+    it("路線が分かっていて、どの stationHint とも一致しなければ空配列を返す（別駅を出さない）", () => {
       const unknownLine = getMeetingPoints(
         "府中",
         ["未知の路線"],
         multiStationData,
       );
-      expect(unknownLine).toHaveLength(1);
+      expect(unknownLine).toEqual([]);
+    });
+
+    it("エントリが1件だけでも、stationHint が路線と食い違えば空配列を返す", () => {
+      // 広島の府中駅（JR福塩線）に、京王線の府中駅のデータが出ていた不具合の回帰テスト
+      const onlyKeio = multiStationData.slice(0, 1);
+      const hiroshima = getMeetingPoints("府中", ["JR福塩線"], onlyKeio, {
+        lat: 34.5714,
+        lng: 133.2355,
+      });
+      expect(hiroshima).toEqual([]);
+    });
+
+    it("stationHint の無いエントリは、路線が何であっても採用される", () => {
+      const noHint: StationMeetingPoints[] = [
+        { ...multiStationData[0]!, stationHint: undefined },
+      ];
+      const result = getMeetingPoints("府中", ["JR福塩線"], noHint);
+      expect(result).toHaveLength(1);
+    });
+
+    it("路線が一致するエントリが、hint無しのエントリより優先される", () => {
+      const mixed: StationMeetingPoints[] = [
+        { ...multiStationData[0]!, stationHint: undefined },
+        multiStationData[1]!,
+      ];
+      const result = getMeetingPoints("府中", ["JR福塩線"], mixed);
+      expect(result[0]?.name).toBe("JR府中駅前広場");
+    });
+  });
+
+  describe("駅からの距離による除外", () => {
+    const farData: StationMeetingPoints[] = [
+      {
+        station: "テスト",
+        meetingPoints: [
+          {
+            name: "近いスポット",
+            lat: 35.0,
+            lng: 135.0,
+            type: "plaza",
+            description: "駅前",
+            confidence: "high",
+          },
+          {
+            name: "遠すぎるスポット",
+            lat: 35.1,
+            lng: 135.0,
+            type: "plaza",
+            description: "約11km離れている",
+            confidence: "high",
+          },
+        ],
+      },
+    ];
+
+    it("上限（1000m）を超えるスポットは除外し、範囲内は残す", () => {
+      const result = getMeetingPoints("テスト", [], farData, {
+        lat: 35.0005,
+        lng: 135.0,
+      });
+      expect(result.map((p) => p.name)).toEqual(["近いスポット"]);
+    });
+
+    it("上限ちょうど付近のスポットは残す", () => {
+      const edge: StationMeetingPoints[] = [
+        {
+          station: "テスト",
+          meetingPoints: [
+            {
+              ...farData[0]!.meetingPoints[0]!,
+              name: "約900m",
+              lat: 35.0081, // 緯度0.0081度 ≒ 900m
+            },
+          ],
+        },
+      ];
+      const result = getMeetingPoints("テスト", [], edge, { lat: 35.0, lng: 135.0 });
+      expect(result).toHaveLength(1);
+      expect(result[0]?.distanceMeters).toBeLessThanOrEqual(
+        MAX_DISTANCE_FROM_STATION_METERS,
+      );
+    });
+
+    it("駅座標が無いときは距離で除外しない", () => {
+      const result = getMeetingPoints("テスト", [], farData);
+      expect(result).toHaveLength(2);
     });
   });
 

@@ -2,10 +2,11 @@
  * 待ち合わせスポットデータの参照と距離計算。
  *
  * data/meetingPoints.json をビルド時に同梱して参照する。
- * ファイルが存在しない場合や空の場合は空配列へ安全にフォールバックする。
+ * 実データ未収集の間は空配列（[]）をコミットしておき、空の場合は空配列を返す。
+ * ビルド設定でのエイリアス差し替えには頼らない（設定の分岐が本番ビルドの事故源になるため）。
  */
 
-import defaultDataset from "@data/meetingPoints.json";
+import defaultDataset from "../../data/meetingPoints.json";
 import type {
   MeetingPoint,
   MeetingPointType,
@@ -21,6 +22,13 @@ export interface MeetingPointWithDistance extends MeetingPoint {
 
 /** 徒歩分数の基準（不動産表示基準: 80m = 1分、端数は切り上げ） */
 const WALKING_SPEED_METERS_PER_MINUTE = 80;
+
+/**
+ * 駅から離れすぎたスポットを除外する距離の上限（メートル）。
+ * scripts/validateMeetingPoints.js の MAX_DISTANCE_ERROR_M と揃えること。
+ * 同名駅の取り違えや座標の誤りが、画面に出ないようにする最後の防壁。
+ */
+export const MAX_DISTANCE_FROM_STATION_METERS = 1000;
 
 /** 地球の平均半径（メートル） */
 const EARTH_RADIUS_METERS = 6371000;
@@ -87,6 +95,40 @@ function isValidMeetingPoint(item: unknown): item is MeetingPoint {
   );
 }
 
+/** stationHint が駅の路線一覧のいずれかと一致するか */
+function matchesLines(hint: string, lines: readonly string[]): boolean {
+  const trimmed = hint.trim();
+  if (!trimmed) return false;
+  return lines.some((line) => line.includes(trimmed) || trimmed.includes(line));
+}
+
+/**
+ * 駅名が一致した複数エントリから、対象の駅のものを選ぶ。
+ *
+ * 優先順位:
+ *   1. stationHint が路線と一致するエントリ（確実に同じ駅）
+ *   2. stationHint の無いエントリ（同名駅が他にない前提で書かれたもの）
+ *   3. 路線が不明（lines が空）のときに限り、stationHint 付きのエントリ
+ *      （照合できないため、後段の距離チェックに委ねる）
+ * 路線が分かっていて stationHint と食い違うエントリは、同名の別駅なので採用しない。
+ */
+function selectEntry(
+  entries: readonly StationMeetingPoints[],
+  lines?: readonly string[] | string[],
+): StationMeetingPoints | undefined {
+  const knownLines = lines ?? [];
+  const verified = entries.find(
+    (entry) => entry.stationHint && matchesLines(entry.stationHint, knownLines),
+  );
+  if (verified) return verified;
+
+  const generic = entries.find((entry) => !entry.stationHint);
+  if (generic) return generic;
+
+  if (knownLines.length === 0) return entries[0];
+  return undefined;
+}
+
 /**
  * 駅名（および路線）から該当する待ち合わせスポット配列を取得する。
  *
@@ -118,31 +160,9 @@ export function getMeetingPoints(
 
   if (matchedEntries.length === 0) return [];
 
-  let targetEntry: StationMeetingPoints | undefined;
+  const targetEntry = selectEntry(matchedEntries, lines);
 
-  if (matchedEntries.length === 1) {
-    targetEntry = matchedEntries[0];
-  } else {
-    // 同名駅の照合: lines と stationHint の一致を探す
-    if (lines && lines.length > 0) {
-      targetEntry = matchedEntries.find((entry) => {
-        if (!entry.stationHint) return false;
-        const hint = entry.stationHint.trim();
-        return lines.some(
-          (line) => line.includes(hint) || hint.includes(line),
-        );
-      });
-    }
-    // 路線で一致しなかった場合、stationHint が無いエントリ、または先頭のエントリへフォールバック
-    if (!targetEntry) {
-      targetEntry =
-        matchedEntries.find((entry) => !entry.stationHint) ?? matchedEntries[0];
-    }
-  }
-
-  if (!targetEntry || !Array.isArray(targetEntry.meetingPoints)) {
-    return [];
-  }
+  if (!targetEntry) return [];
 
   // 不正なデータを安全に除外して距離を計算
   const validPoints: MeetingPointWithDistance[] = [];
@@ -161,6 +181,8 @@ export function getMeetingPoints(
         point.lat,
         point.lng,
       );
+      // 駅から遠すぎるスポットは、別の駅の情報や座標の誤りとみなして除外
+      if (dist > MAX_DISTANCE_FROM_STATION_METERS) continue;
       enriched.distanceMeters = dist;
       enriched.walkingMinutes = estimateWalkingMinutes(dist);
     }

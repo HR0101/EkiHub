@@ -1,5 +1,3 @@
-import { existsSync } from "node:fs";
-import { resolve } from "node:path";
 import type { NextConfig } from "next";
 
 /**
@@ -68,26 +66,6 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
-  },
-
-  turbopack: {
-    resolveAlias: existsSync(resolve(process.cwd(), "data/meetingPoints.json"))
-      ? {}
-      : {
-          "@data/meetingPoints.json": "./tests/fixtures/empty.json",
-        },
-  },
-
-  webpack(config) {
-    const meetingPointsFile = resolve(process.cwd(), "data/meetingPoints.json");
-    const emptyFixture = resolve(process.cwd(), "tests/fixtures/empty.json");
-    if (!existsSync(meetingPointsFile)) {
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        "@data/meetingPoints.json": emptyFixture,
-      };
-    }
-    return config;
   },
 };
 
