@@ -52,12 +52,7 @@ export function Hero() {
   return (
     <>
       <div className="hero__badge">
-        <svg className="hero__mark" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-          <path d="M6 5v7a5 5 0 0 0 5 5h6a5 5 0 0 1 5 5v1M22 5v2a5 5 0 0 1-5 5h-6a5 5 0 0 0-5 5v6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          <circle cx="6" cy="5" r="2.5" fill="currentColor" />
-          <circle cx="22" cy="5" r="2.5" fill="currentColor" />
-          <circle cx="14" cy="14.5" r="3" fill="var(--nm-surface)" stroke="currentColor" strokeWidth="2" />
-        </svg>
+        <span className="hero__mark" aria-hidden="true" />
         {t("hero.badge")}
       </div>
       <h1 className="hero__title">
