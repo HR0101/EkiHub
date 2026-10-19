@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+# node_modules は名前付きボリュームなので、イメージを焼いた後に
+# package.json が変わっていても追従できるよう毎回そろえる。
+echo "Installing Node.js packages..."
+npm install
+
+exec "${@}"
