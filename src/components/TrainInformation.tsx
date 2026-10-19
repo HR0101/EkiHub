@@ -1,12 +1,32 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { ApiRequestError, fetchTrainInformation } from "@/lib/api";
+import type { TrainInformationItem } from "@/types/ekihub";
 
 /** 既定の再取得間隔（サーバーが返す refreshAfterSeconds で上書きする） */
 const FALLBACK_REFRESH_MS = 120_000;
+
+/** 路線1件を描く。平常運転の行は状態だけで足りるので本文を出さない */
+function renderItem(item: TrainInformationItem) {
+  return (
+    <li
+      key={item.id}
+      className={`train-info-item ${item.isNormal ? "is-normal" : ""} ${
+        item.isServiceEnded ? "is-ended" : ""
+      }`}
+    >
+      <span className="train-info-item__railway">{item.railway}</span>
+      <span className="train-info-item__status">{item.status}</span>
+      {!item.isNormal && (
+        <span className="train-info-item__text">{item.text}</span>
+      )}
+    </li>
+  );
+}
 
 /** 鉄道の運行情報。ODPT のトークンが無い環境では準備中の案内を出す */
 export function TrainInformation() {
@@ -19,6 +39,16 @@ export function TrainInformation() {
       q.state.data ? q.state.data.refreshAfterSeconds * 1000 : FALLBACK_REFRESH_MS,
     retry: false,
   });
+
+  // 平常運転の路線は既定で畳んでおく（開くと全件を出す）
+  const [showsNormal, setShowsNormal] = useState(false);
+
+  // 乱れている路線と平常運転の路線を分ける。
+  // 全路線をカードで積むとこのカードだけが入力パネルの2倍以上へ伸び、
+  // 隣の列が空白になってしまうため、平常運転は件数へ畳む。
+  const items = query.data?.items ?? [];
+  const disruptedItems = items.filter((item) => !item.isNormal);
+  const normalItems = items.filter((item) => item.isNormal);
 
   const notConfigured =
     query.error instanceof ApiRequestError &&
@@ -67,27 +97,32 @@ export function TrainInformation() {
           <p>{t("trainInfo.failed")}</p>
         )}
 
-        {query.isSuccess && query.data.items.length === 0 && (
-          <p>{t("trainInfo.none")}</p>
+        {query.isSuccess && items.length === 0 && <p>{t("trainInfo.none")}</p>}
+
+        {query.isSuccess && disruptedItems.length > 0 && (
+          <ul className="train-info-list">{disruptedItems.map(renderItem)}</ul>
         )}
 
-        {query.isSuccess && query.data.items.length > 0 && (
-          <ul className="train-info-list">
-            {query.data.items.map((item) => (
-              <li
-                key={item.id}
-                className={`train-info-item ${item.isNormal ? "is-normal" : ""} ${
-                  item.isServiceEnded ? "is-ended" : ""
-                }`}
-              >
-                <span className="train-info-item__railway">{item.railway}</span>
-                <span className="train-info-item__status">{item.status}</span>
-                {!item.isNormal && (
-                  <span className="train-info-item__text">{item.text}</span>
-                )}
-              </li>
-            ))}
-          </ul>
+        {query.isSuccess && normalItems.length > 0 && (
+          <div className="train-info-normal">
+            <button
+              type="button"
+              className="train-info-normal__toggle"
+              aria-expanded={showsNormal}
+              onClick={() => setShowsNormal((shown) => !shown)}
+            >
+              <span className="train-info-normal__caret" aria-hidden="true">
+                ▸
+              </span>
+              {disruptedItems.length > 0
+                ? t("trainInfo.normalSummary", { count: normalItems.length })
+                : t("trainInfo.allNormal", { count: normalItems.length })}
+            </button>
+
+            {showsNormal && (
+              <ul className="train-info-list">{normalItems.map(renderItem)}</ul>
+            )}
+          </div>
         )}
       </div>
 
