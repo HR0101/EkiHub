@@ -193,6 +193,7 @@ export const ja = {
   },
 
   theme: {
+    randomHint: "ページを開くたびにランダムで選びます。ここから切り替えられます。",
     button: "テーマ",
     dialogLabel: "テーマ設定",
     brightness: "明るさ",

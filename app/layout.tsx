@@ -2,11 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { M_PLUS_Rounded_1c, Noto_Sans_JP } from "next/font/google";
 
 import { Providers } from "@/components/Providers";
-import { THEME_BOOT_SCRIPT } from "@/lib/theme";
+import { DESIGN_BOOT_SCRIPT } from "@/lib/designTheme";
 
 // Leaflet の基本スタイル。自前のCSSより先に読み込んで上書きできるようにする
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
+import "./themes/index.css";
 
 /**
  * 本文フォント。next/font が自ホストするので、
@@ -84,10 +85,10 @@ export default function RootLayout({
     <html lang="ja" className={`${notoSansJp.variable} ${roundedJp.variable}`} suppressHydrationWarning>
       <head>
         {/*
-          保存済みテーマを描画前に当てる。React のマウントを待つと
+          ランダムに選んだデザインを描画前に当てる。React のマウントを待つと
           一瞬ライトで表示されてちらつくため、同期スクリプトで先に流す。
         */}
-        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: DESIGN_BOOT_SCRIPT }} />
       </head>
       <body>
         <Providers>{children}</Providers>

@@ -1,0 +1,337 @@
+/* RETRO — palette, material and component styling. */
+html[data-design="retro"] {
+  --brand-page: #388582;
+  --brand-surface: #c9c9c9;
+  --brand-sunken: #bcbcbc;
+  --brand-line: #777777;
+  --brand-ink: #171717;
+  --brand-ink-sub: #363636;
+  --brand-ink-faint: #494949;
+  --brand-accent: #222879;
+  --brand-accent-wash: #dedeee;
+  --design-radius: 0px;
+  --design-font: "Courier New", var(--font-noto-sans-jp), monospace;
+  --design-border: 3px solid;
+  --design-button-border: 3px solid;
+  --design-shadow: 2px 2px 0 #171717;
+  --design-button-shadow: inset 2px 2px #fff, inset -2px -2px #555;
+}
+
+/* Desktop windows: title rails, bevelled controls, status strips. */
+html[data-design="retro"] .home-app .home-header {
+  padding-top: 54px;
+  background: #c9c9c9;
+  border-width: 3px;
+}
+html[data-design="retro"] .home-app .home-header::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 4px;
+  height: 26px;
+  background: linear-gradient(90deg, #222879, #577fa9);
+}
+html[data-design="retro"] .home-app .home-header::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  width: 12px;
+  height: 12px;
+  background: #c9c9c9;
+  border: 2px solid;
+  border-color: #fff #555 #555 #fff;
+  box-shadow: -22px 0 0 -2px #c9c9c9;
+}
+html[data-design="retro"] .home-app .hero__badge {
+  background: transparent;
+  color: #222879;
+  padding: 0;
+  letter-spacing: -0.03em;
+}
+html[data-design="retro"] .home-app .hero__title {
+  font-weight: 700;
+  letter-spacing: -0.045em;
+}
+html[data-design="retro"] .home-app .hero__lead {
+  border: 2px solid;
+  border-color: #888 #fff #fff #888;
+  padding: 8px 12px;
+  background: #d8d8d8;
+  font-size: 0.9rem;
+}
+html[data-design="retro"] .home-app .toolbar {
+  border-top: 2px solid #888;
+  box-shadow: 0 -1px #fff;
+}
+html[data-design="retro"]
+  .home-app
+  :is(.tool-btn, .btn--ghost, .locale-toggle) {
+  border: 2px solid;
+  border-color: #fff #555 #555 #fff;
+  background: #c9c9c9;
+  border-radius: 0;
+  box-shadow: none;
+}
+html[data-design="retro"] .home-app .tool-btn:active {
+  border-color: #555 #fff #fff #555;
+  transform: none;
+}
+html[data-design="retro"] .home-app .locale-toggle__option {
+  border-radius: 0;
+}
+html[data-design="retro"] .home-app .locale-toggle__option.is-active {
+  background: #dedeee;
+  color: #222879;
+  box-shadow: inset 1px 1px #777;
+}
+html[data-design="retro"] .home-app .panel {
+  padding-top: 8px;
+}
+html[data-design="retro"] .home-app .panel__title {
+  margin: 0 -16px 20px;
+  padding: 7px 12px;
+  font-size: 1rem;
+  letter-spacing: 0;
+}
+html[data-design="retro"] .home-app .input-row__index {
+  border: 1px solid #777;
+  background: #dedeee;
+  color: #222879;
+}
+html[data-design="retro"] .home-app .toggle {
+  background: #bcbcbc;
+  border: 2px solid;
+  border-color: #888 #fff #fff #888;
+  border-radius: 0;
+}
+html[data-design="retro"] .home-app .toggle__slider {
+  background: #c9c9c9;
+  border: 2px solid;
+  border-color: #fff #555 #555 #fff;
+  border-radius: 0;
+  box-shadow: none;
+}
+html[data-design="retro"] .home-app .btn--primary:enabled {
+  outline: 1px solid #171717;
+  outline-offset: 2px;
+}
+html[data-design="retro"] .home-app .result-card__eyebrow {
+  display: block;
+  padding: 7px 12px;
+  color: #fff;
+  background: linear-gradient(90deg, #222879, #577fa9);
+  font-size: 0.9rem;
+}
+html[data-design="retro"] .home-app .result-card__name {
+  margin-top: 18px;
+  font-weight: 700;
+}
+html[data-design="retro"] .home-app .result-sheet .metric {
+  padding: 12px;
+  border: 2px solid;
+  border-color: #888 #fff #fff #888;
+  background: #d8d8d8;
+}
+html[data-design="retro"] .home-app .metric__value {
+  color: #222879;
+  font-weight: 400;
+  font-family: "Courier New", monospace;
+}
+html[data-design="retro"] .home-app .metric__label {
+  font-size: 0.8rem;
+}
+html[data-design="retro"] .home-app .result-sheet .chips li {
+  padding: 3px 8px;
+  border: 1px solid;
+  border-color: #fff #888 #888 #fff;
+  font-size: 0.85rem;
+}
+html[data-design="retro"] .home-app .result-sheet .map {
+  border: 3px solid;
+  border-color: #888 #fff #fff #888;
+}
+html[data-design="retro"] .home-app .ranking-table {
+  background: #fff;
+  border: 2px solid;
+  border-color: #888 #fff #fff #888;
+}
+html[data-design="retro"] .home-app .ranking-table thead th {
+  background: #c9c9c9;
+  color: #171717;
+  border: 1px solid;
+  border-color: #fff #888 #888 #fff;
+}
+html[data-design="retro"] .home-app .ranking-table tbody tr.is-selected {
+  background: #222879;
+  color: #fff;
+}
+html[data-design="retro"]
+  .home-app
+  .ranking-table
+  .is-selected
+  .ranking-table__station {
+  color: #fff;
+}
+html[data-design="retro"] .home-app .travel-item__bar {
+  border-radius: 0;
+  height: 10px;
+  background: #b0b0b0;
+}
+html[data-design="retro"] .home-app .travel-item__fill {
+  background: repeating-linear-gradient(90deg, #222879 0 7px, #b0b0b0 7px 9px);
+  border-radius: 0;
+}
+html[data-design="retro"] .home-app .result-card__icon {
+  border: 2px solid;
+  border-color: #fff #888 #888 #fff;
+  background: #dedeee;
+}
+html[data-design="retro"] .home-app .foot {
+  padding: 12px;
+  border: 2px solid;
+  border-color: #888 #fff #fff #888;
+  text-align: left;
+  background: #c9c9c9;
+}
+@media (max-width: 600px) {
+  html[data-design="retro"] .home-app .home-header {
+    padding-top: 50px;
+  }
+}
+html[data-design="retro"]
+  .home-app
+  :is(.panel, .result-sheet, .fpanel, .home-header) {
+  border-color: #fff #555 #555 #fff;
+}
+html[data-design="retro"] .home-app .input-row input {
+  background: #fff;
+  border: 2px solid;
+  border-color: #555 #fff #fff #555;
+}
+html[data-design="retro"] .home-app .btn--primary:enabled {
+  background: #c9c9c9;
+  color: #171717;
+  border-color: #fff #555 #555 #fff;
+}
+html[data-design="retro"] .home-app .btn--primary:enabled:active {
+  border-color: #555 #fff #fff #555;
+}
+
+/* Composition: menu rail and nested document windows. */
+html[data-design="retro"] .home-app .home-header {
+  grid-template-areas: "tools tools" "hero art";
+  gap: 20px 32px;
+}
+html[data-design="retro"] .home-app .toolbar {
+  border-top: 0;
+  border-bottom: 2px solid #888;
+  padding: 0 0 12px;
+  box-shadow: 0 1px #fff;
+}
+html[data-design="retro"] .home-app .hero__title {
+  font-size: clamp(2rem, 3.7vw, 3.3rem);
+  line-height: 1.35;
+}
+html[data-design="retro"] .home-app .hero__lead {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+html[data-design="retro"] .home-app .result-card__identity {
+  border: 2px solid;
+  border-color: #888 #fff #fff #888;
+  background: #e4e4e4;
+  padding: 6px;
+}
+html[data-design="retro"]
+  .home-app
+  .result-card__identity
+  .result-card__eyebrow {
+  padding: 5px 9px;
+}
+html[data-design="retro"]
+  .home-app
+  .result-card__identity
+  :is(.result-card__name, .result-card__kana) {
+  margin-inline: 12px;
+}
+html[data-design="retro"] .home-app .result-card__identity .result-card__kana {
+  margin-bottom: 14px;
+  font-size: 0.85rem;
+}
+html[data-design="retro"] .home-app .result-navigation {
+  border-bottom: 2px solid #888;
+  padding: 0 0 4px;
+  gap: 4px;
+}
+html[data-design="retro"] .home-app .result-navigation :is(a, button) {
+  padding: 8px 14px;
+  border: 2px solid;
+  border-color: #fff #555 #555 #fff;
+  background: #c9c9c9;
+  color: #171717;
+  font-size: 0.85rem;
+}
+html[data-design="retro"] .home-app .result-navigation a:hover {
+  background: #dedeee;
+  text-decoration: none;
+}
+html[data-design="retro"] .home-app .result-navigation a:active {
+  border-color: #555 #fff #fff #555;
+}
+html[data-design="retro"]
+  .home-app
+  :is(.travel-list__title, .ranking__title, .result-map__title) {
+  font-size: 1rem;
+  background: #b5b5b5;
+  padding: 7px 10px;
+  border: 1px solid;
+  border-color: #fff #888 #888 #fff;
+}
+html[data-design="retro"] .home-app .form-guide {
+  padding: 6px 10px;
+  border: 2px solid;
+  border-color: #888 #fff #fff #888;
+}
+html[data-design="retro"] .home-app .result-card__range {
+  border: 2px solid;
+  border-color: #888 #fff #fff #888;
+  padding: 9px 12px;
+  font-size: 0.85rem;
+  background: #c9c9c9;
+}
+html[data-design="retro"] .home-app .suggest {
+  border: 2px solid;
+  border-color: #fff #555 #555 #fff;
+  box-shadow: 3px 3px 0 #171717;
+  padding: 3px;
+}
+html[data-design="retro"] .home-app .suggest__item {
+  background: #fff;
+  border-bottom: 1px solid #c9c9c9;
+}
+html[data-design="retro"] .home-app .suggest__item.is-active {
+  background: #222879;
+  color: #fff;
+  box-shadow: none;
+}
+html[data-design="retro"]
+  .home-app
+  .suggest__item.is-active
+  :is(.suggest__sub, .suggest__hl) {
+  color: #fff;
+  background: transparent;
+}
+@media (min-width: 1200px) {
+  html[data-design="retro"] .home-app .layout {
+    grid-template-columns: 390px minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+@media (max-width: 600px) {
+  html[data-design="retro"] .home-app .home-header {
+    grid-template-areas: "hero" "tools";
+  }
+}

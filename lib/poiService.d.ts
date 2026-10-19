@@ -13,4 +13,7 @@ export interface NearbySpotsQuery {
 }
 
 /** Overpass から周辺スポットを取得する（キャッシュ＋タイムアウト付き） */
-export function fetchNearbySpots(query: NearbySpotsQuery): Promise<Spot[]>;
+export function fetchNearbySpots(
+  query: NearbySpotsQuery,
+  signal?: AbortSignal,
+): Promise<Spot[]>;

@@ -1,5 +1,6 @@
 "use client";
 
+import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { useMinimumVisible } from "@/hooks/useMinimumVisible";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -13,7 +14,7 @@ export function LoadingOverlay({ isComputing }: { isComputing: boolean }) {
   if (!isVisible) return null;
 
   return (
-    <div className="loading" aria-live="polite" role="status">
+    <div className="loading">
       <div className="loading__box">
         <div className="loading__scene">
           <div className="loading__train" aria-hidden="true">
@@ -26,14 +27,7 @@ export function LoadingOverlay({ isComputing }: { isComputing: boolean }) {
           </div>
           <div className="loading__rail" aria-hidden="true" />
         </div>
-        <p className="loading__text">
-          {t("loading.text")}
-          <span className="loading__dots">
-            <i>.</i>
-            <i>.</i>
-            <i>.</i>
-          </span>
-        </p>
+        <LoadingIndicator label={t("loading.text")} />
       </div>
     </div>
   );

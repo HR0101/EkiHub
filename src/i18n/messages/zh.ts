@@ -189,6 +189,7 @@ export const zh: Messages = {
   },
 
   theme: {
+    randomHint: "每次打开页面时随机选择，也可以在此切换。",
     button: "主题",
     dialogLabel: "主题设置",
     brightness: "明暗",

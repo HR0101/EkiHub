@@ -189,6 +189,7 @@ export const ko: Messages = {
   },
 
   theme: {
+    randomHint: "페이지를 열 때마다 무작위로 선택됩니다. 여기에서 변경할 수 있습니다.",
     button: "테마",
     dialogLabel: "테마 설정",
     brightness: "밝기",

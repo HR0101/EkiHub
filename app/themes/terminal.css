@@ -1,0 +1,308 @@
+/* TERMINAL — palette, material and component styling. */
+html[data-design="terminal"] {
+  --brand-page: #101a16;
+  --brand-surface: #142019;
+  --brand-sunken: #192a20;
+  --brand-line: #40634d;
+  --brand-ink: #c2e6cc;
+  --brand-ink-sub: #9fc7ab;
+  --brand-ink-faint: #8eb99a;
+  --brand-accent: #74ef9a;
+  --brand-accent-wash: #233e2b;
+  --design-radius: 0px;
+  --design-on-accent: #102016;
+  --design-font: "Courier New", var(--font-noto-sans-jp), monospace;
+  --design-shadow: none;
+  --brand-danger: #ff8da1;
+  --design-page-background: repeating-linear-gradient(
+    0deg,
+    #101a16 0 4px,
+    #122019 4px 5px
+  );
+}
+
+/* A route-planning terminal: window rails and restrained phosphor light. */
+html[data-design="terminal"] {
+  --brand-page: #0b1410;
+  --brand-surface: #101c15;
+  --brand-line: #304f3a;
+}
+html[data-design="terminal"] .home-app .home-header {
+  border-top: 3px solid #74ef9a;
+  background: linear-gradient(110deg, #11251a, #0d1712);
+}
+html[data-design="terminal"] .home-app .hero__badge {
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  color: #74ef9a;
+}
+html[data-design="terminal"] .home-app .hero__title {
+  font-size: clamp(1.9rem, 3.7vw, 3.2rem);
+  letter-spacing: -0.025em;
+}
+html[data-design="terminal"] .home-app .hero__lead {
+  color: #9abb9f;
+  border-left: 2px solid #52775a;
+  padding-left: 14px;
+}
+html[data-design="terminal"] .home-app .toolbar {
+  border-top-style: dashed;
+}
+html[data-design="terminal"]
+  .home-app
+  :is(.tool-btn, .btn--ghost, .locale-toggle) {
+  background: transparent;
+  box-shadow: none;
+  border-color: #45684d;
+  font-weight: 400;
+}
+html[data-design="terminal"] .home-app .tool-btn:hover {
+  color: #96ffb6;
+  border-color: #74ef9a;
+  background: #1d3324;
+}
+html[data-design="terminal"] .home-app .panel {
+  padding-top: 0;
+}
+html[data-design="terminal"] .home-app .panel__title {
+  padding: 14px 0;
+  border-bottom: 1px dashed #40634d;
+  color: #74ef9a;
+  font-weight: 500;
+}
+html[data-design="terminal"] .home-app .panel__title::before {
+  display: inline;
+  background: none;
+  width: auto;
+  border-radius: 0;
+  margin-right: 8px;
+}
+html[data-design="terminal"] .home-app .input-row input {
+  background: #09140d;
+  border-color: #40634d;
+  border-radius: 0;
+  caret-color: #74ef9a;
+  font-family: inherit;
+}
+html[data-design="terminal"] .home-app .input-row input:focus {
+  box-shadow: inset 3px 0 #74ef9a;
+}
+html[data-design="terminal"] .home-app .input-row__index {
+  background: transparent;
+  color: #87b792;
+  border: 1px solid #40634d;
+}
+html[data-design="terminal"] .home-app .toggle {
+  background: #09140d;
+  border-color: #40634d;
+}
+html[data-design="terminal"] .home-app .toggle__slider {
+  background: #203b28;
+  box-shadow: inset 0 -2px #74ef9a;
+  border-radius: 0;
+}
+html[data-design="terminal"] .home-app .btn--primary:enabled {
+  border: 1px solid #74ef9a;
+  background: #74ef9a;
+  color: #0b1910;
+  letter-spacing: 0.06em;
+}
+html[data-design="terminal"] .home-app .btn--primary:enabled:hover {
+  background: #a4ffbe;
+  box-shadow: 0 0 18px #74ef9a25;
+}
+html[data-design="terminal"] .home-app .result-card__eyebrow {
+  display: inline-block;
+  padding: 4px 9px;
+  background: #74ef9a;
+  color: #0b1910;
+  font-size: 0.85rem;
+}
+html[data-design="terminal"] .home-app .result-sheet .metric {
+  border-left: 1px solid #40634d;
+  padding: 4px 16px;
+}
+html[data-design="terminal"] .home-app .metric__value {
+  color: #74ef9a;
+  font-weight: 400;
+  font-family: "Courier New", monospace;
+  font-size: 2.2rem;
+}
+html[data-design="terminal"] .home-app .metric__label {
+  font-size: 0.85rem;
+}
+html[data-design="terminal"] .home-app .result-sheet .chips li {
+  padding: 3px 7px;
+  border: 1px solid #40634d;
+  font-size: 0.85rem;
+  color: #a7c9af;
+}
+html[data-design="terminal"]
+  .home-app
+  :is(
+    .travel-list__title,
+    .ranking__title,
+    .result-map__title,
+    .fpanel__title
+  ) {
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+html[data-design="terminal"] .home-app .ranking-table thead th {
+  background: #1b3022;
+  color: #a7c9af;
+}
+html[data-design="terminal"] .home-app .travel-item__bar {
+  height: 8px;
+  background: #203b28;
+  border-radius: 0;
+}
+html[data-design="terminal"] .home-app .travel-item__fill {
+  border-radius: 0;
+  background: repeating-linear-gradient(90deg, #74ef9a 0 5px, #1c3323 5px 7px);
+}
+html[data-design="terminal"] .home-app .result-card__icon {
+  border: 1px dashed #74ef9a;
+  background: transparent;
+  box-shadow: none;
+}
+html[data-design="terminal"] .home-app .result-card__empty-title {
+  font-weight: 500;
+  letter-spacing: 0;
+}
+html[data-design="terminal"] .home-app .quick-start__label {
+  text-align: left;
+  color: #74ef9a;
+}
+html[data-design="terminal"]
+  .home-app
+  :is(
+    .result-navigation,
+    .result-sheet .travel-list,
+    .result-sheet .ranking,
+    .foot
+  ) {
+  border-color: #40634d;
+  border-top-style: dashed;
+}
+
+html[data-design="terminal"] .home-app .hero__badge::before {
+  content: "[";
+}
+html[data-design="terminal"] .home-app .hero__badge::after {
+  content: "]";
+}
+html[data-design="terminal"] .home-app .result-card__name {
+  color: var(--accent);
+  text-shadow: 0 0 18px #74ef9a44;
+}
+html[data-design="terminal"] .home-app .panel__title::before {
+  content: ">";
+}
+
+/* Composition: a compact command workspace, with the output in its own frame. */
+html[data-design="terminal"] .home-app {
+  max-width: 1600px;
+}
+html[data-design="terminal"] .home-app .home-header {
+  border: 1px solid #40634d;
+  border-top: 4px solid #74ef9a;
+  gap: 18px 32px;
+  padding-top: 28px;
+}
+html[data-design="terminal"] .home-app .hero__title {
+  font-weight: 400;
+  line-height: 1.35;
+}
+html[data-design="terminal"] .home-app .hero__title .accent {
+  font-weight: 700;
+}
+html[data-design="terminal"] .home-app .toolbar {
+  gap: 6px;
+  padding-top: 14px;
+}
+html[data-design="terminal"] .home-app .theme-art {
+  opacity: 0.8;
+}
+html[data-design="terminal"] .home-app .result-card__identity {
+  padding: 18px 20px;
+  border: 1px solid #40634d;
+  border-left: 4px solid #74ef9a;
+  background: #09140d;
+}
+html[data-design="terminal"] .home-app .result-card__name {
+  font-weight: 400;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  letter-spacing: 0.02em;
+  margin-top: 8px;
+}
+html[data-design="terminal"] .home-app .result-card__kana {
+  color: #8eb99a;
+  font-size: 0.85rem;
+}
+html[data-design="terminal"] .home-app .result-navigation {
+  padding: 0;
+  border-block: 1px solid #40634d;
+  gap: 0;
+}
+html[data-design="terminal"] .home-app .result-navigation :is(a, button) {
+  padding: 10px 16px;
+  border-right: 1px solid #40634d;
+  color: #a7c9af;
+  font-size: 0.85rem;
+}
+html[data-design="terminal"] .home-app .result-navigation a:hover {
+  background: #203b28;
+  color: #96ffb6;
+  text-decoration: none;
+}
+html[data-design="terminal"] .home-app .result-card__empty {
+  text-align: left;
+  padding: 16px 0;
+}
+html[data-design="terminal"] .home-app .result-card__icon {
+  margin-left: 0;
+  width: 56px;
+  height: 56px;
+}
+html[data-design="terminal"] .home-app .result-card__empty-lead {
+  margin-left: 0;
+  max-width: none;
+}
+html[data-design="terminal"] .home-app .quick-start__items {
+  justify-content: flex-start;
+}
+html[data-design="terminal"] .home-app .quick-start__items .tool-btn::before {
+  content: ">";
+  padding-right: 8px;
+  color: #74ef9a;
+}
+html[data-design="terminal"] .home-app .suggest {
+  border-color: #74ef9a;
+  box-shadow: 4px 4px 0 #050b07;
+}
+html[data-design="terminal"] .home-app .suggest__hl {
+  background: #74ef9a;
+  color: #0b1910;
+  padding: 0 2px;
+}
+html[data-design="terminal"] .home-app .form-guide {
+  border-bottom-style: dashed;
+}
+html[data-design="terminal"] .home-app .search-preferences {
+  border-block-style: dashed;
+}
+html[data-design="terminal"] .home-app .result-card__range {
+  border-left: 1px solid #40634d;
+  padding-left: 14px;
+  font-size: 0.85rem;
+}
+@media (min-width: 1100px) {
+  html[data-design="terminal"] .home-app .home-header {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+  html[data-design="terminal"] .home-app .layout {
+    grid-template-columns: 350px minmax(0, 1fr);
+    gap: 20px;
+  }
+}

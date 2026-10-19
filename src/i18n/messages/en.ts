@@ -189,6 +189,7 @@ export const en: Messages = {
   },
 
   theme: {
+    randomHint: "A random design on each page load. Switch designs here.",
     button: "Theme",
     dialogLabel: "Theme settings",
     brightness: "Brightness",
