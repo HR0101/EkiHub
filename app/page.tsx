@@ -1,5 +1,6 @@
 import { HomeView } from "@/components/HomeView";
-import { Footer, Hero } from "@/components/PageChrome";
+import { Footer } from "@/components/PageChrome";
+import "./home.css";
 
 /**
  * トップページ。
@@ -13,11 +14,7 @@ export default function HomePage() {
     <>
       <div className="aurora" aria-hidden="true" />
 
-      <main className="app">
-        <header className="hero">
-          <Hero />
-        </header>
-
+      <main className="app home-app">
         <HomeView />
 
         <Footer />
