@@ -38,10 +38,11 @@ function fareLabelKey(percent: number): MessageKey {
   return "form.fareLabels.high";
 }
 
-const MODE_OPTIONS: { value: Mode; mainKey: MessageKey; subKey: MessageKey }[] = [
-  { value: "A", mainKey: "form.modeAMain", subKey: "form.modeASub" },
-  { value: "B", mainKey: "form.modeBMain", subKey: "form.modeBSub" },
-];
+const MODE_OPTIONS: { value: Mode; mainKey: MessageKey; subKey: MessageKey }[] =
+  [
+    { value: "A", mainKey: "form.modeAMain", subKey: "form.modeASub" },
+    { value: "B", mainKey: "form.modeBMain", subKey: "form.modeBSub" },
+  ];
 
 /** 入力パネル。駅の入力から算出の実行までを受け持つ */
 export function StationForm({
@@ -65,7 +66,7 @@ export function StationForm({
   const farePercent = Math.round(fareWeight * 100);
   const filledCount = useMemo(
     () => selectFilledOrigins(rows).origins.length,
-    [rows]
+    [rows],
   );
   const canSubmit = filledCount >= MIN_INPUT_ROWS && !isComputing;
 
@@ -73,7 +74,10 @@ export function StationForm({
     <section className="panel" aria-label={t("form.panelTitle")}>
       <h2 className="panel__title">{t("form.panelTitle")}</h2>
 
-      <StepGuide currentIndex={currentStep} />
+      <details className="disclosure form-guide">
+        <summary>{t("steps.ariaLabel")}</summary>
+        <StepGuide currentIndex={currentStep} />
+      </details>
 
       <form
         className="form"
@@ -83,6 +87,10 @@ export function StationForm({
           if (canSubmit) onSubmit();
         }}
       >
+        <div className="input-labels" aria-hidden="true">
+          <span>{t("form.stationLabel")}</span>
+          <span>{t("form.peopleLabel")}</span>
+        </div>
         <div className="inputs">
           {rows.map((row, index) => (
             <StationInputRow
@@ -102,7 +110,11 @@ export function StationForm({
           <div className="mode__head">
             <span className="mode__label">{t("form.modeTitle")}</span>
           </div>
-          <div className="toggle" role="tablist" aria-label={t("form.modeTitle")}>
+          <div
+            className="toggle"
+            role="tablist"
+            aria-label={t("form.modeTitle")}
+          >
             {MODE_OPTIONS.map((option) => (
               <button
                 key={option.value}
@@ -123,45 +135,60 @@ export function StationForm({
           </div>
         </div>
 
-        <div className="weight">
-          <div className="weight__head">
-            <span className="mode__label">{t("form.weightTitle")}</span>
-            <span className="weight__hint">{t(weightLabelKey(weightPercent))}</span>
+        <details className="disclosure search-preferences">
+          <summary>
+            <span>{t("form.preferences")}</span>
+            <span className="disclosure__value">
+              {t(weightLabelKey(weightPercent))} ·{" "}
+              {t(fareLabelKey(farePercent))}
+            </span>
+          </summary>
+          <div className="weight">
+            <div className="weight__head">
+              <span className="mode__label">{t("form.weightTitle")}</span>
+              <span className="weight__hint">
+                {t(weightLabelKey(weightPercent))}
+              </span>
+            </div>
+            <input
+              type="range"
+              className="slider"
+              min={0}
+              max={100}
+              step={5}
+              value={weightPercent}
+              aria-label={t("form.weightAriaLabel")}
+              onChange={(event) =>
+                setFairnessWeight(Number(event.target.value) / 100)
+              }
+            />
+            <div className="weight__labels">
+              <span>{t("form.weightNear")}</span>
+              <span>{t("form.weightFair")}</span>
+            </div>
           </div>
-          <input
-            type="range"
-            className="slider"
-            min={0}
-            max={100}
-            step={5}
-            value={weightPercent}
-            aria-label={t("form.weightAriaLabel")}
-            onChange={(event) =>
-              setFairnessWeight(Number(event.target.value) / 100)
-            }
-          />
-          <div className="weight__labels">
-            <span>{t("form.weightNear")}</span>
-            <span>{t("form.weightFair")}</span>
-          </div>
-        </div>
 
-        <div className="weight">
-          <div className="weight__head">
-            <span className="mode__label">{t("form.fareTitle")}</span>
-            <span className="weight__hint">{t(fareLabelKey(farePercent))}</span>
+          <div className="weight">
+            <div className="weight__head">
+              <span className="mode__label">{t("form.fareTitle")}</span>
+              <span className="weight__hint">
+                {t(fareLabelKey(farePercent))}
+              </span>
+            </div>
+            <input
+              type="range"
+              className="slider"
+              min={0}
+              max={100}
+              step={10}
+              value={farePercent}
+              aria-label={t("form.fareTitle")}
+              onChange={(event) =>
+                setFareWeight(Number(event.target.value) / 100)
+              }
+            />
           </div>
-          <input
-            type="range"
-            className="slider"
-            min={0}
-            max={100}
-            step={10}
-            value={farePercent}
-            aria-label={t("form.fareTitle")}
-            onChange={(event) => setFareWeight(Number(event.target.value) / 100)}
-          />
-        </div>
+        </details>
 
         <button
           type="submit"
@@ -171,6 +198,9 @@ export function StationForm({
           <span className="btn__label">
             {isComputing ? t("form.computing") : t("form.submit")}
           </span>
+          <svg className="btn__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 12h16m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
           <span className="btn__spinner" aria-hidden="true" />
         </button>
 

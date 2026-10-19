@@ -16,6 +16,11 @@ export const ko: Messages = {
   },
 
   form: {
+    inputStep: "1. 가까운 역과 조건 입력",
+    conditions: "검색 조건",
+    editConditions: "조건 변경",
+    closeConditions: "닫기",
+    preferences: "검색 세부 설정",
     panelTitle: "가까운 역 입력",
     placeholder: "예) 신주쿠, 요코하마, 오미야…",
     stationLabel: "가까운 역",
@@ -60,6 +65,12 @@ export const ko: Messages = {
   },
 
   result: {
+    pageTitle: "모임 장소 후보역",
+    returnToResults: "결과로 돌아가기",
+    failedTitle: "결과를 표시할 수 없습니다",
+    navigation: "결과 탐색",
+    overview: "추천역 및 지도",
+    detailsLabel: "기능 살펴보기",
     emptyLine1: "역을 2개 이상 입력한 뒤",
     emptyLine2: "“검색하기”를 눌러 주세요.",
     emptyTitle: "모두의 중심역을 찾아 드립니다",
@@ -91,6 +102,13 @@ export const ko: Messages = {
   },
 
   ranking: {
+    comparisonTitle: "후보역 비교",
+    rank: "순위",
+    station: "후보역",
+    minutes: "평균 이동 시간",
+    fairness: "시간 편차",
+    fare: "평균 운임",
+
     title: "후보역 순위 (클릭하면 상세 표시)",
     meta: "평균 {minutes}분 / ±{fairness}",
   },
@@ -130,6 +148,7 @@ export const ko: Messages = {
   },
 
   trainInfo: {
+    detailsLabel: "제공처 및 문의",
     title: "철도 운행 정보",
     coverage: "수도권 ODPT 제공 노선만 (모든 노선을 포함하지 않습니다)",
     refresh: "운행 정보 갱신",

@@ -1,7 +1,7 @@
 "use client";
 
 import L from "leaflet";
-import { useEffect, useMemo } from "react";
+import { Fragment, useEffect, useMemo } from "react";
 import {
   CircleMarker,
   MapContainer,
@@ -58,13 +58,45 @@ function FitBounds({ points }: { points: [number, number][] }) {
   const map = useMap();
 
   useEffect(() => {
-    if (points.length === 0) return;
+    if (
+      points.length === 0 ||
+      map.getContainer().clientWidth === 0 ||
+      map.getContainer().clientHeight === 0
+    )
+      return;
     // padding はピンの中心を基準に効くので、アイコンの半径（19px）ぶん多めに取る
-    map.flyToBounds(L.latLngBounds(points), {
+    map.invalidateSize({ pan: false });
+    map.fitBounds(L.latLngBounds(points), {
       padding: [64, 64],
-      duration: 0.9,
+      animate: false,
       maxZoom: MAX_FIT_ZOOM,
     });
+  }, [map, points]);
+
+  useEffect(() => {
+    let active = true;
+    const observer = new ResizeObserver(() => {
+      if (
+        !active ||
+        !map.getPane("mapPane") ||
+        map.getContainer().clientWidth === 0 ||
+        map.getContainer().clientHeight === 0
+      )
+        return;
+      map.invalidateSize({ pan: false });
+      if (points.length > 0) {
+        map.fitBounds(L.latLngBounds(points), {
+          padding: [40, 40],
+          maxZoom: MAX_FIT_ZOOM,
+          animate: false,
+        });
+      }
+    });
+    observer.observe(map.getContainer());
+    return () => {
+      active = false;
+      observer.disconnect();
+    };
   }, [map, points]);
 
   return null;
@@ -81,7 +113,7 @@ export function StationMap({ result, station }: Props) {
     if (!result || !center) return [];
     return [
       ...result.origins.map(
-        (origin) => [origin.lat, origin.lng] as [number, number]
+        (origin) => [origin.lat, origin.lng] as [number, number],
       ),
       [center.lat, center.lng],
       [result.centroid.lat, result.centroid.lng],
@@ -108,7 +140,7 @@ export function StationMap({ result, station }: Props) {
       {result &&
         center &&
         result.origins.map((origin, index) => (
-          <div key={origin.name}>
+          <Fragment key={origin.name}>
             <Marker
               position={[origin.lat, origin.lng]}
               icon={makePin(String(index + 1), "pin--origin", 26)}
@@ -128,7 +160,7 @@ export function StationMap({ result, station }: Props) {
               ]}
               pathOptions={{ ...LINK_LINE_SHAPE, color: colors.accent }}
             />
-          </div>
+          </Fragment>
         ))}
 
       {center && (
@@ -137,7 +169,7 @@ export function StationMap({ result, station }: Props) {
           icon={makePin(
             t(isTop ? "map.pinCenter" : "map.pinCandidate"),
             "pin--center",
-            38
+            38,
           )}
         >
           <Popup>
