@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import react from "@vitejs/plugin-react";
@@ -6,6 +7,9 @@ import { defineConfig } from "vitest/config";
 const [nodeMajor, nodeMinor] = process.versions.node.split(".").map(Number);
 // This workspace uses Node 22.9, where jsdom's ESM dependencies need opt-in.
 const needsRequireModuleFlag = nodeMajor === 22 && (nodeMinor ?? 0) < 12;
+
+const meetingPointsFile = fileURLToPath(new URL("./data/meetingPoints.json", import.meta.url));
+const emptyFixtureFile = fileURLToPath(new URL("./tests/fixtures/empty.json", import.meta.url));
 
 export default defineConfig({
   plugins: [react()],
@@ -23,6 +27,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      "@data/meetingPoints.json": existsSync(meetingPointsFile)
+        ? meetingPointsFile
+        : emptyFixtureFile,
     },
   },
 });

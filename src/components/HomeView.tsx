@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useTransition } from "react";
 
 import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { MeetingPoints } from "@/components/MeetingPoints";
 import { NearbySpots } from "@/components/NearbySpots";
 import { Hero, Toolbar } from "@/components/PageChrome";
 import { Ranking } from "@/components/Ranking";
@@ -377,6 +378,7 @@ export function HomeView({ page = "input" }: { page?: "input" | "results" }) {
               />
             )}
 
+            {currentStation && <MeetingPoints station={currentStation} />}
             {currentStation && <NearbySpots station={currentStation} />}
 
             <div className="result-service">

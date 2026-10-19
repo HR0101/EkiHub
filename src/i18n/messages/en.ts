@@ -147,6 +147,20 @@ export const en: Messages = {
     more: "{count} more (showing top {limit})",
   },
 
+  meetingPoints: {
+    title: "Meeting Spots",
+    types: {
+      statue: "Statue / Monument",
+      plaza: "Plaza / Square",
+      gate: "Gate / Entrance",
+      building: "Building / Facility",
+      landmark: "Landmark",
+    },
+    exit: "Nearest: {exit}",
+    distance: "Approx. {meters}m (about {minutes} min walk)",
+    source: "Source",
+  },
+
   trainInfo: {
     detailsLabel: "Source & contact",
     title: "Rail service status",

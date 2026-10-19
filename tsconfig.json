@@ -30,6 +30,10 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@data/*": [
+        "./data/*",
+        "./tests/fixtures/*"
       ]
     }
   },

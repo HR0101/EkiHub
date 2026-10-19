@@ -147,6 +147,20 @@ export const ko: Messages = {
     more: "그 외 {count}곳 (상위 {limit}곳만 표시)",
   },
 
+  meetingPoints: {
+    title: "약속 장소",
+    types: {
+      statue: "동상·조형물",
+      plaza: "광장",
+      gate: "개찰구·출구",
+      building: "건물·시설",
+      landmark: "랜드마크",
+    },
+    exit: "가까운 출구: {exit}",
+    distance: "약 {meters}m (도보 약 {minutes}분)",
+    source: "출처",
+  },
+
   trainInfo: {
     detailsLabel: "제공처 및 문의",
     title: "철도 운행 정보",
