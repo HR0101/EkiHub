@@ -16,6 +16,11 @@ export const zh: Messages = {
   },
 
   form: {
+    inputStep: "1. 输入车站与条件",
+    conditions: "搜索条件",
+    editConditions: "修改条件",
+    closeConditions: "收起",
+    preferences: "偏好设置",
     panelTitle: "输入最近的车站",
     placeholder: "例）新宿、横滨、大宫…",
     stationLabel: "最近的车站",
@@ -60,6 +65,12 @@ export const zh: Messages = {
   },
 
   result: {
+    pageTitle: "集合车站候选",
+    returnToResults: "返回结果",
+    failedTitle: "无法显示结果",
+    navigation: "结果导航",
+    overview: "推荐车站与地图",
+    detailsLabel: "查看功能",
     emptyLine1: "输入两个以上的车站后，",
     emptyLine2: "请点击「搜索」。",
     emptyTitle: "为大家找出中心车站",
@@ -91,6 +102,13 @@ export const zh: Messages = {
   },
 
   ranking: {
+    comparisonTitle: "候选车站比较",
+    rank: "排名",
+    station: "车站",
+    minutes: "平均时间",
+    fairness: "时间差异",
+    fare: "平均票价",
+
     title: "候选车站排名（点击查看详情）",
     meta: "平均 {minutes} 分 / ±{fairness}",
   },
@@ -130,6 +148,7 @@ export const zh: Messages = {
   },
 
   trainInfo: {
+    detailsLabel: "数据来源与联系",
     title: "铁路运行信息",
     coverage: "仅限首都圈 ODPT 提供的线路（并非全部线路）",
     refresh: "更新运行信息",

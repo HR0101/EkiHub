@@ -9,45 +9,96 @@ interface Props {
   onSelect: (name: string) => void;
 }
 
-/** 候補駅ランキング。1件しかないときは比較の意味がないので出さない */
+/** Compare candidates in rows; selecting a station updates its details and map. */
 export function Ranking({ ranking, selectedName, onSelect }: Props) {
   const { t } = useTranslation();
   if (ranking.length <= 1) return null;
 
   return (
-    <div className="ranking">
-      <h4 className="ranking__title">{t("ranking.title")}</h4>
-      <ul>
-        {ranking.map((entry, index) => {
-          const fare =
-            entry.averageFareYen > 0
-              ? ` / ¥${entry.averageFareYen.toLocaleString("ja-JP")}`
-              : "";
-          return (
-            <li
-              key={entry.name}
-              className={`ranking-item ${entry.name === selectedName ? "is-selected" : ""}`}
-            >
-              <button
-                type="button"
-                className="ranking-item__button"
-                aria-current={entry.name === selectedName}
+    <section
+      id="station-comparison"
+      className="ranking"
+      aria-labelledby="ranking-title"
+    >
+      <h3 id="ranking-title" className="ranking__title">
+        {t("ranking.comparisonTitle")}
+      </h3>
+      <div className="ranking-table-wrap">
+        <table className="ranking-table">
+          <caption className="ranking-table__hint">
+            {t("ranking.title")}
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">{t("ranking.rank")}</th>
+              <th scope="col">{t("ranking.station")}</th>
+              <th scope="col">{t("ranking.minutes")}</th>
+              <th scope="col">{t("ranking.fairness")}</th>
+              <th scope="col">{t("ranking.fare")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ranking.map((entry, index) => (
+              <tr
+                key={entry.name}
+                className={entry.name === selectedName ? "is-selected" : ""}
                 onClick={() => onSelect(entry.name)}
               >
-                <span className="ranking-item__rank">{index + 1}</span>
-                <span className="ranking-item__name">{entry.name}</span>
-                <span className="ranking-item__meta">
-                  {t("ranking.meta", {
-                    minutes: entry.averageMinutes,
-                    fairness: entry.fairness,
-                  })}
-                  {fare}
+                <td className="ranking-table__rank">{index + 1}</td>
+                <th scope="row">
+                  <button
+                    type="button"
+                    className="ranking-table__station"
+                    aria-pressed={entry.name === selectedName}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onSelect(entry.name);
+                    }}
+                  >
+                    {entry.name}
+                  </button>
+                </th>
+                <td>{t("travel.minutes", { count: entry.averageMinutes })}</td>
+                <td>±{entry.fairness}</td>
+                <td>
+                  {entry.averageFareYen > 0
+                    ? `¥${entry.averageFareYen.toLocaleString("ja-JP")}`
+                    : "—"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <ul className="ranking-mobile">
+        {ranking.map((entry, index) => (
+          <li key={entry.name}>
+            <button
+              type="button"
+              className={`ranking-mobile__row ${entry.name === selectedName ? "is-selected" : ""}`}
+              aria-pressed={entry.name === selectedName}
+              onClick={() => onSelect(entry.name)}
+            >
+              <span className="ranking-mobile__rank">{index + 1}</span>
+              <strong className="ranking-mobile__name">{entry.name}</strong>
+              <span className="ranking-mobile__time">
+                {t("travel.minutes", { count: entry.averageMinutes })}
+              </span>
+              <span className="ranking-mobile__meta">
+                <span>
+                  {t("ranking.fairness")} ±{entry.fairness}
                 </span>
-              </button>
-            </li>
-          );
-        })}
+                <span>
+                  {t("ranking.fare")}{" "}
+                  {entry.averageFareYen > 0
+                    ? `¥${entry.averageFareYen.toLocaleString("ja-JP")}`
+                    : "—"}
+                </span>
+              </span>
+            </button>
+          </li>
+        ))}
       </ul>
-    </div>
+    </section>
   );
 }

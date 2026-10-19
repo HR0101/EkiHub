@@ -15,13 +15,19 @@ export function TravelList({ travelTimes }: Props) {
   const maxMinutes = Math.max(...travelTimes.map((t) => t.minutes), 1);
 
   return (
-    <div className="travel-list">
-      <h4 className="travel-list__title">{t("travel.title")}</h4>
+    <section
+      className="travel-list"
+      id="travel-times"
+      aria-labelledby="travel-title"
+    >
+      <h3 id="travel-title" className="travel-list__title">
+        {t("travel.title")}
+      </h3>
       <ul>
         {travelTimes.map((travel) => (
           <li className="travel-item" key={travel.from}>
             <span className="travel-item__name">{travel.from}</span>
-            <span className="travel-item__bar">
+            <span className="travel-item__bar" aria-hidden="true">
               <span
                 className="travel-item__fill"
                 style={{ width: `${(travel.minutes / maxMinutes) * 100}%` }}
@@ -38,7 +44,9 @@ export function TravelList({ travelTimes }: Props) {
               </span>
             ) : (
               travel.directPossible && (
-                <span className="badge badge--direct">{t("travel.direct")}</span>
+                <span className="badge badge--direct">
+                  {t("travel.direct")}
+                </span>
               )
             )}
             <span className="travel-item__min">
@@ -47,6 +55,6 @@ export function TravelList({ travelTimes }: Props) {
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
 }

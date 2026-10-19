@@ -1,0 +1,25 @@
+services:
+  web:
+    build: .
+    volumes:
+      - .:/usr/src/ekihub
+      # ホスト(macOS)向けに入れた node_modules と .next を持ち込まないよう、
+      # コンテナ側は名前付きボリュームに分ける
+      - node_modules:/usr/src/ekihub/node_modules
+      - next_cache:/usr/src/ekihub/.next
+    ports:
+      - "80:3000"
+    environment:
+      NODE_ENV: "development"
+      # 未設定でも動く（埋め込みデータ＋距離概算へ自動フォールバックする）。
+      # 運行情報カードを実データで見たいときだけ .env に ODPT_TOKEN を書く。
+      ODPT_TOKEN: ${ODPT_TOKEN:-}
+      ROUTING_PROVIDER: ${ROUTING_PROVIDER:-}
+      ROUTING_OTP_URL: ${ROUTING_OTP_URL:-}
+    tty: true
+    stdin_open: true
+    command: npm run dev -- --hostname 0.0.0.0 --port 3000
+
+volumes:
+  node_modules:
+  next_cache:

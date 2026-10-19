@@ -20,6 +20,11 @@ export const ja = {
   },
 
   form: {
+    inputStep: "1. 最寄駅と条件を入力",
+    conditions: "検索条件",
+    editConditions: "条件を変更",
+    closeConditions: "閉じる",
+    preferences: "こだわり条件",
     panelTitle: "最寄駅を入力",
     placeholder: "例）新宿、横浜、大宮…",
     stationLabel: "最寄駅",
@@ -64,6 +69,12 @@ export const ja = {
   },
 
   result: {
+    pageTitle: "集合駅の候補",
+    returnToResults: "結果に戻る",
+    failedTitle: "結果を表示できませんでした",
+    navigation: "結果のナビゲーション",
+    overview: "おすすめ・地図",
+    detailsLabel: "できることを見る",
     emptyLine1: "最寄駅を2駅以上入力して",
     emptyLine2: "「検索する」を押してください。",
     emptyTitle: "みんなの中心駅を見つけます",
@@ -95,6 +106,13 @@ export const ja = {
   },
 
   ranking: {
+    comparisonTitle: "候補駅の比較",
+    rank: "順位",
+    station: "候補駅",
+    minutes: "平均所要時間",
+    fairness: "時間のばらつき",
+    fare: "平均運賃",
+
     title: "候補駅ランキング（クリックで詳細を表示）",
     meta: "平均{minutes}分 / ±{fairness}",
   },
@@ -134,6 +152,7 @@ export const ja = {
   },
 
   trainInfo: {
+    detailsLabel: "提供元・お問い合わせ",
     title: "鉄道の運行情報",
     coverage: "首都圏のODPT提供路線のみ（全路線を網羅していません）",
     refresh: "運行情報を更新",

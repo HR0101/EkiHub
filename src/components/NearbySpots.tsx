@@ -41,7 +41,7 @@ export function NearbySpots({ station }: Props) {
       if (category === null) throw new Error("category is required");
       const result = await fetchSpotsWithFallback(
         { lat: station.lat, lng: station.lng, category, radius },
-        signal
+        signal,
       );
       return result.spots;
     },
@@ -50,78 +50,82 @@ export function NearbySpots({ station }: Props) {
   });
 
   return (
-    <section className="fpanel" aria-label={t("spots.title")}>
-      <h3 className="fpanel__title">{t("spots.title")}</h3>
+    <details className="disclosure nearby-spots">
+      <summary>
+        <h3 className="fpanel__title">{t("spots.title")}</h3>
+      </summary>
+      <div className="nearby-spots__content">
+        <div className="spot-controls">
+          {CATEGORIES.map((option) => (
+            <button
+              key={option}
+              type="button"
+              className={`tool-btn ${category === option ? "is-active" : ""}`}
+              aria-pressed={category === option}
+              onClick={() => setCategory(option)}
+            >
+              {t(`spots.categories.${option}`)}
+            </button>
+          ))}
+        </div>
 
-      <div className="spot-controls">
-        {CATEGORIES.map((option) => (
-          <button
-            key={option}
-            type="button"
-            className={`tool-btn ${category === option ? "is-active" : ""}`}
-            aria-pressed={category === option}
-            onClick={() => setCategory(option)}
-          >
-            {t(`spots.categories.${option}`)}
-          </button>
-        ))}
+        <div className="spot-controls spot-controls--radius">
+          <span className="spot-controls__label">{t("spots.radiusLabel")}</span>
+          {RADIUS_OPTIONS.map((option) => (
+            <button
+              key={option}
+              type="button"
+              className={`tool-btn ${radius === option ? "is-active" : ""}`}
+              aria-pressed={radius === option}
+              onClick={() => setRadius(option)}
+            >
+              {option >= 1000 ? `〜${option / 1000}km` : `〜${option}m`}
+            </button>
+          ))}
+        </div>
+
+        {category === null && (
+          <p className="spot-note">{t("spots.chooseCategory")}</p>
+        )}
+
+        {spotsQuery.isPending && category !== null && (
+          <p className="spot-note">{t("spots.searching")}</p>
+        )}
+
+        {spotsQuery.isError && <p className="spot-note">{t("spots.failed")}</p>}
+
+        {spotsQuery.isSuccess && spotsQuery.data.length === 0 && (
+          <p className="spot-note">{t("spots.empty")}</p>
+        )}
+
+        {spotsQuery.isSuccess && spotsQuery.data.length > 0 && (
+          <>
+            <ul className="spot-list">
+              {spotsQuery.data.slice(0, MAX_VISIBLE).map((spot) => (
+                <li
+                  className="spot-item"
+                  key={`${spot.name}-${spot.lat}-${spot.lng}`}
+                >
+                  <span className="spot-item__name">{spot.name}</span>
+                  {spot.tags.opening_hours && (
+                    <span className="spot-item__meta">
+                      {spot.tags.opening_hours}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+            {spotsQuery.data.length > MAX_VISIBLE && (
+              <p className="spot-note">
+                {t("spots.more", {
+                  count: spotsQuery.data.length - MAX_VISIBLE,
+                  limit: MAX_VISIBLE,
+                })}
+              </p>
+            )}
+          </>
+        )}
       </div>
-
-      <div className="spot-controls spot-controls--radius">
-        <span className="spot-controls__label">{t("spots.radiusLabel")}</span>
-        {RADIUS_OPTIONS.map((option) => (
-          <button
-            key={option}
-            type="button"
-            className={`tool-btn ${radius === option ? "is-active" : ""}`}
-            aria-pressed={radius === option}
-            onClick={() => setRadius(option)}
-          >
-            {option >= 1000 ? `〜${option / 1000}km` : `〜${option}m`}
-          </button>
-        ))}
-      </div>
-
-      {category === null && (
-        <p className="spot-note">{t("spots.chooseCategory")}</p>
-      )}
-
-      {spotsQuery.isPending && category !== null && (
-        <p className="spot-note">{t("spots.searching")}</p>
-      )}
-
-      {spotsQuery.isError && (
-        <p className="spot-note">{t("spots.failed")}</p>
-      )}
-
-      {spotsQuery.isSuccess && spotsQuery.data.length === 0 && (
-        <p className="spot-note">{t("spots.empty")}</p>
-      )}
-
-      {spotsQuery.isSuccess && spotsQuery.data.length > 0 && (
-        <>
-          <ul className="spot-list">
-            {spotsQuery.data.slice(0, MAX_VISIBLE).map((spot) => (
-              <li className="spot-item" key={`${spot.name}-${spot.lat}-${spot.lng}`}>
-                <span className="spot-item__name">{spot.name}</span>
-                {spot.tags.opening_hours && (
-                  <span className="spot-item__meta">
-                    {spot.tags.opening_hours}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-          {spotsQuery.data.length > MAX_VISIBLE && (
-            <p className="spot-note">
-              {t("spots.more", {
-                count: spotsQuery.data.length - MAX_VISIBLE,
-                limit: MAX_VISIBLE,
-              })}
-            </p>
-          )}
-        </>
-      )}
-    </section>
+    </details>
   );
 }

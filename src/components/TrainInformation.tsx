@@ -91,7 +91,8 @@ export function TrainInformation() {
         )}
       </div>
 
-      <div className="train-info-card__foot">
+      <details className="disclosure train-info-card__foot">
+        <summary>{t("trainInfo.detailsLabel")}</summary>
         {query.isSuccess && (
           <p>
             {t("trainInfo.updated", {
@@ -124,7 +125,7 @@ export function TrainInformation() {
           </a>
           {t("trainInfo.contactAfter")}
         </p>
-      </div>
+      </details>
     </section>
   );
 }

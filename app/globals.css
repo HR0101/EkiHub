@@ -13,22 +13,22 @@
    =================================================================== */
 :root {
   /* ---- ブランドカラー：入れ替えるならこの5行 ---- */
-  --brand-accent: #00b6ec;         /* 主アクセント（澄んだ水色。明るいが彩度は落とさない） */
-  --brand-accent-strong: #0094c4;  /* ホバー・押下の一段濃い色 */
-  --brand-accent-support: #ff4d94; /* 補助（鮮やかなピンク。差し色に使う） */
-  --brand-accent-wash: #d6f3ff;    /* 選択中・強調の淡い面 */
-  --brand-tint: #c2ecff;           /* 背景上端の色 */
-  --brand-accent-complement: #ec3600; /* 補色。数値や状態を主色から切り離して読ませる */
+  --brand-accent: #087f8c;         /* 主アクセント（落ち着いた青緑） */
+  --brand-accent-strong: #066773;  /* ホバー・押下の一段濃い色 */
+  --brand-accent-support: #8b7ca8; /* 補助（淡い紫。地図の重心などに使う） */
+  --brand-accent-wash: #e6f3f3;    /* 選択中・強調の淡い面 */
+  --brand-tint: #f4f7f7;           /* 背景上端の色 */
+  --brand-accent-complement: #506875; /* 補色。数値や状態を主色から切り離して読ませる */
 
   /* ---- 地の色：明るさのトーンを決める ---- */
-  --brand-page: #eefaff;    /* ページ背景（うっすら水色を残す） */
+  --brand-page: #f4f7f7;    /* ページ背景（わずかに青緑を含むグレー） */
   --brand-surface: #ffffff; /* 面 */
-  --brand-sunken: #f0faff;  /* 一段沈んだ面 */
-  --brand-line: #cfe9f6;    /* 面の輪郭・区切り線 */
-  --brand-line-strong: #a8dcf0;
-  --brand-ink: #26343f;     /* 本文（真っ黒にせず、青みのグレーで和らげる） */
-  --brand-ink-sub: #5f727e;
-  --brand-ink-faint: #94a7b3;
+  --brand-sunken: #f6f8f8;  /* 一段沈んだ面 */
+  --brand-line: #e1e8e8;    /* 面の輪郭・区切り線 */
+  --brand-line-strong: #bdcecf;
+  --brand-ink: #203337;     /* 本文（真っ黒にせず、青みのグレーで和らげる） */
+  --brand-ink-sub: #617579;
+  --brand-ink-faint: #73878a;
   --brand-danger: #ff4d6d;
 }
 

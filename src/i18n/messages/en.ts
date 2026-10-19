@@ -16,6 +16,11 @@ export const en: Messages = {
   },
 
   form: {
+    inputStep: "1. Enter stations and preferences",
+    conditions: "Search conditions",
+    editConditions: "Edit conditions",
+    closeConditions: "Close",
+    preferences: "Search preferences",
     panelTitle: "Enter nearest stations",
     placeholder: "e.g. Shinjuku, Yokohama, Omiya…",
     stationLabel: "Nearest station",
@@ -60,6 +65,12 @@ export const en: Messages = {
   },
 
   result: {
+    pageTitle: "Meeting stations",
+    returnToResults: "Return to results",
+    failedTitle: "Unable to load results",
+    navigation: "Result navigation",
+    overview: "Station & map",
+    detailsLabel: "Explore features",
     emptyLine1: "Enter at least two stations,",
     emptyLine2: "then press Search.",
     emptyTitle: "Find where everyone should meet",
@@ -91,6 +102,13 @@ export const en: Messages = {
   },
 
   ranking: {
+    comparisonTitle: "Compare stations",
+    rank: "Rank",
+    station: "Station",
+    minutes: "Average time",
+    fairness: "Time variation",
+    fare: "Average fare",
+
     title: "Candidate ranking (click for details)",
     meta: "avg {minutes} min / ±{fairness}",
   },
@@ -130,6 +148,7 @@ export const en: Messages = {
   },
 
   trainInfo: {
+    detailsLabel: "Source & contact",
     title: "Rail service status",
     coverage: "Only lines provided via ODPT in the Tokyo area (not exhaustive)",
     refresh: "Refresh service status",

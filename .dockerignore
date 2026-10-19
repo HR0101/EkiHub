@@ -1,0 +1,30 @@
+# See https://docs.docker.com/engine/reference/builder/#dockerignore-file for more about ignoring files.
+
+# Ignore git directory.
+/.git/
+/.gitignore
+
+# Ignore all environment files.
+/.env*
+
+# Ignore dependencies and build output.
+/node_modules/
+/.next/
+/out/
+
+# Ignore logfiles and OS metadata.
+*.log
+.DS_Store
+
+# Ignore CI service files.
+/.github
+
+# Ignore the pre-Next.js frontend (kept for reference only).
+/legacy/
+
+# Ignore generated diagrams.
+/assets/
+
+# Ignore Docker-related files
+/.dockerignore
+/Dockerfile*

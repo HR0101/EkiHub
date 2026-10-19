@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-import { parseShareParams } from "@/lib/shareUrl";
+import { buildShareQuery, parseShareParams } from "@/lib/shareUrl";
 import { useEkiHubStore } from "@/stores/useEkiHubStore";
 
 /**
@@ -25,9 +25,25 @@ export function useShareParams(onReady: () => void): void {
     const params = parseShareParams(window.location.search);
     if (!params) return;
 
+    const state = useEkiHubStore.getState();
+    const query = buildShareQuery({
+      origins: params.origins,
+      mode: params.mode ?? state.mode,
+      fairnessWeight: params.fairnessWeight ?? state.fairnessWeight,
+      fareWeight: params.fareWeight ?? state.fareWeight,
+    });
+    if (state.result && state.resultQuery === query) {
+      const selected = new URLSearchParams(window.location.search).get(
+        "station",
+      );
+      if (selected) state.selectStation(selected);
+      return;
+    }
+
     setRows(params.origins);
     if (params.mode) setMode(params.mode);
-    if (params.fairnessWeight !== null) setFairnessWeight(params.fairnessWeight);
+    if (params.fairnessWeight !== null)
+      setFairnessWeight(params.fairnessWeight);
     if (params.fareWeight !== null) setFareWeight(params.fareWeight);
 
     // ストアへ反映されたあとに算出させる

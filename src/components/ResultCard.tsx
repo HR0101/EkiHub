@@ -30,7 +30,7 @@ function formatYen(value: number): string {
 /** 所要時間をどう求めたかを示す文言のキー */
 function routingSourceKey(
   result: CenterResult,
-  station: RankingEntry
+  station: RankingEntry,
 ): MessageKey {
   if (result.routingRefined || station.routed) return "result.sourceRouted";
   if (result.routingMethod === "graph") return "result.sourceGraph";
@@ -47,7 +47,7 @@ export function ResultCard({ result, station, onQuickStart }: Props) {
     if (entry.isMajor) parts.push(t("result.majorStation"));
     if (entry.ridership) {
       parts.push(
-        t("result.ridership", { man: Math.round(entry.ridership / 10000) })
+        t("result.ridership", { man: Math.round(entry.ridership / 10000) }),
       );
     }
     return parts.join(" ・");
@@ -59,16 +59,33 @@ export function ResultCard({ result, station, onQuickStart }: Props) {
       <div className="result-card is-empty">
         <div className="result-card__empty">
           <div className="result-card__icon" aria-hidden="true">
-            🗾
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+              <circle
+                cx="20"
+                cy="20"
+                r="6"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+              <path
+                d="M20 4v7m0 18v7M4 20h7m18 0h7M9 9l5 5m12 12 5 5M9 31l5-5m12-12 5-5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
           </div>
           <h3 className="result-card__empty-title">{t("result.emptyTitle")}</h3>
           <p className="result-card__empty-lead">{t("result.emptyLead")}</p>
 
-          <ul className="result-card__points">
-            <li>{t("result.emptyPoint1")}</li>
-            <li>{t("result.emptyPoint2")}</li>
-            <li>{t("result.emptyPoint3")}</li>
-          </ul>
+          <details className="disclosure empty-details">
+            <summary>{t("result.detailsLabel")}</summary>
+            <ul className="result-card__points">
+              <li>{t("result.emptyPoint1")}</li>
+              <li>{t("result.emptyPoint2")}</li>
+              <li>{t("result.emptyPoint3")}</li>
+            </ul>
+          </details>
 
           <div className="quick-start">
             <span className="quick-start__label">

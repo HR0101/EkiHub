@@ -21,6 +21,7 @@ const QR_SIZE = 180;
 export function ResultActions({ station }: Props) {
   const { t } = useTranslation();
   const rows = useEkiHubStore((state) => state.rows);
+  const resultQuery = useEkiHubStore((state) => state.resultQuery);
   const mode = useEkiHubStore((state) => state.mode);
   const fairnessWeight = useEkiHubStore((state) => state.fairnessWeight);
   const fareWeight = useEkiHubStore((state) => state.fareWeight);
@@ -39,6 +40,8 @@ export function ResultActions({ station }: Props) {
   }, []);
 
   function currentShareUrl(): string {
+    if (resultQuery)
+      return `${window.location.origin}/results?${resultQuery}&station=${encodeURIComponent(station.name)}`;
     return buildShareUrl({
       origins: rows
         .filter((row) => row.name.trim().length > 0)
@@ -92,12 +95,16 @@ export function ResultActions({ station }: Props) {
             ? "actions.copied"
             : urlCopy.status === "failed"
               ? "actions.copyFailed"
-              : "actions.copyUrl"
+              : "actions.copyUrl",
         )}
       </button>
 
       {canWebShare && (
-        <button type="button" className="tool-btn" onClick={() => void handleWebShare()}>
+        <button
+          type="button"
+          className="tool-btn"
+          onClick={() => void handleWebShare()}
+        >
           {t("actions.share")}
         </button>
       )}
@@ -121,7 +128,7 @@ export function ResultActions({ station }: Props) {
             ? "actions.copied"
             : summaryCopy.status === "failed"
               ? "actions.copyFailed"
-              : "actions.copySummary"
+              : "actions.copySummary",
         )}
       </button>
 
