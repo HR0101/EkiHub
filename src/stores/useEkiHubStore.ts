@@ -29,6 +29,7 @@ interface EkiHubState {
   /** 運賃の重み 0〜1 */
   fareWeight: number;
   result: CenterResult | null;
+  resultQuery: string | null;
   /** ランキングから選んでいる駅名。null なら best を見る */
   selectedName: string | null;
 
@@ -41,7 +42,7 @@ interface EkiHubState {
   setFairnessWeight: (weight: number) => void;
   setFareWeight: (weight: number) => void;
 
-  setResult: (result: CenterResult | null) => void;
+  setResult: (result: CenterResult | null, query?: string) => void;
   selectStation: (name: string) => void;
 }
 
@@ -62,6 +63,7 @@ export const useEkiHubStore = create<EkiHubState>((set, get) => ({
   fairnessWeight: 0.6,
   fareWeight: 0,
   result: null,
+  resultQuery: null,
   selectedName: null,
 
   addRow: () => set((state) => ({ rows: [...state.rows, createRow()] })),
@@ -76,7 +78,7 @@ export const useEkiHubStore = create<EkiHubState>((set, get) => ({
   updateRow: (id, patch) =>
     set((state) => ({
       rows: state.rows.map((row) =>
-        row.id === id ? { ...row, ...patch } : row
+        row.id === id ? { ...row, ...patch } : row,
       ),
     })),
 
@@ -90,8 +92,12 @@ export const useEkiHubStore = create<EkiHubState>((set, get) => ({
   setFairnessWeight: (fairnessWeight) => set({ fairnessWeight }),
   setFareWeight: (fareWeight) => set({ fareWeight }),
 
-  setResult: (result) =>
-    set({ result, selectedName: result ? result.best.name : null }),
+  setResult: (result, query) =>
+    set({
+      result,
+      resultQuery: result ? (query ?? null) : null,
+      selectedName: result ? result.best.name : null,
+    }),
 
   selectStation: (name) => {
     const { result } = get();
@@ -109,7 +115,7 @@ export function selectCurrentStation(state: {
 }): RankingEntry | null {
   if (!state.result) return null;
   const selected = state.result.ranking.find(
-    (entry) => entry.name === state.selectedName
+    (entry) => entry.name === state.selectedName,
   );
   return selected ?? state.result.best;
 }

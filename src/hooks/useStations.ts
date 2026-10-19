@@ -18,7 +18,7 @@ export function useStations() {
  * 条件を変えるたびに投げ直すので、キャッシュではなく mutation で扱う。
  */
 export function useCenterStation(options?: {
-  onSuccess?: (result: CenterResult) => void;
+  onSuccess?: (result: CenterResult, request: CenterRequest) => void;
 }) {
   return useMutation<CenterResult, Error, CenterRequest>({
     mutationFn: (request) => fetchCenterStation(request),
