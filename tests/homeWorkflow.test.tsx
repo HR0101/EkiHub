@@ -196,9 +196,7 @@ describe("responsive search workflow", () => {
       screen.getByRole("combobox", { name: "最寄駅 1" }).getAttribute("value"),
     ).toBe("新宿");
     expect(
-      screen
-        .getByRole("spinbutton", { name: "最寄駅 1 — 人数" })
-        .getAttribute("value"),
+      (screen.getByRole("combobox", { name: "最寄駅 1 — 人数" }) as HTMLSelectElement).value,
     ).toBe("2");
   });
 
@@ -284,6 +282,7 @@ describe("responsive search workflow", () => {
     act(() => {
       spots.open = true;
     });
-    expect(within(spots).getAllByRole("button").length).toBe(10);
+    expect(within(spots).getAllByRole("button").length).toBe(7);
+    expect(within(spots).getByRole("link", {name: "Googleマップで探す"})).toBeDefined();
   });
 });

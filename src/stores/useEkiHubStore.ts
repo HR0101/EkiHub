@@ -52,9 +52,12 @@ interface EkiHubState {
  * ハイドレーションが壊れるため、単純な連番にしている。
  */
 let rowSequence = 0;
+function normalizePeople(people: number): number {
+  return Number.isFinite(people) ? Math.max(1, Math.min(10, Math.trunc(people))) : 1;
+}
 function createRow(name = "", people = 1): StationInputRow {
   rowSequence += 1;
-  return { id: `row-${rowSequence}`, name, people };
+  return { id: `row-${rowSequence}`, name, people: normalizePeople(people) };
 }
 
 export const useEkiHubStore = create<EkiHubState>((set, get) => ({
@@ -78,7 +81,7 @@ export const useEkiHubStore = create<EkiHubState>((set, get) => ({
   updateRow: (id, patch) =>
     set((state) => ({
       rows: state.rows.map((row) =>
-        row.id === id ? { ...row, ...patch } : row,
+        row.id === id ? { ...row, ...patch, people: normalizePeople(patch.people ?? row.people) } : row,
       ),
     })),
 

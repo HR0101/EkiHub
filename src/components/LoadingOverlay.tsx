@@ -16,17 +16,6 @@ export function LoadingOverlay({ isComputing }: { isComputing: boolean }) {
   return (
     <div className="loading">
       <div className="loading__box">
-        <div className="loading__scene">
-          <div className="loading__train" aria-hidden="true">
-            <span className="train__smoke" />
-            <span className="train__body" />
-            <span className="train__window" />
-            <span className="train__light" />
-            <span className="train__wheel train__wheel--a" />
-            <span className="train__wheel train__wheel--b" />
-          </div>
-          <div className="loading__rail" aria-hidden="true" />
-        </div>
         <LoadingIndicator label={t("loading.text")} />
       </div>
     </div>

@@ -1,4 +1,4 @@
-/** Theme colors and motion are supplied by the shared theme stylesheet. */
+/** The document design selects both the shape and motion without a hydration delay. */
 export function LoadingIndicator({ label }: { label: string }) {
   return (
     <div className="loading-indicator" role="status" aria-live="polite">
