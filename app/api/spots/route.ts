@@ -1,3 +1,4 @@
+import { fetchOverpass } from "@/server/overpassTransport";
 import { fetchNearbySpots, CATEGORY_LABELS } from "../../../lib/poiService.js";
 import type { ApiError, SpotCategory } from "@/types/ekihub";
 
@@ -47,6 +48,7 @@ export async function GET(request: Request): Promise<Response> {
         radius,
       },
       request.signal,
+      fetchOverpass,
     );
     return Response.json({
       count: spots.length,

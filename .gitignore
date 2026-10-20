@@ -34,6 +34,8 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+__pycache__/
+*.py[cod]
 
 #  デプロイ手順書（個人用・公開しない） 
 docs/deploy-oracle.md

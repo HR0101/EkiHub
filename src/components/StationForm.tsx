@@ -111,27 +111,32 @@ export function StationForm({
             <span className="mode__label">{t("form.modeTitle")}</span>
           </div>
           <div
-            className="toggle"
-            role="tablist"
+            className="mode-options"
+            role="radiogroup"
             aria-label={t("form.modeTitle")}
           >
             {MODE_OPTIONS.map((option) => (
-              <button
+              <label
                 key={option.value}
-                type="button"
-                role="tab"
-                aria-selected={mode === option.value}
-                className={`toggle__btn ${mode === option.value ? "is-active" : ""}`}
-                onClick={() => setMode(option.value)}
+                className={`mode-choice ${mode === option.value ? "is-active" : ""}`}
               >
-                <span className="toggle__main">{t(option.mainKey)}</span>
-                <span className="toggle__sub">{t(option.subKey)}</span>
-              </button>
+                <input
+                  type="radio"
+                  name="station-candidate-mode"
+                  value={option.value}
+                  checked={mode === option.value}
+                  onChange={() => setMode(option.value)}
+                />
+                <span className="mode-choice__copy">
+                  <span className="mode-choice__title">
+                    {t(option.mainKey)}
+                  </span>
+                  <span className="mode-choice__description">
+                    {t(option.subKey)}
+                  </span>
+                </span>
+              </label>
             ))}
-            <span
-              className={`toggle__slider ${mode === "B" ? "is-right" : ""}`}
-              aria-hidden="true"
-            />
           </div>
         </div>
 
@@ -198,8 +203,19 @@ export function StationForm({
           <span className="btn__label">
             {isComputing ? t("form.computing") : t("form.submit")}
           </span>
-          <svg className="btn__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M4 12h16m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <svg
+            className="btn__arrow"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M4 12h16m-6-6 6 6-6 6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
           <span className="btn__spinner" aria-hidden="true" />
         </button>

@@ -44,3 +44,37 @@ it("does not mistake Overpass timeout remarks for an empty successful result", a
   await vi.advanceTimersByTimeAsync(2500);
   await rejected;
 });
+
+it("requests node coordinates and way centers, preserving both kinds of place", async () => {
+  const fetch = vi.fn((_url: string, init: RequestInit) => {
+    const ql = new URLSearchParams(String(init.body)).get("data");
+    expect(ql).toContain("out body center 120;");
+    return Promise.resolve(new Response(JSON.stringify({elements: [
+      {type: "node", lat: 35.66, lon: 139.7, tags: {name: "Node cafe", amenity: "cafe"}},
+      {type: "way", center: {lat: 35.661, lon: 139.701}, tags: {name: "Building cafe", amenity: "cafe"}}
+    ]})));
+  });
+  vi.stubGlobal("fetch", fetch);
+  const { fetchNearbySpots } = await import("../lib/poiService.js");
+  const pending = fetchNearbySpots(query);
+  await vi.advanceTimersByTimeAsync(1);
+  expect((await pending).map(spot => spot.name)).toEqual(["Node cafe", "Building cafe"]);
+});
+
+it("allows a slow but valid response beyond the previous ten-second cutoff", async () => {
+  vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(resolve => setTimeout(() => resolve(response()), 12000))));
+  const { fetchNearbySpots } = await import("../lib/poiService.js");
+  const pending = fetchNearbySpots(query);
+  await vi.advanceTimersByTimeAsync(12000);
+  expect(await pending).toHaveLength(1);
+});
+
+it("bounds fully stalled requests and clears scheduled work", async () => {
+  vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
+  const { fetchNearbySpots } = await import("../lib/poiService.js");
+  const pending = fetchNearbySpots(query);
+  const rejected = expect(pending).rejects.toBeDefined();
+  await vi.advanceTimersByTimeAsync(25000);
+  await rejected;
+  expect(vi.getTimerCount()).toBe(0);
+});

@@ -20,7 +20,7 @@ interface Props {
 
 /** 人数の入力範囲 */
 const PEOPLE_MIN = 1;
-const PEOPLE_MAX = 99;
+const PEOPLE_MAX = 10;
 
 /**
  * 駅名の入力欄1行。
@@ -172,11 +172,8 @@ export function StationInputRow({ row, index, stations }: Props) {
         </div>
       </div>
 
-      <input
-        type="number"
+      <select
         className="input-row__people js-people"
-        min={PEOPLE_MIN}
-        max={PEOPLE_MAX}
         value={row.people}
         title={t("form.peopleLabel")}
         aria-label={`${t("form.stationLabel")} ${index} — ${t("form.peopleLabel")}`}
@@ -188,7 +185,11 @@ export function StationInputRow({ row, index, stations }: Props) {
               : PEOPLE_MIN,
           });
         }}
-      />
+      >
+        {Array.from({ length: PEOPLE_MAX }, (_, index) => index + 1).map((people) => (
+          <option key={people} value={people}>{t("form.peopleCount", { count: people })}</option>
+        ))}
+      </select>
 
       <button
         type="button"

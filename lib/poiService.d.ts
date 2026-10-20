@@ -16,4 +16,5 @@ export interface NearbySpotsQuery {
 export function fetchNearbySpots(
   query: NearbySpotsQuery,
   signal?: AbortSignal,
+  fetchImpl?: typeof fetch,
 ): Promise<Spot[]>;
