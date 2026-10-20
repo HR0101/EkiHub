@@ -1,0 +1,33 @@
+{
+  "reference_rows": 9372,
+  "reference_sha256": "31c07a47da667261d34e7554bf11c3185db4c2bdebf9dfab51a9eba5bd0d64d3",
+  "counts": {
+    "osm": {
+      "match": 7066,
+      "different": 981,
+      "unmatched": 136
+    },
+    "curated": {
+      "match": 157
+    }
+  },
+  "official_counts": {
+    "correct": 2790,
+    "primary-difference": 776,
+    "source-conflict": 1,
+    "official-spelling-difference": 14,
+    "punctuation-only": 1,
+    "name-scope-difference": 3,
+    "spacing-only": 9,
+    "spelling-unverified": 1
+  },
+  "verified_errors": 782,
+  "stale_verified_records": 0,
+  "manual_review_counts": {
+    "renamed": 2,
+    "non-station": 5,
+    "planned": 3
+  },
+  "stale_manual_reviews": 0,
+  "pending_candidates": 293
+}
