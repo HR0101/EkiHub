@@ -50,3 +50,9 @@ docs/deploy-oracle.md
 out/
 next-env.d.ts
 *.tsbuildinfo
+
+# Runtime member data (never ship or commit account data)
+var/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal

@@ -4,6 +4,8 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useTransition } from "react";
 
+import { SavedGroupsPanel } from "@/components/SavedGroupsPanel";
+import { restoreMemberGroup } from "@/lib/restoreMemberGroup";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { MeetingPoints } from "@/components/MeetingPoints";
 import { NearbySpots } from "@/components/NearbySpots";
@@ -138,6 +140,8 @@ export function HomeView({ page = "input" }: { page?: "input" | "results" }) {
         })),
         mode: data.mode,
         bestName: data.best.name,
+        fairnessWeight: request.weight ?? 0.6,
+        fareWeight: request.fareWeight ?? 0,
       });
     },
   });
@@ -225,6 +229,24 @@ export function HomeView({ page = "input" }: { page?: "input" | "results" }) {
           <Hero />
         </div>
         <ThemeArtwork />
+        {history.synced && (
+          <div className="history-sync">
+            <span>履歴・お気に入りをアカウントに同期中</span>
+            {history.localCount > 0 && (
+              <button className="tool-btn" onClick={history.importLocal}>
+                この端末の履歴を取り込む（{history.localCount}件）
+              </button>
+            )}
+          </div>
+        )}
+        {history.syncError && (
+          <p role="alert">
+            {history.syncError}
+            <button className="tool-btn" onClick={history.retry}>
+              再読み込み
+            </button>
+          </p>
+        )}
         <Toolbar
           history={{
             entries: history.entries,
@@ -233,6 +255,10 @@ export function HomeView({ page = "input" }: { page?: "input" | "results" }) {
             onRestore: (entry) => {
               setRows(entry.origins);
               setMode(entry.mode);
+              useEkiHubStore
+                .getState()
+                .setFairnessWeight(entry.fairnessWeight ?? 0.6);
+              useEkiHubStore.getState().setFareWeight(entry.fareWeight ?? 0);
               editConditions();
             },
           }}
@@ -242,6 +268,12 @@ export function HomeView({ page = "input" }: { page?: "input" | "results" }) {
       <div className={`layout layout--${page}`}>
         <div ref={inputRef} className="sidebar input-workspace" tabIndex={-1}>
           <div id="search-form" className="input-workspace__body">
+            <SavedGroupsPanel
+              onSearch={(group) => {
+                restoreMemberGroup(group);
+                handleSubmit();
+              }}
+            />
             <StationForm
               stations={stationsQuery.data ?? []}
               isComputing={centerMutation.isPending || isNavigating}

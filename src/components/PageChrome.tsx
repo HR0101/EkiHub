@@ -29,6 +29,7 @@ export function Toolbar({ history }: ToolbarProps) {
 
   return (
     <div className="toolbar" id="toolbar">
+      <Link href="/account" className="tool-btn">{t("member.nav")}</Link>
       <LocaleToggle />
       <Link href="/howto" className="tool-btn">
         {t("nav.howto")}
