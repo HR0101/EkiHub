@@ -57,7 +57,7 @@ npm run dev -- --webpack --port 3001
 
 ## 4. 本番への設定
 
-本番もNode.js 24以上が必要です。CI・DockerのNodeバージョンを24に揃えています。Oracle VMでNode 24が使えることを確認してからデプロイしてください。デプロイの事前チェックは古いNodeの場合、稼働中のリリースを交換する前に停止します。
+本番アプリにはNode.js 24以上が必要です。CI・DockerのNodeバージョンを24に揃え、CIで使用したNode実行ファイルも配布物へ同梱します。PM2は同梱の `node` を明示して起動するため、Oracle VMのグローバルなNodeを変更する必要はありません。デプロイの事前チェックは、同梱Nodeの起動とSQLiteの互換性を稼働中のリリースを交換する前に確認します。配布物はCIと同じOS・CPUアーキテクチャ向けです。
 
 Google側に本番用のOAuthクライアントを用意し、リダイレクトURIを次に設定します。
 
@@ -88,6 +88,12 @@ Node.js 24の環境で、書き込みが続いていても整合性を保つSQLi
 MEMBER_DATABASE_PATH=/absolute/path/members.sqlite npm run backup:members -- /secure/backups/members-20261021.sqlite
 ```
 
+本番の配布先ディレクトリでは、同梱したNodeでバックアップツールを実行します。
+
+```sh
+MEMBER_DATABASE_PATH=/absolute/path/members.sqlite ./node scripts/backupMembers.mjs /secure/backups/members-20261023.sqlite
+```
+
 本番では毎日とデプロイ前にバックアップを取得し、別の保存先にも保管してください。保存期限に達したバックアップは管理者が削除してください。バックアップには削除前のグループ情報が含まれる場合があります。
 
 復元時はアプリを停止し、現行のDB・`-wal`・`-shm`ファイルを別ディレクトリへ退避してから、検証済みのバックアップを `MEMBER_DATABASE_PATH` のパスへ配置します。DBの権限は600、親ディレクトリは700に設定し、アプリを再起動して本人のグループを確認します。稼働中のDBだけをファイルコピーで上書きしないでください。
@@ -99,7 +105,7 @@ MEMBER_DATABASE_PATH=/absolute/path/members.sqlite npm run backup:members -- /se
 - Google Cloudで本番用OAuthクライアントと `https://ekihub.jp/api/auth/callback/google` を登録する。
 - 同意画面のホームページ・プライバシー・利用規約とドメインを設定し、公開対象を確認する。Googleから同意・審査を求められた場合は所有者が確認する。
 - GitHub Actions Secretsへ本番用の3つの認証情報を登録する。ローカルの秘密値を公開ファイルへコピーしない。
-- VMのNode.js 24と永続DB保存先を確認し、バックアップの定期実行を設定する。
+- 同梱Nodeの起動と永続DB保存先を確認し、バックアップの定期実行を設定する。
 - デプロイ後、HTTPSの本番URLでログイン・保存・ログアウト・再ログインを確認する。
 
 デプロイは、OAuth Secretsが不足している場合やVMでSQLiteのネイティブモジュールが起動できない場合、稼働中リリースを交換する前に停止します。CIでは型チェック・Lint・テストを実行します。

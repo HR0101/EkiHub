@@ -4,7 +4,7 @@ import { promisify } from "node:util";
 import Database from "better-sqlite3";
 import { randomBytes } from "node:crypto";
 import { mkdtempSync, rmSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import assert from "node:assert/strict";
 import { encode } from "next-auth/jwt";
@@ -13,9 +13,17 @@ const port = Number(process.env.MEMBER_SMOKE_PORT || 3002);
 const origin = `http://127.0.0.1:${port}`;
 const directory = mkdtempSync(join(tmpdir(), "ekihub-member-smoke-"));
 const secret = randomBytes(32).toString("base64url");
-const child = spawn(process.execPath, [".next/standalone/server.js"], {
+const bundledNode = join(process.cwd(), ".next/standalone/node");
+// Homebrew's development Node uses a shared libnode; CI ships official Linux Node.
+const runtimeEnv = {
+  ...process.env,
+  ...(process.platform === "darwin"
+    ? { DYLD_LIBRARY_PATH: join(dirname(process.execPath), "../lib") }
+    : {}),
+};
+const child = spawn(bundledNode, [".next/standalone/server.js"], {
   env: {
-    ...process.env,
+    ...runtimeEnv,
     NODE_ENV: "production",
     HOSTNAME: "127.0.0.1",
     PORT: String(port),
@@ -214,11 +222,11 @@ try {
   // Exercise the actual backup command while both repositories are active.
   const backupPath = join(directory, "backup.sqlite");
   await promisify(execFile)(
-    process.execPath,
+    bundledNode,
     [".next/standalone/scripts/backupMembers.mjs", backupPath],
     {
       env: {
-        ...process.env,
+        ...runtimeEnv,
         MEMBER_DATABASE_PATH: join(directory, "members.sqlite"),
       },
     },

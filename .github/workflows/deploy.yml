@@ -151,12 +151,6 @@ jobs:
           script: |
             set -e
             RELEASE="$HOME/ekihub-app/ekihub-next"
-            # SQLiteの対応ランタイムを、現行リリースに触る前に確認する。
-            NODE_MAJOR=$(node -p 'process.versions.node.split(".")[0]')
-            if [ "$NODE_MAJOR" -lt 24 ]; then
-              echo "会員機能にはNode.js 24以上が必要です。VMを更新してから再実行してください。"
-              exit 1
-            fi
             # 不完全なOAuth設定のリリースを稼働前に拒否する。
             if [ -z "$AUTH_SECRET" ] || [ -z "$AUTH_GOOGLE_ID" ] || [ -z "$AUTH_GOOGLE_SECRET" ]; then
               echo "会員ログイン用のGitHub Secretsが不足しています。"
@@ -171,8 +165,14 @@ jobs:
             rm -rf "$RELEASE.new"
             mkdir -p "$RELEASE.new"
             tar -xzf "/tmp/$BUNDLE" -C "$RELEASE.new"
+            # CIで検証したNodeを同梱し、VM全体のNodeには依存しない。
+            NODE_MAJOR=$("$RELEASE.new/node" -p 'process.versions.node.split(".")[0]')
+            if [ "$NODE_MAJOR" -lt 24 ]; then
+              echo "配布物のNode.jsは24以上が必要です。"
+              exit 1
+            fi
             # VM上のネイティブSQLiteバイナリ互換性を交換前に検証する。
-            (cd "$RELEASE.new" && node -e 'const D=require("better-sqlite3");const d=new D(":memory:");d.prepare("SELECT 1").get();d.close()')
+            (cd "$RELEASE.new" && ./node -e 'const D=require("better-sqlite3");const d=new D(":memory:");d.prepare("SELECT 1").get();d.close()')
             rm -f "/tmp/$BUNDLE"
 
             rm -rf "$RELEASE.prev"
@@ -189,7 +189,8 @@ jobs:
               AUTH_SECRET="$AUTH_SECRET" AUTH_GOOGLE_ID="$AUTH_GOOGLE_ID" \
               AUTH_GOOGLE_SECRET="$AUTH_GOOGLE_SECRET" AUTH_URL=https://ekihub.jp \
               AUTH_TRUST_HOST=true MEMBER_DATABASE_PATH="$MEMBER_DIR/members.sqlite" \
-              pm2 start server.js --name ekihub --cwd "$RELEASE" --update-env
+              pm2 start server.js --name ekihub --cwd "$RELEASE" \
+                --interpreter "$RELEASE/node" --update-env
             pm2 save
 
             # 外から見る前に VM の中で確かめる（nginx より手前か後ろかを切り分けるため）
