@@ -1,0 +1,96 @@
+/* Keep member screens independent of each search theme's workspace width. */
+html .app.member-page {
+  width: 100%;
+  max-width: 1200px;
+  min-width: 0;
+  margin-inline: auto;
+  padding: clamp(20px, 3vw, 40px) clamp(16px, 3vw, 40px);
+  overflow-wrap: anywhere;
+}
+
+.member-page__header {
+  gap: 16px 24px;
+}
+
+html .app.member-page .member-page__header .toolbar {
+  position: static;
+  flex: 1 1 480px;
+  min-width: 0;
+  width: auto;
+  margin: 0;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.member-page__header > .nav-link {
+  flex-shrink: 0;
+}
+
+.member-page__header .tool-btn {
+  margin: 0;
+}
+
+.member-page__intro {
+  margin-block: clamp(32px, 5vw, 64px) 32px;
+}
+
+.member-page__intro h1 {
+  font-size: clamp(1.65rem, 3.4vw, 2.6rem);
+  text-wrap: balance;
+}
+
+.member-page--guest .member-page__intro {
+  max-width: 720px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+html .app.member-page .member-login {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 36px);
+}
+
+.member-page--guest > .member-message {
+  max-width: 600px;
+  margin: 0 auto 24px;
+}
+
+.member-page__columns > *,
+.member-page__header > *,
+.member-page__identity > * {
+  min-width: 0;
+}
+
+.member-page .foot {
+  max-width: 720px;
+  margin: clamp(32px, 5vw, 56px) auto 0;
+}
+
+@media (max-width: 900px) {
+  html .app.member-page .member-page__header .toolbar {
+    flex-basis: 100%;
+    justify-content: center;
+  }
+
+  .member-page__columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  html .app.member-page .member-page__header .toolbar {
+    gap: 8px 6px;
+  }
+
+  html .member-page__header .locale-toggle {
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 100%;
+  }
+
+  .member-page__actions .btn {
+    width: 100%;
+  }
+}
