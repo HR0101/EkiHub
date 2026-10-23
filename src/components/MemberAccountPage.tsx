@@ -103,7 +103,7 @@ export function MemberAccountPage({
   }
   const busy = save.isPending || remove.isPending;
   return (
-    <main className="app home-app member-page">
+    <main className={`app home-app member-page${!account.data?.user ? " member-page--guest" : ""}`}>
       <header className="member-page__header">
         <Link href="/" className="nav-link">
           ← {t("member.back")}
