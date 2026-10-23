@@ -37,6 +37,8 @@ await cp("scripts/backupMembers.mjs", join(root, "scripts/backupMembers.mjs"), {
   recursive: true,
 });
 await inspect(root);
+// Ship the runtime used to build and test the native SQLite module.
+await cp(process.execPath, join(root, "node"));
 console.log(
-  "Standalone bundle assembled; no environment files or member databases.",
+  `Standalone bundle assembled with Node ${process.version}; no environment files or member databases.`,
 );

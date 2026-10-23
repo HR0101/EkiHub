@@ -13,7 +13,8 @@ const port = Number(process.env.MEMBER_SMOKE_PORT || 3002);
 const origin = `http://127.0.0.1:${port}`;
 const directory = mkdtempSync(join(tmpdir(), "ekihub-member-smoke-"));
 const secret = randomBytes(32).toString("base64url");
-const child = spawn(process.execPath, [".next/standalone/server.js"], {
+const bundledNode = join(process.cwd(), ".next/standalone/node");
+const child = spawn(bundledNode, [".next/standalone/server.js"], {
   env: {
     ...process.env,
     NODE_ENV: "production",
@@ -214,7 +215,7 @@ try {
   // Exercise the actual backup command while both repositories are active.
   const backupPath = join(directory, "backup.sqlite");
   await promisify(execFile)(
-    process.execPath,
+    bundledNode,
     [".next/standalone/scripts/backupMembers.mjs", backupPath],
     {
       env: {
