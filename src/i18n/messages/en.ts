@@ -2,6 +2,53 @@ import type { Messages } from "./ja";
 
 /** English. Keys follow ja.ts — adding a key there surfaces the gap here. */
 export const en: Messages = {
+  member: {
+    export: "Export saved data",
+    nav: "My groups",
+    title: "Your usual people. Your next meetup.",
+    lead: "Save stations, people and preferences. Search again with one tap.",
+    login: "Continue with Google",
+    logout: "Sign out",
+    loginTitle: "Save groups to your account",
+    loginDescription:
+      "Sign in with Google to access your groups on your phone and computer.",
+    loginNote:
+      "Your first sign-in creates an account. EkiHub never receives your Google password.",
+    unavailable:
+      "Google sign-in is being prepared. Station search is available without signing in.",
+    authError: "Sign-in failed. Please try again.",
+    groupsTitle: "Saved groups",
+    manage: "Manage",
+    loading: "Loading…",
+    loadFailed: "Could not load your saved groups.",
+    retry: "Retry",
+    search: "Search with this group",
+    empty: "No groups saved yet.",
+    saveCurrent: "Save current settings",
+    name: "Group name",
+    namePlaceholder: "e.g. University friends",
+    save: "Save group",
+    saving: "Saving…",
+    update: "Save changes",
+    saved: "Saved. You can reuse this group next time.",
+    edit: "Edit",
+    delete: "Delete",
+    deleteConfirm: "Delete this group?",
+    cancel: "Cancel",
+    editing: "Editing group",
+    newGroup: "New group",
+    add: "Add group",
+    conditions: "Search settings to save",
+    back: "Back to station search",
+    signedIn: "Signed in",
+    privacy: "About sign-in and stored data",
+    limit: "Save up to 30 groups.",
+    createHint:
+      "Your current search settings are shown below. Adjust them before saving if needed.",
+    error: "Could not complete the action. Please try again later.",
+    loginBusy: "Connecting…",
+    deleteBusy: "Deleting…",
+  },
   hero: {
     badge: "EkiHub",
     titleBefore: "Find the ",
@@ -143,9 +190,11 @@ export const en: Messages = {
     radiusLabel: "Radius",
     chooseCategory: "Choose a category",
     searching: "Searching…",
-    failed: "The nearby places service is unavailable. Try again or search Google Maps.",
+    failed:
+      "The nearby places service is unavailable. Try again or search Google Maps.",
     openMap: "Search Google Maps",
-    mapHint: "Find places near {station} Station on Google Maps. Select a category to narrow your search.",
+    mapHint:
+      "Find places near {station} Station on Google Maps. Select a category to narrow your search.",
     mapQuery: "{category} near {station} Station",
     retry: "Try again",
     empty: "Nothing found within this radius.",

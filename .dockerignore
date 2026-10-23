@@ -28,3 +28,7 @@
 # Ignore Docker-related files
 /.dockerignore
 /Dockerfile*
+
+# Private runtime member data
+/var/
+*.sqlite*

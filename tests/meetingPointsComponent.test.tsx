@@ -40,7 +40,7 @@ describe("MeetingPoints コンポーネント", () => {
     const station = createDummyStation({ name: "渋谷", lines: ["JR山手線"] });
 
     const { container } = render(
-      <LocaleProvider initialLocale="ja">
+      <LocaleProvider>
         <MeetingPoints station={station} dataset={typedSampleData} />
       </LocaleProvider>,
     );
@@ -73,7 +73,7 @@ describe("MeetingPoints コンポーネント", () => {
     });
 
     render(
-      <LocaleProvider initialLocale="ja">
+      <LocaleProvider>
         <MeetingPoints station={station} dataset={typedSampleData} />
       </LocaleProvider>,
     );
@@ -92,7 +92,7 @@ describe("MeetingPoints コンポーネント", () => {
     });
 
     render(
-      <LocaleProvider initialLocale="ja">
+      <LocaleProvider>
         <MeetingPoints station={station} dataset={typedSampleData} />
       </LocaleProvider>,
     );
@@ -106,7 +106,7 @@ describe("MeetingPoints コンポーネント", () => {
     const station = createDummyStation({ name: "存在しない駅", lines: ["JR山手線"] });
 
     const { container } = render(
-      <LocaleProvider initialLocale="ja">
+      <LocaleProvider>
         <MeetingPoints station={station} dataset={typedSampleData} />
       </LocaleProvider>,
     );

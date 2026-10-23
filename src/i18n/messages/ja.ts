@@ -6,6 +6,53 @@
  * 翻訳漏れがコンパイルエラーとして出る。
  */
 export const ja = {
+  member: {
+    export: "保存データを書き出す",
+    nav: "マイグループ",
+    title: "いつものメンバーで、次の集合も。",
+    lead: "出発駅・人数・検索条件を保存して、次回はワンタップで検索。",
+    login: "Googleでログイン",
+    logout: "ログアウト",
+    loginTitle: "グループをアカウントに保存",
+    loginDescription:
+      "Googleアカウントでログインすると、保存したグループをスマホ・PCから呼び出せます。",
+    loginNote:
+      "初回ログインでアカウントが作成されます。GoogleのパスワードをEkiHubが取得することはありません。",
+    unavailable:
+      "Googleログインは現在準備中です。駅の検索はログインなしで使えます。",
+    authError: "ログインできませんでした。もう一度お試しください。",
+    groupsTitle: "保存したグループ",
+    manage: "管理する",
+    loading: "読み込み中…",
+    loadFailed: "保存した内容を取得できませんでした。",
+    retry: "再試行",
+    search: "このグループで検索",
+    empty: "まだ保存したグループはありません。",
+    saveCurrent: "今の入力条件を保存",
+    name: "グループ名",
+    namePlaceholder: "例：大学の友達",
+    save: "グループを保存",
+    saving: "保存中…",
+    update: "変更を保存",
+    saved: "保存しました。次回からこのグループを呼び出せます。",
+    edit: "編集",
+    delete: "削除",
+    deleteConfirm: "このグループを削除しますか？",
+    cancel: "キャンセル",
+    editing: "グループを編集中",
+    newGroup: "新しいグループ",
+    add: "グループを追加",
+    conditions: "保存する検索条件",
+    back: "駅の検索に戻る",
+    signedIn: "ログイン中",
+    privacy: "ログインと保存データについて",
+    limit: "グループは30件まで保存できます。",
+    createHint:
+      "検索画面の条件を引き継いでいます。必要に応じて変更して保存できます。",
+    error: "処理できませんでした。時間をおいてもう一度お試しください。",
+    loginBusy: "接続中…",
+    deleteBusy: "削除中…",
+  },
   hero: {
     badge: "EkiHub",
     titleBefore: "みんなの",
@@ -56,7 +103,8 @@ export const ja = {
     },
     submit: "中心駅を検索する",
     computing: "検索中…",
-    stationsError: "駅データを読み込めませんでした。ページを再読み込みしてください。",
+    stationsError:
+      "駅データを読み込めませんでした。ページを再読み込みしてください。",
   },
 
   steps: {
@@ -147,9 +195,11 @@ export const ja = {
     radiusLabel: "範囲",
     chooseCategory: "カテゴリを選んでください",
     searching: "探しています…",
-    failed: "周辺スポットの検索サービスに接続できませんでした。再試行するか、Googleマップで探せます。",
+    failed:
+      "周辺スポットの検索サービスに接続できませんでした。再試行するか、Googleマップで探せます。",
     openMap: "Googleマップで探す",
-    mapHint: "{station}駅の近くのお店や公園をGoogleマップで探せます。カテゴリを選ぶと検索を絞れます。",
+    mapHint:
+      "{station}駅の近くのお店や公園をGoogleマップで探せます。カテゴリを選ぶと検索を絞れます。",
     mapQuery: "{station}駅 周辺 {category}",
     retry: "もう一度探す",
     empty: "この範囲では見つかりませんでした。",
@@ -200,7 +250,8 @@ export const ja = {
   },
 
   theme: {
-    randomHint: "ページを開くたびにランダムで選びます。ここから切り替えられます。",
+    randomHint:
+      "ページを開くたびにランダムで選びます。ここから切り替えられます。",
     button: "テーマ",
     dialogLabel: "テーマ設定",
     brightness: "明るさ",

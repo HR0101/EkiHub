@@ -196,7 +196,11 @@ describe("responsive search workflow", () => {
       screen.getByRole("combobox", { name: "最寄駅 1" }).getAttribute("value"),
     ).toBe("新宿");
     expect(
-      (screen.getByRole("combobox", { name: "最寄駅 1 — 人数" }) as HTMLSelectElement).value,
+      (
+        screen.getByRole("combobox", {
+          name: "最寄駅 1 — 人数",
+        }) as HTMLSelectElement
+      ).value,
     ).toBe("2");
   });
 
@@ -283,6 +287,44 @@ describe("responsive search workflow", () => {
       spots.open = true;
     });
     expect(within(spots).getAllByRole("button").length).toBe(7);
-    expect(within(spots).getByRole("link", {name: "Googleマップで探す"})).toBeDefined();
+    expect(
+      within(spots).getByRole("link", { name: "Googleマップで探す" }),
+    ).toBeDefined();
+  });
+});
+
+it("searches a saved member group with its people counts and every saved preference", async () => {
+  const group = {
+    id: "member-group",
+    name: "いつもの友達",
+    origins: [
+      { name: "新宿", people: 7 },
+      { name: "横浜", people: 4 },
+    ],
+    mode: "B",
+    fairnessWeight: 0.2,
+    fareWeight: 0.7,
+    updatedAt: "2026-10-21",
+  };
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string) => {
+      if (url === "/api/account")
+        return Response.json({
+          enabled: true,
+          user: { id: "alice", name: "Alice" },
+        });
+      if (url === "/api/groups") return Response.json({ groups: [group] });
+      throw new Error(`Unexpected URL ${url}`);
+    }),
+  );
+  mount();
+  fireEvent.click(await screen.findByRole("button", { name: /いつもの友達/ }));
+  expect(submit).toHaveBeenCalledWith({
+    origins: ["新宿", "横浜"],
+    peopleCounts: [7, 4],
+    mode: "B",
+    weight: 0.2,
+    fareWeight: 0.7,
   });
 });

@@ -2,7 +2,7 @@
 # check=error=true
 
 # Make sure NODE_VERSION matches the Node version in package.json (engines) and the production VM
-ARG NODE_VERSION=20.20.2
+ARG NODE_VERSION=24
 FROM docker.io/library/node:$NODE_VERSION-slim AS base
 
 # EkiHub app lives here

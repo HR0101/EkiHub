@@ -14,6 +14,11 @@ services:
       # 未設定でも動く（埋め込みデータ＋距離概算へ自動フォールバックする）。
       # 運行情報カードを実データで見たいときだけ .env に ODPT_TOKEN を書く。
       ODPT_TOKEN: ${ODPT_TOKEN:-}
+      AUTH_SECRET: ${AUTH_SECRET:-}
+      AUTH_GOOGLE_ID: ${AUTH_GOOGLE_ID:-}
+      AUTH_GOOGLE_SECRET: ${AUTH_GOOGLE_SECRET:-}
+      AUTH_URL: ${AUTH_URL:-http://localhost}
+      MEMBER_DATABASE_PATH: /usr/src/ekihub/var/members.sqlite
       ROUTING_PROVIDER: ${ROUTING_PROVIDER:-}
       ROUTING_OTP_URL: ${ROUTING_OTP_URL:-}
     tty: true

@@ -2,6 +2,52 @@ import type { Messages } from "./ja";
 
 /** 한국어. 키 구조는 ja.ts와 동일합니다. */
 export const ko: Messages = {
+  member: {
+    export: "저장 데이터 내보내기",
+    nav: "내 그룹",
+    title: "늘 만나는 사람들과, 다음 모임도.",
+    lead: "출발역·인원·검색 조건을 저장하고 다음에는 한 번에 검색하세요.",
+    login: "Google로 로그인",
+    logout: "로그아웃",
+    loginTitle: "계정에 그룹 저장",
+    loginDescription:
+      "Google로 로그인하면 휴대폰과 PC에서 저장한 그룹을 불러올 수 있습니다.",
+    loginNote:
+      "첫 로그인 시 계정이 생성됩니다. EkiHub는 Google 비밀번호를 받지 않습니다.",
+    unavailable:
+      "Google 로그인 준비 중입니다. 역 검색은 로그인 없이 이용할 수 있습니다.",
+    authError: "로그인하지 못했습니다. 다시 시도해 주세요.",
+    groupsTitle: "저장한 그룹",
+    manage: "관리",
+    loading: "불러오는 중…",
+    loadFailed: "저장한 내용을 불러오지 못했습니다.",
+    retry: "다시 시도",
+    search: "이 그룹으로 검색",
+    empty: "아직 저장한 그룹이 없습니다.",
+    saveCurrent: "현재 조건 저장",
+    name: "그룹 이름",
+    namePlaceholder: "예: 대학 친구들",
+    save: "그룹 저장",
+    saving: "저장 중…",
+    update: "변경 내용 저장",
+    saved: "저장했습니다. 다음에 이 그룹을 불러올 수 있습니다.",
+    edit: "편집",
+    delete: "삭제",
+    deleteConfirm: "이 그룹을 삭제할까요?",
+    cancel: "취소",
+    editing: "그룹 편집 중",
+    newGroup: "새 그룹",
+    add: "그룹 추가",
+    conditions: "저장할 검색 조건",
+    back: "역 검색으로 돌아가기",
+    signedIn: "로그인 중",
+    privacy: "로그인 및 저장 데이터 안내",
+    limit: "그룹은 최대 30개까지 저장할 수 있습니다.",
+    createHint: "현재 검색 조건을 불러왔습니다. 필요하면 변경 후 저장하세요.",
+    error: "처리하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+    loginBusy: "연결 중…",
+    deleteBusy: "삭제 중…",
+  },
   hero: {
     badge: "EkiHub",
     titleBefore: "모두의 ",
@@ -52,7 +98,8 @@ export const ko: Messages = {
     },
     submit: "중심역 검색하기",
     computing: "검색 중…",
-    stationsError: "역 데이터를 불러오지 못했습니다. 페이지를 새로고침해 주세요.",
+    stationsError:
+      "역 데이터를 불러오지 못했습니다. 페이지를 새로고침해 주세요.",
   },
 
   steps: {
@@ -75,7 +122,8 @@ export const ko: Messages = {
     emptyLine1: "역을 2개 이상 입력한 뒤",
     emptyLine2: "“검색하기”를 눌러 주세요.",
     emptyTitle: "모두의 중심역을 찾아 드립니다",
-    emptyLead: "전원의 이동 시간과 요금을 바탕으로 모이기 좋은 역을 제안합니다.",
+    emptyLead:
+      "전원의 이동 시간과 요금을 바탕으로 모이기 좋은 역을 제안합니다.",
     emptyPoint1: "이동 시간의 편차를 줄여, 혼자만 멀어지지 않게 합니다",
     emptyPoint2: "요금 추정과 직통 여부도 함께 보여 줍니다",
     emptyPoint3: "정해진 역 주변에서 모일 만한 장소를 찾을 수 있습니다",
@@ -143,9 +191,11 @@ export const ko: Messages = {
     radiusLabel: "범위",
     chooseCategory: "카테고리를 선택해 주세요",
     searching: "찾는 중…",
-    failed: "주변 장소 서비스에 연결할 수 없습니다. 다시 시도하거나 Google 지도에서 검색하세요.",
+    failed:
+      "주변 장소 서비스에 연결할 수 없습니다. 다시 시도하거나 Google 지도에서 검색하세요.",
     openMap: "Google 지도에서 검색",
-    mapHint: "Google 지도에서 {station}역 근처 장소를 찾을 수 있습니다. 카테고리를 선택하면 검색 범위를 좁힐 수 있습니다.",
+    mapHint:
+      "Google 지도에서 {station}역 근처 장소를 찾을 수 있습니다. 카테고리를 선택하면 검색 범위를 좁힐 수 있습니다.",
     mapQuery: "{station}역 근처 {category}",
     retry: "다시 검색",
     empty: "이 범위에서는 찾지 못했습니다.",
@@ -196,7 +246,8 @@ export const ko: Messages = {
   },
 
   theme: {
-    randomHint: "페이지를 열 때마다 무작위로 선택됩니다. 여기에서 변경할 수 있습니다.",
+    randomHint:
+      "페이지를 열 때마다 무작위로 선택됩니다. 여기에서 변경할 수 있습니다.",
     button: "테마",
     dialogLabel: "테마 설정",
     brightness: "밝기",
