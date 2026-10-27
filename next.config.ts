@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 /**
  * Content-Security-Policy
  *
- * 旧 server.js から引き継いだ方針（外部は地図タイルと Overpass のみ許可）を保ちつつ、
+ * 旧 server.js から引き継いだ方針（外部は地図タイルのみ許可）を保ちつつ、
  * Next.js の都合に合わせて調整している。
  *   - Leaflet / QRコードは npm から読むため、外部 CDN の許可は不要になった
  *   - フォントは next/font で自ホストするため font-src は 'self' のみ
@@ -23,8 +23,8 @@ function contentSecurityPolicy(isDev: boolean): string {
     "font-src 'self' data:",
     // 背景地図（国土地理院）と鉄道路線の重ね合わせ（OpenRailwayMap）のタイル
     "img-src 'self' data: blob: https://cyberjapandata.gsi.go.jp https://*.tiles.openrailwaymap.org",
-    // 自APIと、ブラウザから直接叩く Overpass ミラー
-    "connect-src 'self' https://overpass-api.de https://overpass.private.coffee https://overpass.kumi.systems",
+    // 画面から呼ぶのは自APIだけ（周辺スポットは Google マップへのリンクで、通信しない）
+    "connect-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

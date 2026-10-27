@@ -8,8 +8,6 @@ import type {
   ApiError,
   CenterRequest,
   CenterResult,
-  Spot,
-  SpotCategory,
   Station,
   TrainInformation,
 } from "@/types/ekihub";
@@ -67,22 +65,6 @@ export async function fetchCenterStation(
     signal,
   });
   return parseResponse<CenterResult>(response);
-}
-
-/** 集合駅の周辺スポットを取得する */
-export async function fetchSpots(
-  params: { lat: number; lng: number; category: SpotCategory; radius: number },
-  signal?: AbortSignal
-): Promise<Spot[]> {
-  const query = new URLSearchParams({
-    lat: String(params.lat),
-    lng: String(params.lng),
-    category: params.category,
-    radius: String(params.radius),
-  });
-  const response = await fetch(`/api/spots?${query.toString()}`, { signal });
-  const data = await parseResponse<{ spots: Spot[] }>(response);
-  return data.spots;
 }
 
 /** 最新の運行情報を取得する */

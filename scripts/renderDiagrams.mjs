@@ -5,8 +5,10 @@
  * 出力先は assets/ で、README からはリンクで参照する.
  *
  * 使い方:
- *   PUPPETEER_SKIP_DOWNLOAD=1 npm i --no-save @mermaid-js/mermaid-cli
+ *   PUPPETEER_SKIP_DOWNLOAD=1 npm i --no-save @mermaid-js/mermaid-cli@11
  *   node scripts/renderDiagrams.mjs
+ *
+ * mermaid-cli 12 は -w（幅の指定）を受け付けないため 11 系を使う.
  *
  * mermaid-cli は Chrome を必要とするが、ダウンロードはせず
  * 端末にインストール済みの Chrome を使う（CHROME_PATH で変更可能）.
@@ -60,7 +62,7 @@ function main() {
   if (!existsSync(MMDC)) {
     console.error(
       "mermaid-cli が見つかりません。次を実行してください:\n" +
-        "  PUPPETEER_SKIP_DOWNLOAD=1 npm i --no-save @mermaid-js/mermaid-cli"
+        "  PUPPETEER_SKIP_DOWNLOAD=1 npm i --no-save @mermaid-js/mermaid-cli@11"
     );
     process.exit(1);
   }

@@ -183,17 +183,10 @@ export const zh: Messages = {
       convenience: "便利店",
       park: "公园",
     },
-    radiusLabel: "范围",
-    chooseCategory: "请选择类别",
-    searching: "搜索中…",
-    failed: "无法连接周边地点服务。请重试，或在Google地图中搜索。",
     openMap: "在Google地图中搜索",
     mapHint:
       "在Google地图中寻找{station}站附近的地点。选择类别可缩小搜索范围。",
     mapQuery: "{station}站 附近 {category}",
-    retry: "重新搜索",
-    empty: "此范围内没有找到。",
-    more: "另有 {count} 处（仅显示前 {limit} 处）",
   },
 
   meetingPoints: {

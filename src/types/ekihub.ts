@@ -20,7 +20,7 @@ export type RoutingMethod = "graph" | "straight" | "otp";
 /** 運行状態。alert（異常）→ normal → ended の順で並べる */
 export type ServiceState = "alert" | "normal" | "ended";
 
-/** 周辺スポットのカテゴリ（lib/poiService.js の CATEGORY_LABELS と対応） */
+/** 周辺スポットのカテゴリ（Google マップで探すときの絞り込み。文言は辞書の spots.categories） */
 export type SpotCategory =
   | "cafe"
   | "restaurant"
@@ -132,18 +132,6 @@ export interface CenterRequest {
   fareWeight?: number;
   /** origins と同じ並びの人数 */
   peopleCounts?: number[];
-}
-
-/** 周辺スポット1件 */
-export interface Spot {
-  name: string;
-  category: SpotCategory;
-  lat: number;
-  lng: number;
-  tags: {
-    cuisine: string | null;
-    opening_hours: string | null;
-  };
 }
 
 /** 運行情報1件 */

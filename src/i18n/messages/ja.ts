@@ -192,18 +192,10 @@ export const ja = {
       convenience: "コンビニ",
       park: "公園",
     },
-    radiusLabel: "範囲",
-    chooseCategory: "カテゴリを選んでください",
-    searching: "探しています…",
-    failed:
-      "周辺スポットの検索サービスに接続できませんでした。再試行するか、Googleマップで探せます。",
     openMap: "Googleマップで探す",
     mapHint:
       "{station}駅の近くのお店や公園をGoogleマップで探せます。カテゴリを選ぶと検索を絞れます。",
     mapQuery: "{station}駅 周辺 {category}",
-    retry: "もう一度探す",
-    empty: "この範囲では見つかりませんでした。",
-    more: "ほか {count} 件（上位{limit}件のみ表示）",
   },
 
   meetingPoints: {

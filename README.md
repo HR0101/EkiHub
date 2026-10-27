@@ -84,7 +84,6 @@ flowchart LR
     subgraph RT["APIルート app/api/*/route.ts"]
       R1["GET /api/stations<br/>駅マスタ"]
       R2["POST /api/center<br/>中心駅の算出"]
-      R3["GET /api/spots<br/>GET /api/spot-categories"]
       R4["GET /api/train-information"]
       R5["GET /api/health<br/>デプロイ後の疎通確認"]
     end
@@ -95,7 +94,6 @@ flowchart LR
       GRF["stationGraph<br/>ダイクストラ法<br/>エッジ上限 12km"]
       FRE["fareEstimate<br/>運賃の概算"]
       RPV["routeProvider<br/>経路APIの差し替え口"]
-      POI["poiService<br/>Overpass クエリ組立"]
       ODP["odptTrainInformation<br/>正規化・キャッシュ"]
     end
   end
@@ -104,7 +102,6 @@ flowchart LR
 
   subgraph EX["外部API（すべて任意）"]
     E1["ODPT<br/>駅データ拡張・運行情報"]
-    E2["Overpass API<br/>周辺スポット"]
     E3["OpenTripPlanner<br/>所要時間・運賃"]
   end
 
@@ -112,13 +109,10 @@ flowchart LR
   UI --> R1
   UI --> R2
   UI --> R4
-  UI -. "直接叩けない時だけ" .-> R3
-  UI -. "既定は直接取得" .-> E2
 
   R1 --> REPO
   R2 --> REPO
   R2 --> CTR
-  R3 --> POI
   R4 --> ODP
 
   CTR --> GRF
@@ -128,7 +122,6 @@ flowchart LR
   REPO --> D
   REPO -. "ODPT_TOKEN 設定時" .-> E1
 
-  POI --> E2
   ODP --> E1
   RPV -. "ROUTING_PROVIDER=otp" .-> E3
 
@@ -140,10 +133,10 @@ flowchart LR
   classDef ci fill:#fbeef4,stroke:#c98bab,color:#4a1730
 
   class UI,PG client
-  class R1,R2,R3,R4,R5 route
-  class REPO,CTR,GRF,FRE,RPV,POI,ODP logic
+  class R1,R2,R4,R5 route
+  class REPO,CTR,GRF,FRE,RPV,ODP logic
   class D data
-  class E1,E2,E3 ext
+  class E1,E3 ext
 ```
 
 > Mermaid が描画されない環境向けに，同じ図の画像も置いています：[SVG](assets/architecture-server.svg) ／ [PNG](assets/architecture-server.png)
@@ -152,7 +145,7 @@ flowchart LR
 
 - **外部APIは無くても動く**：`data/` の同梱データと距離概算へ自動フォールバックするため，トークン未設定でも全機能が成立します．
 - **重い処理は1回だけ**：駅マスタのマージと駅グラフの構築は初回リクエストで作ってプロセス内に保持し，以降は使い回します．
-- **周辺スポットは Google マップへ渡す**：画面ではカテゴリを選んで Google マップの検索を開くだけで，外部APIは呼びません．図の `/api/spots` と Overpass は旧方式の名残で，現在の画面からは使っていません．
+- **周辺スポットは Google マップへ渡す**：画面ではカテゴリを選んで Google マップの検索を開くだけで，本サービスから外部APIは呼びません．
 
 ### 画面の構成
 
@@ -187,7 +180,6 @@ EkiHub/
 │   ├── meet/[token]/          # 共有グループの集合ページ（予定・投票）
 │   ├── themes/                # 8種のデザインテーマのCSS
 │   └── api/                   # center / stations / train-information / health と会員系のAPI
-│                              # （spots / spot-categories は旧方式の名残で，画面からは未使用）
 ├── src/
 │   ├── components/            # React コンポーネント（入力フォーム・結果カード・地図など）
 │   ├── hooks/                 # 駅マスタ・算出・履歴・共有URLなどのフック
@@ -202,8 +194,7 @@ EkiHub/
 │   ├── fareEstimate.js        # 距離からの運賃概算
 │   ├── odptTrainInformation.js# ODPT運行情報の取得・正規化・キャッシュ
 │   ├── routeProvider.js       # 経路API抽象化（Strategy Pattern・差し替え式）
-│   ├── stationKana.js         # 駅名の読みの補正
-│   └── poiService.js          # 周辺スポット取得（Overpass．現在の画面からは未使用）
+│   └── stationKana.js         # 駅名の読みの補正
 ├── data/
 │   ├── stations.js            # 埋め込み主要駅（乗降客数つき・手動キュレーション）
 │   ├── stations-osm.json      # 日本全国約8,200駅（OSM + 手動拡張・コミット対象）
@@ -291,13 +282,12 @@ flowchart LR
     NG -- "proxy_pass<br/>X-Forwarded-* を転送" --> APP
   end
 
-  EX["外部API<br/>ODPT・Overpass<br/>OpenTripPlanner"]
+  EX["外部API<br/>ODPT・OpenTripPlanner"]
   GH["GitHub Actions<br/>main への push で<br/>テスト → デプロイ"]
 
   U -- "HTTPS" --> CF
   CF -- "HTTPS" --> NG
   APP -- "タイムアウト＋キャッシュ<br/>失敗時フォールバック" --> EX
-  U -. "周辺スポットは直接取得" .-> EX
   GH -. "SSH一時開放 → 再起動 → 疎通確認" .-> VM
 
   classDef client fill:#eef2f7,stroke:#94a3b8,color:#0f172a
