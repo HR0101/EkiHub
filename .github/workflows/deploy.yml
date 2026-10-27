@@ -219,6 +219,36 @@ jobs:
           echo "$HEALTH"
           echo "$HEALTH" | jq -e '.status == "ok" and .odptEnabled == true' > /dev/null
 
+      # 背景地図のタイルが「画像として」取れ、本番の CSP でも許可されているかを確かめる。
+      # CARTO はキー無しで「API KEY REQUIRED」の透かし画像を HTTP 200 で返していたため（#91）、
+      # ステータスだけでなく形式と大きさも見る。都心のタイルは数十KB、透かしや空白は数KBしかない。
+      # 地図の提供元を変えたら src/components/StationMap.tsx の TILE_URL と揃えること。
+      - name: Map tile check
+        run: |
+          TILE_URL="https://cyberjapandata.gsi.go.jp/xyz/pale/12/3638/1613.png"
+          TILE_HOST=$(echo "$TILE_URL" | cut -d/ -f3)
+          MIN_TILE_BYTES=20000
+
+          CSP=$(curl -fsSI --connect-timeout 15 https://ekihub.jp | grep -i '^content-security-policy:' || true)
+          if ! echo "$CSP" | grep -q "$TILE_HOST"; then
+            echo "::error::本番の CSP（img-src）に $TILE_HOST がありません"
+            exit 1
+          fi
+
+          for i in $(seq 1 3); do
+            RESULT=$(curl -sS -o /tmp/tile.png -w "%{http_code}|%{content_type}|%{size_download}" \
+              --connect-timeout 10 --max-time 20 "$TILE_URL" || true)
+            IFS='|' read -r STATUS TYPE SIZE <<< "$RESULT"
+            SIZE=${SIZE%.*}
+            echo "try $i: status=$STATUS type=$TYPE bytes=$SIZE"
+            if [ "$STATUS" = "200" ] && [[ "$TYPE" == image/* ]] && [ "${SIZE:-0}" -ge "$MIN_TILE_BYTES" ]; then
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::背景地図のタイルを画像として取得できません: $TILE_URL"
+          exit 1
+
       - name: Close SSH for this runner
         if: always()
         run: |
