@@ -21,11 +21,16 @@ interface Props {
   station: RankingEntry | null;
 }
 
-/** 白基調のUIに合わせた明るいタイル */
-const TILE_URL =
-  "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+/**
+ * 白基調のUIに合わせた明るいタイル（国土地理院の淡色地図）。
+ * キー不要で、出典の表示だけで使える。CARTO はキー無しだと
+ * 「API KEY REQUIRED」の透かし画像を返すようになったため切り替えた（#91）。
+ * 提供元を変えるときは next.config.ts の CSP（img-src）、
+ * データ出典・プライバシーポリシーのページ、deploy.yml のタイル確認も揃えること。
+ */
+const TILE_URL = "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png";
 const TILE_ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener noreferrer">地理院タイル</a>';
 
 /** 鉄道路線のオーバーレイ */
 const RAILWAY_TILE_URL =

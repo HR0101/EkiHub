@@ -21,7 +21,8 @@ function contentSecurityPolicy(isDev: boolean): string {
     `script-src ${scriptSrc}`,
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self' data:",
-    "img-src 'self' data: blob: https://*.basemaps.cartocdn.com https://*.tiles.openrailwaymap.org",
+    // 背景地図（国土地理院）と鉄道路線の重ね合わせ（OpenRailwayMap）のタイル
+    "img-src 'self' data: blob: https://cyberjapandata.gsi.go.jp https://*.tiles.openrailwaymap.org",
     // 自APIと、ブラウザから直接叩く Overpass ミラー
     "connect-src 'self' https://overpass-api.de https://overpass.private.coffee https://overpass.kumi.systems",
     "object-src 'none'",
