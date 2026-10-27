@@ -2,7 +2,7 @@
 
 複数人の最寄駅を入力すると，**全員が集まりやすい「中心となる駅」**を算出・提案するWebアプリケーションです．日本全国の鉄道駅（約8,200駅）に対応し，地理的重心ではなく**鉄道ネットワーク上の移動時間の公平性**でランキングします．
 
-ダークモードを基調とした没入感のあるUIで，地図上に各駅からの位置関係と所要時間を可視化します．
+8つのデザインテーマからページを開くたびに1つを選んで表示し，地図上に各駅からの位置関係と所要時間を可視化します．
 
 ## 🌐 今すぐ使う（インストール不要）
 
@@ -25,24 +25,26 @@
 - **結果の可視化**：中心駅カード，各最寄駅からの所要時間バー，地図上の経路線・重心表示．
 - **候補ランキング**：候補駅をクリックすると，その駅基準でカード・所要時間・地図が切り替わる．
 
-### 拡張機能（機能モジュール）
-
-コア（`app.js`）が公開するイベントバス `window.EkiHub` を介して，以下の機能を独立モジュールとして追加しています（`public/js/features/`）．
+### そのほかの機能
 
 | 機能 | 概要 |
 |---|---|
-| テーマ切替 | ダーク／ライト／自動モードと7種のカラーテーマ（デフォルト・サクラ・森・海・夕焼け・紅葉・高コントラスト）．永続化対応． |
-| 多言語対応 | 日本語・英語・中国語・韓国語の切替（`i18n.js`） |
+| 手順ガイド | 入力欄の先頭に「最寄駅 → 検索 → 調整」の3手順を示し，今どこまで進んだかを表示． |
+| デザインテーマ | Y2K / CHROME・TERMINAL / MONO・MOBILE / FRIENDLY・RETRO / DESKTOP・CLAY / TOY・SOFT / NEUMORPHIC・GLASS / AURORA・VIOLET / SOFT POP の8種．ページを開くたびにランダムで1つを選び，「テーマ」ボタンから切り替えられる（選んだテーマは保存しない）． |
+| 多言語対応 | 日本語・英語・中国語・韓国語の切替 |
 | メンバー名・人数 | 各駅にメンバー名と人数を設定．人数で重心・平均を重み付け． |
-| 重視ポイント | 「近さ ⇄ 公平さ」スライダーに加え，**運賃の重視度**スライダー． |
+| 重視ポイント | 「こだわり条件」で「近さ ⇄ 公平さ」と**運賃の重視度**を調整． |
 | 運賃概算・直通可能性 | 距離から普通運賃を概算し表示．同一路線なら「直通」を表示． |
 | 共有URL・QR | 入力・条件をURL化してコピー／Web共有／QRコード表示．開くと自動復元． |
 | 結果コピー | 集合駅と各メンバーの所要時間・運賃をテキストでクリップボードにコピー． |
-| 集合時刻・出発逆算 | 集合時刻から各メンバーの出発時刻を逆算．`.ics`でカレンダー登録． |
-| 周辺スポット | 集合駅周辺のカフェ・居酒屋・カラオケ等をOSMから取得し地図表示． |
-| 履歴・お気に入り | 検索履歴を保存・再実行．駅の組合せをお気に入り登録． |
+| 周辺スポット | カフェ・居酒屋・カラオケなどのカテゴリを選び，集合駅周辺の検索結果を Google マップで開く． |
+| 履歴 | 検索履歴を保存・再実行し，よく使う組合せはお気に入りとして上に固定．ログイン中はアカウントに保存され，別の端末からも使える（端末に残っていた履歴は手動で取り込む）． |
+| マイグループ | Googleログイン後，駅・人数・検索条件をグループとして保存し，次回はそのまま検索（後述「[会員ログインとグループ保存](#会員ログインとグループ保存)」）． |
+| 共有グループ | マイグループを招待リンクで共有し，メンバーごとの出発駅の登録，集合の予定づくり，候補駅への投票・参加の回答ができる． |
 | 印刷 | 結果を印刷用レイアウトで出力． |
-| 鉄道運行情報 | ODPTセンターの最新運行情報を表示．PCでは入力欄下のカード、スマートフォンでは上部の「運行情報」ボタンから開く． |
+| 鉄道運行情報 | 結果欄の下に，首都圏の ODPT 提供路線の運行情報を表示（`ODPT_TOKEN` 設定時）． |
+
+> 移行前の旧版（`legacy/`）にあった「集合時刻・出発逆算（`.ics` 登録）」は，Next.js への移行で引き継いでいないため，現在の画面にはありません．
 
 ---
 
@@ -50,14 +52,16 @@
 
 | 区分 | 採用技術 | 選定理由 |
 |---|---|---|
-| バックエンド | Node.js（ESM）+ Express | 依存が `express` のみで極めて軽量．フロント・バック言語統一 |
-| フロントエンド | Vanilla JS + HTML + CSS | ビルドステップなし（`public/` をそのまま配信）．フレームワーク非依存 |
-| 地図 | Leaflet + CARTO Dark タイル | APIキー不要・無料でダークモードの地図を実現 |
+| 画面・API | Next.js（App Router）+ React + TypeScript | 画面と `/api/*` を1プロセスで配信．算出ロジック（`lib/`）はフレームワーク非依存のまま利用 |
+| 状態管理 | Zustand + TanStack Query | 入力・結果の状態と，駅マスタ・算出APIの取得とキャッシュを分担 |
+| 地図 | Leaflet（react-leaflet）+ 地理院タイル（淡色地図）+ OpenRailwayMap | APIキー不要・無料．白基調の画面に馴染む淡い背景地図に鉄道路線を重ねる |
 | 駅データ | OpenStreetMap（Overpass API）+ 手動拡張 | キー不要で日本全国の駅位置情報を取得 |
 | 乗降客数 | 国土数値情報 S12（駅別乗降客数） | 国土交通省の公式オープンデータ．主要駅判定に利用 |
 | 経路（任意） | OpenTripPlanner（差し替え式） | `routeProvider` で実所要時間に置換可能．未設定時は距離推定にフォールバック |
-| 周辺スポット | OpenStreetMap（Overpass API） | 集合駅周辺の店舗・施設をキー不要で取得 |
-| QRコード | qrcodejs（CDN） | 共有URLのQRをクライアント側で生成 |
+| 周辺スポット | Google マップの検索リンク | APIキー不要．利用者がリンクを開いたときだけ Google へ移動する |
+| QRコード | qrcode（npm） | 共有URLのQRをクライアント側で生成 |
+| 会員ログイン（任意） | Auth.js（Google OAuth）+ SQLite（better-sqlite3） | ログインなしでも検索できる．保存したグループ・履歴だけをサーバーに置く |
+| テスト | Vitest + Testing Library | 算出ロジック・API・画面部品を同じ仕組みで検証 |
 | ホスティング | Oracle Cloud VM + nginx + PM2 | Always Free枠で無期限無料．Let's EncryptでHTTPS化 |
 | CDN / セキュリティ | Cloudflare | WAF・DDoS防御・オリジンIP秘匿・SSL/TLS |
 | CI/CD | GitHub Actions | push時に自動テスト＆デプロイ（OCI CLIで動的ファイアウォール制御） |
@@ -148,25 +152,25 @@ flowchart LR
 
 - **外部APIは無くても動く**：`data/` の同梱データと距離概算へ自動フォールバックするため，トークン未設定でも全機能が成立します．
 - **重い処理は1回だけ**：駅マスタのマージと駅グラフの構築は初回リクエストで作ってプロセス内に保持し，以降は使い回します．
-- **周辺スポットはブラウザ優先**：既定ではブラウザから Overpass を直接叩き（サーバーの帯域とレート制限を使わない），塞がれている環境でだけ `/api/spots` へ落とします．
+- **周辺スポットは Google マップへ渡す**：画面ではカテゴリを選んで Google マップの検索を開くだけで，外部APIは呼びません．図の `/api/spots` と Overpass は旧方式の名残で，現在の画面からは使っていません．
 
-### アーキテクチャ（コア + 機能モジュール）
+### 画面の構成
 
 ```
-コア（app.js: 979行）
-  ├── フォーム・オートコンプリート・地図描画
-  ├── API呼び出し・結果表示
-  └── 拡張API（window.EkiHub）公開
-        ├── イベントバス（on / off / emit）
-        ├── 状態アクセサ（getState / getResult / getSelected）
-        └── ヘルパー（injectStyle / escapeHtml / t）
+app/page.tsx・app/results/page.tsx（ページ）
+  └── HomeView（src/components/）… 入力・算出・結果表示をまとめる
+        ├── StationForm / StepGuide        … 最寄駅・人数・条件の入力と手順ガイド
+        ├── ResultCard / TravelList / Ranking / StationMap … 結果カード・所要時間・候補比較・地図
+        ├── ResultActions / NearbySpots    … 共有・QR・コピー・印刷，周辺スポット
+        └── TrainInformation               … 鉄道運行情報
 
-機能モジュール（public/js/features/*.js: 各139〜572行）
-  └── window.EkiHub の イベント を購読し，所定の拡張枠へUIを差し込む
-      → 相互に独立．1つが例外を投げても他に波及しない
+状態   … src/stores/useEkiHubStore.ts（Zustand：入力・選択中の候補・結果）
+取得   … src/hooks/（TanStack Query：駅マスタ・中心駅の算出・履歴）→ src/lib/api.ts → /api/*
+文言   … src/i18n/（日本語がマスター．キーを足すと他言語の翻訳漏れが型エラーになる）
+テーマ … app/themes/*.css（8種のデザイン）と src/lib/designTheme.ts（ページを開くたびに選ぶ）
 ```
 
-新機能の追加は `public/js/features/foo.js` を作成し，`index.html` 末尾に `<script defer>` を1行追加するだけで完了します．
+スマートフォン幅では，入力（`/`）と結果（`/results`）を別ページに分けて表示します．
 
 ---
 
@@ -174,48 +178,56 @@ flowchart LR
 
 ```
 EkiHub/
-├── server.js                  # Expressサーバー（API・データマージ・OGP生成）
-├── package.json               # 依存: express のみ
-├── .github/workflows/
-│   └── deploy.yml             # CI/CD（テスト → Oracle Cloud VMへ自動デプロイ）
-├── data/
-│   ├── stations.js            # 埋め込み主要駅（乗降客数つき・手動キュレーション）
-│   ├── stations-osm.json      # 日本全国約8,200駅（OSM + 手動拡張・コミット対象）
-│   └── ridership.json         # 駅名→乗降客数マップ（S12から生成・コミット対象）
-├── lib/
+├── app/                       # Next.js App Router（ページとAPIルート）
+│   ├── page.tsx               # トップページ（入力と結果）
+│   ├── results/               # スマートフォン幅の結果ページ
+│   ├── howto/                 # 使い方ガイド
+│   ├── terms/ privacy/ credits/ # 利用規約・プライバシーポリシー・データ出典
+│   ├── account/               # 会員ページ（マイグループ）
+│   ├── meet/[token]/          # 共有グループの集合ページ（予定・投票）
+│   ├── themes/                # 8種のデザインテーマのCSS
+│   └── api/                   # center / stations / train-information / health と会員系のAPI
+│                              # （spots / spot-categories は旧方式の名残で，画面からは未使用）
+├── src/
+│   ├── components/            # React コンポーネント（入力フォーム・結果カード・地図など）
+│   ├── hooks/                 # 駅マスタ・算出・履歴・共有URLなどのフック
+│   ├── stores/                # 画面の状態（Zustand）
+│   ├── lib/                   # 画面側の共通処理（API呼び出し・共有URL・テーマ・駅名検索など）
+│   ├── server/                # サーバー側の処理（駅マスタの読込・会員データ・入力検証）
+│   ├── i18n/                  # 日本語・英語・中国語・韓国語の文言
+│   └── types/                 # 共通の型
+├── lib/                       # フレームワーク非依存の算出ロジック
 │   ├── centerLogic.js         # 中心駅算出（重心・時間・運賃・人数重み・モードA/B）
 │   ├── stationGraph.js        # 駅ネットワークグラフ構築・ダイクストラ法
 │   ├── fareEstimate.js        # 距離からの運賃概算
 │   ├── odptTrainInformation.js# ODPT運行情報の取得・正規化・キャッシュ
 │   ├── routeProvider.js       # 経路API抽象化（Strategy Pattern・差し替え式）
-│   └── poiService.js          # 周辺スポット取得（Overpass API・キャッシュつき）
+│   ├── stationKana.js         # 駅名の読みの補正
+│   └── poiService.js          # 周辺スポット取得（Overpass．現在の画面からは未使用）
+├── data/
+│   ├── stations.js            # 埋め込み主要駅（乗降客数つき・手動キュレーション）
+│   ├── stations-osm.json      # 日本全国約8,200駅（OSM + 手動拡張・コミット対象）
+│   ├── ridership.json         # 駅名→乗降客数マップ（S12から生成・コミット対象）
+│   ├── station-kana-overrides.json # 駅名の読みの手動補正
+│   └── meetingPoints.json     # 待ち合わせスポット（未収集のため空）
+├── tests/                     # Vitest のテスト（npm test）
 ├── scripts/
 │   ├── fetchKantoStations.js  # OSMから駅データを取得
 │   ├── buildRidership.js      # S12のGeoJSONから乗降客数マップを生成
 │   ├── generateKana.js        # kuromojiでkana未登録駅の読みを補完
 │   ├── testRouting.js         # 経路精緻化ロジックの単体テスト
+│   ├── assembleBundle.mjs     # 本番配布物（standalone）の組み立て
+│   ├── setupMemberAuth.mjs / backupMembers.mjs / smokeMemberFlow.mjs # 会員機能の設定・バックアップ・確認
 │   ├── renderDiagrams.mjs     # READMEの構成図をSVG/PNGへ書き出す
-│   └── smoke*.js              # ブラウザ起動スモークテスト（puppeteer・別途インストール要）
+│   └── smoke*.js              # 旧版向けのブラウザ起動スモークテスト（puppeteer・別途インストール要）
+├── public/                    # favicon・OGP画像・テーマのアイコン・robots.txt / sitemap.xml
 ├── assets/                    # 構成図の画像（renderDiagrams.mjs の生成物）
-└── public/
-    ├── index.html             # トップページ（拡張枠つき）
-    ├── howto.html             # 使い方ガイド
-    ├── 404.html               # カスタム404ページ
-    ├── style.css              # ダーク/ライト/7カラーテーマ対応UI
-    ├── app.js                 # コア：フォーム・地図・算出・拡張API（window.EkiHub）
-    ├── robots.txt / sitemap.xml
-    └── js/features/           # 機能モジュール（各機能が独立した1ファイル）
-        ├── themeToggle.js     # テーマ切替（モード＋カラー）
-        ├── i18n.js            # 多言語切替（日/英/中/韓）
-        ├── fareWeight.js      # 運賃の重視度スライダー
-        ├── shareLink.js       # 共有URLのコピー/共有
-        ├── qrShare.js         # 共有URLのQRコード
-        ├── clipboardSummary.js# 結果サマリーのコピー
-        ├── meetingTools.js    # 集合時刻・出発逆算・カレンダー(.ics)
-        ├── nearbySpots.js     # 周辺スポット取得・地図表示
-        ├── historyFavorites.js# 履歴・お気に入り
-        ├── trainInformation.js# ODPT鉄道運行情報カード
-        └── printExport.js     # 印刷用出力
+├── legacy/                    # 移行前（Express + Vanilla JS）の画面．参照用に保存
+├── server.js                  # 移行前の Express サーバー．参照用（本番では使わない）
+├── Dockerfile / docker-compose.yml # ローカル開発用のコンテナ
+├── MEMBER_SETUP.md            # 会員ログインの設定手順
+└── .github/workflows/
+    └── deploy.yml             # CI/CD（テスト → Actions でビルド → Oracle Cloud VMへ自動デプロイ）
 ```
 
 ---
@@ -402,7 +414,7 @@ node scripts/generateKana.js
 
 ## 調整ポイント
 
-- **主要駅の閾値**：`server.js` の `MAJOR_THRESHOLD`（既定20万人/日）を変更すると，主要駅限定モードの候補数を増減できます．
+- **主要駅の閾値**：`src/server/stationRepository.ts` の `MAJOR_THRESHOLD` と `lib/centerLogic.js` の `MAJOR_RIDERSHIP_THRESHOLD`（どちらも既定20万人/日）を変更すると，主要駅限定モードの候補数を増減できます．2箇所は揃えてください．地方の主要駅は `data/stations.js` の `getMajorThreshold` が地域ごとに低い閾値で判定します．
 - **スコアの重み**：`lib/centerLogic.js` の `DEFAULT_WEIGHT_FAIRNESS`（「近さ」と「公平さ」の配分）と，UIの運賃重視スライダーでバランスを調整できます．
 - **精緻化する駅数**：`computeCenterStation({ refineCount })`（既定8）で，経路APIで精緻化する上位候補数を変更できます．
 - **エッジ上限**：`lib/stationGraph.js` の `DEFAULT_EDGE_CAP_M`（12km）．この値を安易に上げると海上を渡るショートカットが復活するため注意が必要です．
@@ -413,7 +425,8 @@ node scripts/generateKana.js
 
 - 駅位置情報：© OpenStreetMap contributors（ODbL）
 - 乗降客数：国土交通省「国土数値情報（駅別乗降客数データ）」
-- 地図タイル：© CARTO
+- 背景地図：地理院タイル（国土地理院の淡色地図）
+- 鉄道路線の重ね合わせ：OpenRailwayMap（表示スタイル CC BY-SA 2.0），地図データ © OpenStreetMap contributors
 
 ## GitHubの言語集計について
 
