@@ -188,18 +188,10 @@ export const ko: Messages = {
       convenience: "편의점",
       park: "공원",
     },
-    radiusLabel: "범위",
-    chooseCategory: "카테고리를 선택해 주세요",
-    searching: "찾는 중…",
-    failed:
-      "주변 장소 서비스에 연결할 수 없습니다. 다시 시도하거나 Google 지도에서 검색하세요.",
     openMap: "Google 지도에서 검색",
     mapHint:
       "Google 지도에서 {station}역 근처 장소를 찾을 수 있습니다. 카테고리를 선택하면 검색 범위를 좁힐 수 있습니다.",
     mapQuery: "{station}역 근처 {category}",
-    retry: "다시 검색",
-    empty: "이 범위에서는 찾지 못했습니다.",
-    more: "그 외 {count}곳 (상위 {limit}곳만 표시)",
   },
 
   meetingPoints: {

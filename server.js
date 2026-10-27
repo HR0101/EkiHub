@@ -17,7 +17,6 @@ import { readFileSync, existsSync } from "fs";
 import { stations as embeddedStations } from "./data/stations.js";
 import { computeCenterStation } from "./lib/centerLogic.js";
 import { getOrBuildGraph } from "./lib/stationGraph.js";
-import { fetchNearbySpots, CATEGORY_LABELS } from "./lib/poiService.js";
 import { makeProviderFromEnv } from "./lib/routeProvider.js";
 import { createOdptTrainInformationClient } from "./lib/odptTrainInformation.js";
 
@@ -347,30 +346,8 @@ app.post("/api/center", async (req, res) => {
   }
 });
 
-// 周辺スポットAPI: 集合駅周辺の集まれる場所(カフェ・居酒屋等)を返す
-// クエリ: ?lat=&lng=&category=&radius=
-app.get("/api/spots", async (req, res) => {
-  try {
-    const lat = Number(req.query.lat);
-    const lng = Number(req.query.lng);
-    const category = String(req.query.category || "cafe");
-    const radius = Math.min(1500, Math.max(100, Number(req.query.radius) || 800));
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-      return res.status(400).json({ error: "緯度経度を指定してください." });
-    }
-    const spots = await fetchNearbySpots({ lat, lng, category, radius });
-    res.json({ count: spots.length, category, radius, spots });
-  } catch (error) {
-    // 内部例外の詳細はログのみに残し、利用者には一般化したメッセージを返す
-    console.error("周辺スポットの取得に失敗:", error);
-    res.status(500).json({ error: "周辺スポットの取得に失敗しました。時間をおいて再度お試しください。" });
-  }
-});
-
-// 周辺スポットのカテゴリ一覧
-app.get("/api/spot-categories", (_req, res) => {
-  res.json({ categories: CATEGORY_LABELS });
-});
+// 周辺スポットのサーバー経由の取得(/api/spots)は、Overpass 取得の削除に合わせて外した.
+// 旧画面(legacy/)の周辺スポットは、ブラウザから Overpass を直接叩く経路だけが残る.
 
 // ヘルスチェック（有効な機能の一覧つき）
 app.get("/api/health", (_req, res) => {
@@ -379,7 +356,7 @@ app.get("/api/health", (_req, res) => {
     odptEnabled: Boolean(ODPT_TOKEN),
     routingEnabled: ROUTING_ENABLED,
     routingProvider: ROUTING_ENABLED ? (process.env.ROUTING_PROVIDER || "custom") : null,
-    features: ["center", "fare", "people-weight", "spots", "routing", "train-information"]
+    features: ["center", "fare", "people-weight", "routing", "train-information"]
   });
 });
 

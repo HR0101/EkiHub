@@ -187,18 +187,10 @@ export const en: Messages = {
       convenience: "Convenience stores",
       park: "Parks",
     },
-    radiusLabel: "Radius",
-    chooseCategory: "Choose a category",
-    searching: "Searching…",
-    failed:
-      "The nearby places service is unavailable. Try again or search Google Maps.",
     openMap: "Search Google Maps",
     mapHint:
       "Find places near {station} Station on Google Maps. Select a category to narrow your search.",
     mapQuery: "{category} near {station} Station",
-    retry: "Try again",
-    empty: "Nothing found within this radius.",
-    more: "{count} more (showing top {limit})",
   },
 
   meetingPoints: {
