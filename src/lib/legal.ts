@@ -21,4 +21,4 @@ export const ISSUES_URL = "https://github.com/HR0101/EkiHub/issues";
 /** 各文書の制定日。改定したら文書ごとに「改定日」を足していく */
 export const TERMS_ESTABLISHED = "2026年10月12日";
 export const PRIVACY_ESTABLISHED = "2026年10月12日";
-export const CREDITS_UPDATED = "2026年10月12日";
+export const CREDITS_UPDATED = "2026年10月27日";

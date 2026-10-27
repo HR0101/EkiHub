@@ -112,11 +112,15 @@ export default function CreditsPage() {
           <h2>地図</h2>
           <ul>
             <li>
-              背景地図：©{" "}
-              <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer">
-                CARTO
+              背景地図：
+              <a
+                href="https://maps.gsi.go.jp/development/ichiran.html"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                地理院タイル
               </a>
-              、地図データ © OpenStreetMap contributors
+              （国土地理院の淡色地図）
             </li>
             <li>
               鉄道路線の重ね合わせ：

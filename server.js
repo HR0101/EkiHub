@@ -122,8 +122,8 @@ const CONTENT_SECURITY_POLICY = [
   // injectStyle と style 属性のため inline を許可。CSSは Leaflet(unpkg)/Google Fonts
   "style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
-  // 地図タイル(CARTO/OpenRailwayMap) と Leaflet のマーカー画像(unpkg)
-  "img-src 'self' data: blob: https://*.basemaps.cartocdn.com https://*.tiles.openrailwaymap.org https://unpkg.com",
+  // 地図タイル(国土地理院/OpenRailwayMap) と Leaflet のマーカー画像(unpkg)
+  "img-src 'self' data: blob: https://cyberjapandata.gsi.go.jp https://*.tiles.openrailwaymap.org https://unpkg.com",
   // 自API と、ブラウザから直接叩く Overpass ミラー
   "connect-src 'self' https://overpass-api.de https://overpass.private.coffee https://overpass.kumi.systems",
   "object-src 'none'",

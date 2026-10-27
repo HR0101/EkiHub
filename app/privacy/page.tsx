@@ -34,7 +34,7 @@ const EXTERNAL_SERVICES = [
       "本サービスへのすべてのアクセスに含まれる情報（IPアドレス、リクエストの内容など）",
   },
   {
-    name: "CARTO",
+    name: "国土地理院（地理院タイル）",
     purpose: "地図画像の表示",
     sentData: "IPアドレス、表示している地図の範囲",
   },
@@ -235,6 +235,8 @@ export default function PrivacyPage() {
             <br />
             2026年10月21日
             改定（Googleログイン・共有グループ・投票・予定・履歴同期）
+            <br />
+            2026年10月27日 改定（地図画像の提供元を国土地理院へ変更）
             <br />
             運営者：{OPERATOR_NAME}
           </p>
