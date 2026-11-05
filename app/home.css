@@ -1258,3 +1258,55 @@
     display: none;
   }
 }
+
+/* Supporting figures stay available without competing with travel and fairness. */
+.home-app .result-card__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+  margin: 0;
+  padding: 0;
+  color: var(--text-sub);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.home-app .result-card__facts dt {
+  margin-bottom: 4px;
+}
+.home-app .result-card__facts dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.home-app .result-actions {
+  display: flex;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+.home-app .result-actions__more {
+  min-width: 0;
+}
+.home-app .result-actions__more > summary {
+  width: fit-content;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+.home-app .result-actions__more > summary:hover {
+  background: var(--nm-surface-sunken);
+}
+.home-app .result-actions__more[open] {
+  flex-basis: 100%;
+}
+.home-app .result-actions__secondary {
+  display: flex;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 0;
+}
+.home-app .result-actions__secondary .qr-panel {
+  flex-basis: 100%;
+  margin-top: 8px;
+}

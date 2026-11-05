@@ -57,6 +57,11 @@ export const en: Messages = {
     lead: "Enter everyone's nearest station and we'll suggest where to meet.",
   },
 
+  notFound: {
+    title: "Page not found",
+    description: "The page may have moved or been removed. Return home to search for a meeting station.",
+  },
+
   nav: {
     howto: "How to use",
     home: "← Back to home",
@@ -69,7 +74,7 @@ export const en: Messages = {
     closeConditions: "Close",
     preferences: "Search preferences",
     panelTitle: "Enter nearest stations",
-    placeholder: "e.g. Shinjuku, Yokohama, Omiya…",
+    placeholder: "e.g. Shinjuku",
     stationLabel: "Nearest station",
     peopleLabel: "People",
     peopleCount: "{count}",
@@ -121,8 +126,8 @@ export const en: Messages = {
     detailsLabel: "Explore features",
     emptyLine1: "Enter at least two stations,",
     emptyLine2: "then press Search.",
-    emptyTitle: "Find where everyone should meet",
-    emptyLead: "We suggest a station based on everyone's travel time and fare.",
+    emptyTitle: "Enter at least two stations",
+    emptyLead: "Choose “Find the midpoint station” to see suggestions",
     emptyPoint1: "Keeps the travel time even, so nobody is left far away",
     emptyPoint2: "Shows estimated fares and whether a direct train exists",
     emptyPoint3: "Finds places to gather around the chosen station",
@@ -162,6 +167,7 @@ export const en: Messages = {
   },
 
   actions: {
+    more: "More options",
     copyUrl: "Copy URL",
     copied: "Copied",
     copyFailed: "Could not copy",

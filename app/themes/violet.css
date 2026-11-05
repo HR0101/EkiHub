@@ -57,6 +57,14 @@ html[data-design="violet"] .home-app .tool-btn:active {
   box-shadow: none;
   transform: translate(1px, 1px);
 }
+/* Keep keyboard focus inside each language segment, clear of the group border. */
+html[data-design="violet"] .home-app .locale-toggle__option:focus-visible {
+  outline: 2px solid var(--text-main);
+  outline-offset: -3px;
+}
+html[data-design="violet"] .home-app .locale-toggle__option.is-active:focus-visible {
+  outline-color: #fff;
+}
 html[data-design="violet"] .home-app .panel__title {
   border-bottom: 2px solid #29223a;
   font-weight: 900;
@@ -334,5 +342,147 @@ html[data-design="violet"] .home-app .result-card__range {
   }
   html[data-design="violet"] .home-app .result-card__identity {
     padding: 20px 16px;
+  }
+}
+
+/* Keep the original Soft Pop material above. These adjustments only improve
+   density, field widths and the hierarchy of the existing information. */
+html[data-design="violet"] .home-app {
+  padding-top: 24px;
+}
+html[data-design="violet"] .home-app .home-header {
+  grid-template-columns: minmax(0, 1fr) 144px;
+  gap: 16px 24px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+html[data-design="violet"] .home-app .hero__badge {
+  margin-bottom: 12px;
+}
+html[data-design="violet"] .home-app .hero__title {
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
+}
+html[data-design="violet"] .home-app .hero__lead {
+  margin-top: 8px;
+}
+html[data-design="violet"] .home-app .toolbar {
+  padding-top: 16px;
+}
+html[data-design="violet"] .home-app .theme-art > :is(svg, img) {
+  max-height: 112px;
+}
+html[data-design="violet"] .home-app .inputs {
+  gap: 12px;
+}
+html[data-design="violet"] .home-app .input-labels {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 72px 44px;
+  gap: 8px;
+  padding: 0 0 8px 32px;
+}
+html[data-design="violet"] .home-app .input-row {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 72px 44px;
+  gap: 8px;
+}
+html[data-design="violet"] .home-app .input-row__index {
+  width: 24px;
+  height: 24px;
+}
+html[data-design="violet"] .home-app select.input-row__people {
+  width: 72px;
+  min-width: 72px;
+  padding: 12px 4px;
+  border: 2px solid #29223a;
+  border-radius: 6px;
+}
+html[data-design="violet"] .home-app .input-row__remove {
+  width: 44px;
+  height: 44px;
+}
+html[data-design="violet"] .home-app .mode {
+  margin-top: 24px;
+}
+html[data-design="violet"] .home-app .search-preferences {
+  margin: 24px 0 16px;
+}
+html[data-design="violet"] .home-app .result-sheet .metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0 16px;
+}
+html[data-design="violet"] .home-app .result-actions__primary {
+  background: var(--text-main);
+  color: #fff;
+  box-shadow: 3px 3px 0 #b29acb;
+  padding-inline: 16px;
+}
+html[data-design="violet"] .home-app .result-actions__primary:hover {
+  background: #40394f;
+}
+html[data-design="violet"] .home-app .result-actions__more > summary {
+  border: 2px solid #29223a;
+  border-radius: 5px;
+  background: #f3eff9;
+}
+html[data-design="violet"] .home-app .result-card__empty {
+  padding: 16px 0;
+}
+html[data-design="violet"] .home-app .result-card__icon {
+  margin-bottom: 16px;
+}
+html[data-design="violet"] .home-app .result-card__empty-lead {
+  margin: 8px auto 24px;
+}
+html[data-design="violet"] .home-app .quick-start {
+  margin-top: 0;
+  padding-top: 0;
+  border: 0;
+}
+html[data-design="violet"] .home-app .empty-details {
+  margin-top: 24px;
+}
+html[data-design="violet"] .leaflet-control-attribution {
+  background: #ffffffed !important;
+  color: var(--text-sub) !important;
+  font-size: 0.6875rem;
+}
+html[data-design="violet"] .leaflet-control-attribution a {
+  color: var(--accent) !important;
+}
+@media (min-width: 900px) {
+  html[data-design="violet"] .home-app .layout {
+    grid-template-columns: 400px minmax(0, 1fr);
+  }
+}
+@media (max-width: 899px) {
+  html[data-design="violet"] .home-app .home-header {
+    grid-template-columns: minmax(0, 1fr) 112px;
+  }
+}
+@media (max-width: 600px) {
+  html[data-design="violet"] .home-app .home-header {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 20px 16px;
+  }
+  html[data-design="violet"] .home-app .hero__title {
+    font-size: 2rem;
+  }
+  html[data-design="violet"] .home-app :is(.panel, .result-sheet) {
+    padding: 16px;
+  }
+  html[data-design="violet"] .home-app .input-row {
+    grid-template-columns: 24px minmax(0, 1fr) 76px 44px;
+    gap: 4px;
+  }
+  html[data-design="violet"] .home-app .input-labels {
+    grid-template-columns: minmax(0, 1fr) 76px 44px;
+    gap: 4px;
+    padding-left: 28px;
+  }
+  html[data-design="violet"] .home-app select.input-row__people {
+    width: 76px;
+    min-width: 76px;
   }
 }

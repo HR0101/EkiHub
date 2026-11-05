@@ -6,8 +6,10 @@ import {
   render,
   screen,
   within,
+  waitFor,
 } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import QRCode from "qrcode";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { HomeView } from "@/components/HomeView";
@@ -290,6 +292,49 @@ describe("responsive search workflow", () => {
     expect(
       within(spots).getByRole("link", { name: "Googleマップで探す" }),
     ).toBeDefined();
+  });
+
+  it("copies the selected station and keeps QR, summary and print in secondary actions", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    const print = vi.fn();
+    vi.stubGlobal("navigator", { clipboard: { writeText } });
+    vi.stubGlobal("print", print);
+    const { container } = mount("results");
+    act(() => onSuccess?.(result, request));
+    act(() => useEkiHubStore.getState().selectStation("東京"));
+    fireEvent.click(screen.getByRole("button", { name: "URLをコピー" }));
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith(
+      expect.stringContaining(`&station=${encodeURIComponent("東京")}`),
+    ));
+    const more = container.querySelector(".result-actions__more") as HTMLDetailsElement;
+    expect(more.open).toBe(false);
+    expect(more.querySelector("summary")?.textContent).toBe("その他");
+    act(() => { more.open = true; });
+    expect(within(more).getByRole("button", { name: "QR" })).toBeDefined();
+    fireEvent.click(within(more).getByRole("button", { name: "結果をコピー" }));
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith(expect.stringContaining("東京")));
+    fireEvent.click(within(more).getByRole("button", { name: "印刷" }));
+    expect(print).toHaveBeenCalledOnce();
+  });
+
+  it("refreshes an open QR code when another candidate is selected", async () => {
+    const qr = vi.spyOn(QRCode, "toDataURL").mockImplementation(async () => "data:image/png;base64,AA==");
+    try {
+      const { container } = mount("results");
+      act(() => onSuccess?.(result, request));
+      const more = container.querySelector(".result-actions__more") as HTMLDetailsElement;
+      act(() => { more.open = true; });
+      fireEvent.click(screen.getByRole("button", { name: "QR" }));
+      await waitFor(() => expect(qr).toHaveBeenLastCalledWith(
+        expect.stringContaining(`&station=${encodeURIComponent("品川")}`),
+        expect.any(Object),
+      ));
+      act(() => useEkiHubStore.getState().selectStation("東京"));
+      await waitFor(() => expect(qr).toHaveBeenLastCalledWith(
+        expect.stringContaining(`&station=${encodeURIComponent("東京")}`),
+        expect.any(Object),
+      ));
+    } finally { qr.mockRestore(); }
   });
 });
 

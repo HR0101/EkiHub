@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LocaleProvider } from "@/i18n/LocaleProvider";
-import { DESIGN_BOOT_SCRIPT, DESIGN_THEMES, applyDesignTheme, readDesignTheme } from "@/lib/designTheme";
+import { DESIGN_BOOT_SCRIPT, DESIGN_THEMES, PUBLIC_DESIGN_THEMES, applyDesignTheme, readDesignTheme } from "@/lib/designTheme";
 
 function boot() { new Function(DESIGN_BOOT_SCRIPT)(); }
 function picker() { return render(<LocaleProvider><ThemeToggle /></LocaleProvider>); }
@@ -15,17 +15,14 @@ beforeEach(() => {
 });
 afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
-describe("random document theme", () => {
-  it("can boot into every one of the eight designs, including both random boundaries", () => {
-    DESIGN_THEMES.forEach((theme, index) => {
-      vi.spyOn(Math, "random").mockReturnValue(index / DESIGN_THEMES.length);
+describe("public document theme", () => {
+  it("always boots into Soft Pop, including both random boundaries", () => {
+    for (const value of [0, 0.5, 0.999999]) {
+      vi.spyOn(Math, "random").mockReturnValue(value);
       boot();
-      expect(document.documentElement.dataset.design).toBe(theme.id);
-      expect(document.documentElement.style.colorScheme).toBe(theme.dark ? "dark" : "light");
-    });
-    vi.spyOn(Math, "random").mockReturnValue(0.999999);
-    boot();
-    expect(document.documentElement.dataset.design).toBe("violet");
+      expect(document.documentElement.dataset.design).toBe("violet");
+      expect(document.documentElement.style.colorScheme).toBe("light");
+    }
   });
 
   it("ignores stored selections and runs even when storage is inaccessible", () => {
@@ -33,18 +30,25 @@ describe("random document theme", () => {
     vi.spyOn(Math, "random").mockReturnValueOnce(0).mockReturnValueOnce(0.5);
     document.documentElement.dataset.color = "forest";
     boot();
-    expect(document.documentElement.dataset.design).toBe("y2k");
+    expect(document.documentElement.dataset.design).toBe("violet");
     expect(document.documentElement.hasAttribute("data-color")).toBe(false);
-    boot(); // A new document boot draws again rather than restoring the old choice.
-    expect(document.documentElement.dataset.design).toBe("clay");
+    boot();
+    expect(document.documentElement.dataset.design).toBe("violet");
   });
 
   it("retains the theme when read on client-side route remounts", () => {
-    applyDesignTheme("terminal");
+    applyDesignTheme("violet");
     const random = vi.spyOn(Math, "random");
-    expect(readDesignTheme()).toBe("terminal");
-    expect(readDesignTheme()).toBe("terminal");
+    expect(readDesignTheme()).toBe("violet");
+    expect(readDesignTheme()).toBe("violet");
     expect(random).not.toHaveBeenCalled();
+  });
+
+  it("replaces a withheld theme with Soft Pop on remount", () => {
+    applyDesignTheme("terminal");
+    expect(readDesignTheme()).toBe("violet");
+    expect(document.documentElement.dataset.design).toBe("violet");
+    expect(document.documentElement.hasAttribute("data-mode")).toBe(false);
   });
 
   it("updates browser chrome and notifies the map on switches", () => {
@@ -65,34 +69,22 @@ describe("random document theme", () => {
 });
 
 describe("design picker", () => {
-  it("switches all eight themes, keeps selection across remounts, and never stores it", () => {
+  it("keeps the eight designs available internally, but only publishes Soft Pop", () => {
+    expect(DESIGN_THEMES).toHaveLength(8);
+    expect(PUBLIC_DESIGN_THEMES.map((theme) => theme.id)).toEqual(["violet"]);
+  });
+
+  it("hides the picker while one theme is public and never stores a selection", () => {
     applyDesignTheme("glass");
     const write = vi.spyOn(Storage.prototype, "setItem");
     const view = picker();
-    fireEvent.click(screen.getByRole("button", { name: "テーマ" }));
-    for (const theme of DESIGN_THEMES) {
-      const button = screen.getByRole("button", { name: theme.name });
-      fireEvent.click(button);
-      expect(button.getAttribute("aria-pressed")).toBe("true");
-      expect(document.documentElement.dataset.design).toBe(theme.id);
-    }
+    expect(screen.queryByRole("button", { name: "テーマ" })).toBeNull();
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.documentElement.dataset.design).toBe("violet");
     expect(write).not.toHaveBeenCalled();
     view.unmount();
     picker();
-    fireEvent.click(screen.getByRole("button", { name: "テーマ" }));
-    expect(screen.getByRole("button", { name: "VIOLET / SOFT POP" }).getAttribute("aria-pressed")).toBe("true");
-    expect(screen.getAllByRole("button", { pressed: true })).toHaveLength(1);
-  });
-
-  it("closes on Escape with focus restored and on an outside pointer press", () => {
-    picker();
-    const trigger = screen.getByRole("button", { name: "テーマ" });
-    fireEvent.click(trigger);
-    fireEvent.keyDown(document, { key: "Escape" });
-    expect(screen.queryByRole("dialog")).toBeNull();
-    expect(document.activeElement).toBe(trigger);
-    fireEvent.click(trigger);
-    fireEvent.pointerDown(document.body);
-    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.queryByRole("button", { name: "テーマ" })).toBeNull();
+    expect(document.documentElement.dataset.design).toBe("violet");
   });
 });

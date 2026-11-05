@@ -1,7 +1,7 @@
 "use client";
 
 import QRCode from "qrcode";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { buildShareUrl } from "@/lib/shareUrl";
@@ -39,7 +39,7 @@ export function ResultActions({ station }: Props) {
     setCanWebShare(typeof navigator.share === "function");
   }, []);
 
-  function currentShareUrl(): string {
+  const currentShareUrl = useCallback((): string => {
     if (resultQuery)
       return `${window.location.origin}/results?${resultQuery}&station=${encodeURIComponent(station.name)}`;
     return buildShareUrl({
@@ -50,7 +50,7 @@ export function ResultActions({ station }: Props) {
       fairnessWeight,
       fareWeight,
     });
-  }
+  }, [resultQuery, station.name, rows, mode, fairnessWeight, fareWeight]);
 
   // QRは開いた時にだけ作る（閉じている間は生成コストを払わない）
   useEffect(() => {
@@ -67,9 +67,7 @@ export function ResultActions({ station }: Props) {
     return () => {
       cancelled = true;
     };
-    // 条件が変わったら作り直す
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isQrOpen, rows, mode, fairnessWeight, fareWeight]);
+  }, [isQrOpen, currentShareUrl]);
 
   async function handleWebShare() {
     try {
@@ -84,10 +82,10 @@ export function ResultActions({ station }: Props) {
   }
 
   return (
-    <div className="hero-actions">
+    <div className="hero-actions result-actions">
       <button
         type="button"
-        className="tool-btn"
+        className="tool-btn result-actions__primary"
         onClick={() => void urlCopy.copy(currentShareUrl())}
       >
         {t(
@@ -109,50 +107,55 @@ export function ResultActions({ station }: Props) {
         </button>
       )}
 
-      <button
-        type="button"
-        className="tool-btn"
-        aria-expanded={isQrOpen}
-        onClick={() => setIsQrOpen((current) => !current)}
-      >
-        {t("actions.qr")}
-      </button>
+      <details className="disclosure result-actions__more">
+        <summary>{t("actions.more")}</summary>
+        <div className="result-actions__secondary">
+          <button
+            type="button"
+            className="tool-btn"
+            aria-expanded={isQrOpen}
+            onClick={() => setIsQrOpen((current) => !current)}
+          >
+            {t("actions.qr")}
+          </button>
 
-      <button
-        type="button"
-        className="tool-btn"
-        onClick={() => void summaryCopy.copy(buildSummaryText(station))}
-      >
-        {t(
-          summaryCopy.status === "copied"
-            ? "actions.copied"
-            : summaryCopy.status === "failed"
-              ? "actions.copyFailed"
-              : "actions.copySummary",
-        )}
-      </button>
+          <button
+            type="button"
+            className="tool-btn"
+            onClick={() => void summaryCopy.copy(buildSummaryText(station))}
+          >
+            {t(
+              summaryCopy.status === "copied"
+                ? "actions.copied"
+                : summaryCopy.status === "failed"
+                  ? "actions.copyFailed"
+                  : "actions.copySummary",
+            )}
+          </button>
 
-      <button type="button" className="tool-btn" onClick={() => window.print()}>
-        {t("actions.print")}
-      </button>
+          <button type="button" className="tool-btn" onClick={() => window.print()}>
+            {t("actions.print")}
+          </button>
 
-      {isQrOpen && (
-        <div className="qr-panel">
-          {qrDataUrl ? (
-            // next/image は data URL を最適化できないため通常の img を使う
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={qrDataUrl}
-              alt={t("actions.qrAlt")}
-              width={QR_SIZE}
-              height={QR_SIZE}
-            />
-          ) : (
-            <p className="qr-panel__note">{t("actions.qrPreparing")}</p>
+          {isQrOpen && (
+            <div className="qr-panel">
+              {qrDataUrl ? (
+                // next/image は data URL を最適化できないため通常の img を使う
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={qrDataUrl}
+                  alt={t("actions.qrAlt")}
+                  width={QR_SIZE}
+                  height={QR_SIZE}
+                />
+              ) : (
+                <p className="qr-panel__note">{t("actions.qrPreparing")}</p>
+              )}
+              <p className="qr-panel__note">{t("actions.qrNote")}</p>
+            </div>
           )}
-          <p className="qr-panel__note">{t("actions.qrNote")}</p>
         </div>
-      )}
+      </details>
     </div>
   );
 }

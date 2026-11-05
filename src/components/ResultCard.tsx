@@ -1,6 +1,7 @@
 "use client";
 
 import { ResultActions } from "@/components/ResultActions";
+import { MeetingJourney } from "@/components/MeetingJourney";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import type { MessageKey } from "@/i18n";
 import type { CenterResult, RankingEntry } from "@/types/ekihub";
@@ -53,39 +54,14 @@ export function ResultCard({ result, station, onQuickStart }: Props) {
     return parts.join(" ・");
   }
 
-  // 空の状態は「何ができるか」を伝えて、そのまま試せる場にしている
+  // 空の状態は次の操作と、入力なしで試せる例に絞る。
   if (!result || !station) {
     return (
       <div className="result-card is-empty">
         <div className="result-card__empty">
-          <div className="result-card__icon" aria-hidden="true">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <circle
-                cx="20"
-                cy="20"
-                r="6"
-                stroke="currentColor"
-                strokeWidth="2"
-              />
-              <path
-                d="M20 4v7m0 18v7M4 20h7m18 0h7M9 9l5 5m12 12 5 5M9 31l5-5m12-12 5-5"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
+          <MeetingJourney />
           <h3 className="result-card__empty-title">{t("result.emptyTitle")}</h3>
           <p className="result-card__empty-lead">{t("result.emptyLead")}</p>
-
-          <details className="disclosure empty-details">
-            <summary>{t("result.detailsLabel")}</summary>
-            <ul className="result-card__points">
-              <li>{t("result.emptyPoint1")}</li>
-              <li>{t("result.emptyPoint2")}</li>
-              <li>{t("result.emptyPoint3")}</li>
-            </ul>
-          </details>
 
           <div className="quick-start">
             <span className="quick-start__label">
@@ -105,10 +81,14 @@ export function ResultCard({ result, station, onQuickStart }: Props) {
             </div>
           </div>
 
-          <p className="result-card__empty-hint">
-            {t("result.emptyLine1")}
-            {t("result.emptyLine2")}
-          </p>
+          <details className="disclosure empty-details">
+            <summary>{t("result.detailsLabel")}</summary>
+            <ul className="result-card__points">
+              <li>{t("result.emptyPoint1")}</li>
+              <li>{t("result.emptyPoint2")}</li>
+              <li>{t("result.emptyPoint3")}</li>
+            </ul>
+          </details>
         </div>
       </div>
     );
@@ -123,7 +103,7 @@ export function ResultCard({ result, station, onQuickStart }: Props) {
   return (
     <div className="result-card">
       <div className="result-card__content">
-        <div className="result-card__identity">
+        <div className="result-card__identity" key={station.name}>
           <span className="result-card__eyebrow">
             {t(isTop ? "result.eyebrowBest" : "result.eyebrowSelected")}
           </span>
@@ -146,19 +126,18 @@ export function ResultCard({ result, station, onQuickStart }: Props) {
             <span className="metric__value">±{station.fairness}</span>
             <span className="metric__label">{t("result.fairness")}</span>
           </div>
-          <div className="metric">
-            <span className="metric__value">
-              {formatYen(station.averageFareYen)}
-            </span>
-            <span className="metric__label">{t("result.avgFare")}</span>
-          </div>
-          <div className="metric">
-            <span className="metric__value">
-              {station.distanceToCentroidKm}
-            </span>
-            <span className="metric__label">{t("result.distance")}</span>
-          </div>
         </div>
+
+        <dl className="result-card__facts">
+          <div>
+            <dt>{t("result.avgFare")}</dt>
+            <dd>{formatYen(station.averageFareYen)}</dd>
+          </div>
+          <div>
+            <dt>{t("result.distance")}</dt>
+            <dd>{station.distanceToCentroidKm}</dd>
+          </div>
+        </dl>
 
         <p className="result-card__range">
           {t("result.range", {
