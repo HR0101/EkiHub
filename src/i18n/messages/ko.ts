@@ -56,6 +56,11 @@ export const ko: Messages = {
     lead: "각자의 가까운 역을 입력하면 모두가 모이기 좋은 역을 제안합니다.",
   },
 
+  notFound: {
+    title: "페이지를 찾을 수 없습니다",
+    description: "페이지가 이동되었거나 삭제되었을 수 있습니다. 홈에서 모일 역을 검색하세요.",
+  },
+
   nav: {
     howto: "사용 방법",
     home: "← 홈으로 돌아가기",
@@ -68,7 +73,7 @@ export const ko: Messages = {
     closeConditions: "닫기",
     preferences: "검색 세부 설정",
     panelTitle: "가까운 역 입력",
-    placeholder: "예) 신주쿠, 요코하마, 오미야…",
+    placeholder: "예: 신주쿠",
     stationLabel: "가까운 역",
     peopleLabel: "인원",
     peopleCount: "{count}명",
@@ -121,9 +126,8 @@ export const ko: Messages = {
     detailsLabel: "기능 살펴보기",
     emptyLine1: "역을 2개 이상 입력한 뒤",
     emptyLine2: "“검색하기”를 눌러 주세요.",
-    emptyTitle: "모두의 중심역을 찾아 드립니다",
-    emptyLead:
-      "전원의 이동 시간과 요금을 바탕으로 모이기 좋은 역을 제안합니다.",
+    emptyTitle: "가까운 역을 2개 이상 입력",
+    emptyLead: "「중심역 검색하기」를 눌러 후보를 확인하세요",
     emptyPoint1: "이동 시간의 편차를 줄여, 혼자만 멀어지지 않게 합니다",
     emptyPoint2: "요금 추정과 직통 여부도 함께 보여 줍니다",
     emptyPoint3: "정해진 역 주변에서 모일 만한 장소를 찾을 수 있습니다",
@@ -163,6 +167,7 @@ export const ko: Messages = {
   },
 
   actions: {
+    more: "더 보기",
     copyUrl: "URL 복사",
     copied: "복사했습니다",
     copyFailed: "복사할 수 없습니다",

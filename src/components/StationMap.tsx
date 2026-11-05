@@ -137,10 +137,12 @@ export function StationMap({ result, station }: Props) {
       className="map"
       center={DEFAULT_CENTER}
       zoom={DEFAULT_ZOOM}
+      minZoom={5}
+      maxZoom={18}
       scrollWheelZoom
       aria-label={t("map.ariaLabel")}
     >
-      <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} />
+      <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} maxNativeZoom={18} />
       <TileLayer
         url={RAILWAY_TILE_URL}
         attribution='鉄道: <a href="https://www.openrailwaymap.org/">OpenRailwayMap</a>'

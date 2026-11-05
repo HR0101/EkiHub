@@ -61,6 +61,11 @@ export const ja = {
     lead: "複数人の最寄駅を入力すると、全員が集まりやすい駅を提案します。",
   },
 
+  notFound: {
+    title: "ページが見つかりません",
+    description: "URLが変更されたか、ページが削除された可能性があります。ホームから駅を検索できます。",
+  },
+
   nav: {
     howto: "使い方",
     home: "← ホームに戻る",
@@ -73,7 +78,7 @@ export const ja = {
     closeConditions: "閉じる",
     preferences: "こだわり条件",
     panelTitle: "最寄駅を入力",
-    placeholder: "例）新宿、横浜、大宮…",
+    placeholder: "例：新宿",
     stationLabel: "最寄駅",
     peopleLabel: "人数",
     peopleCount: "{count}人",
@@ -126,8 +131,8 @@ export const ja = {
     detailsLabel: "できることを見る",
     emptyLine1: "最寄駅を2駅以上入力して",
     emptyLine2: "「検索する」を押してください。",
-    emptyTitle: "みんなの中心駅を見つけます",
-    emptyLead: "全員の移動時間と運賃から、集まりやすい駅を提案します。",
+    emptyTitle: "最寄駅を2駅以上入力",
+    emptyLead: "「中心駅を検索する」で候補を表示",
     emptyPoint1: "遠い人が出ないよう、移動時間のばらつきを抑えます",
     emptyPoint2: "運賃の概算と、直通で行けるかどうかも表示します",
     emptyPoint3: "決まった駅の周辺から、集まれる場所を探せます",
@@ -167,6 +172,7 @@ export const ja = {
   },
 
   actions: {
+    more: "その他",
     copyUrl: "URLをコピー",
     copied: "コピーしました",
     copyFailed: "コピーできません",
