@@ -2482,16 +2482,6 @@ body {
   gap: 6px;
 }
 
-.spot-controls--radius {
-  margin-top: 8px;
-}
-
-.spot-controls__label {
-  font-size: 0.78rem;
-  color: var(--text-sub);
-  margin-right: 2px;
-}
-
 /* 選択中はトグルと同じ「淡い面＋水色の輪郭」で示す */
 .tool-btn.is-active {
   color: var(--accent);
@@ -2503,34 +2493,6 @@ body {
   margin-top: 12px;
   font-size: 0.82rem;
   color: var(--text-sub);
-}
-
-.spot-list {
-  margin-top: 12px;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.spot-item {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 8px 10px;
-  border-radius: var(--radius-sm);
-  background: var(--nm-surface-sunken);
-}
-
-.spot-item__name {
-  font-size: 0.9rem;
-}
-
-.spot-item__meta {
-  font-size: 0.74rem;
-  color: var(--text-faint);
-  text-align: right;
 }
 
 /* ===================================================================
