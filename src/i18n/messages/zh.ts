@@ -137,6 +137,7 @@ export const zh: Messages = {
     avgFare: "平均票价(估算)",
     distance: "到重心的距离(km)",
     range: "各成员 {min}〜{max} 分钟{transfers} {source}",
+    estimateNote: "所需时间和票价是根据车站位置和线路计算的估算值。实际时刻、路线和票价请通过换乘查询等确认。",
     transfers: " ・平均换乘 {count} 次",
     sourceRouted: "（实际路线数据）",
     sourceGraph: "（铁路网路线估算）",

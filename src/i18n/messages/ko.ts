@@ -141,6 +141,7 @@ export const ko: Messages = {
     avgFare: "평균 요금(추정)",
     distance: "무게중심까지의 거리(km)",
     range: "각 구성원 {min}〜{max}분{transfers} {source}",
+    estimateNote: "소요 시간과 운임은 역의 위치와 노선으로 계산한 추정값입니다. 실제 시간·경로·운임은 환승 안내 서비스 등에서 확인해 주세요.",
     transfers: " ・평균 환승 {count}회",
     sourceRouted: "(실제 경로 데이터)",
     sourceGraph: "(철도망 경로 추정)",
