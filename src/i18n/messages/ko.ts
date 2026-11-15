@@ -145,6 +145,7 @@ export const ko: Messages = {
     sourceRouted: "(실제 경로 데이터)",
     sourceGraph: "(철도망 경로 추정)",
     sourceStraight: "(거리 기반 추정)",
+    renamedOrigin: "「{from}」은(는) 「{to}」(으)로 계산했습니다.",
   },
 
   travel: {

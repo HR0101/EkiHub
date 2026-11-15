@@ -141,6 +141,7 @@ export const zh: Messages = {
     sourceRouted: "（实际路线数据）",
     sourceGraph: "（铁路网路线估算）",
     sourceStraight: "（按距离估算）",
+    renamedOrigin: "已将「{from}」按「{to}」计算。",
   },
 
   travel: {

@@ -93,9 +93,21 @@ export function HomeView({ page = "input" }: { page?: "input" | "results" }) {
   const stationsQuery = useStations();
   const centerMutation = useCenterStation({
     onSuccess: (data, request) => {
+      // 旧駅名（例:「日吉」）を読み替えたときは、共有URLと入力欄も新しい駅名にそろえる
+      const renamed = new Map(
+        (data.renamedOrigins ?? []).map((entry) => [entry.from, entry.to]),
+      );
+      const canonicalName = (name: string) => renamed.get(name.trim()) ?? name;
+      if (renamed.size > 0) {
+        const { rows: currentRows, updateRow } = useEkiHubStore.getState();
+        for (const row of currentRows) {
+          const to = renamed.get(row.name.trim());
+          if (to) updateRow(row.id, { name: to });
+        }
+      }
       const query = buildShareQuery({
         origins: request.origins.map((name, index) => ({
-          name,
+          name: canonicalName(name),
           people: request.peopleCounts?.[index] ?? 1,
         })),
         mode: request.mode,
@@ -109,7 +121,10 @@ export function HomeView({ page = "input" }: { page?: "input" | "results" }) {
       const incoming = parseShareParams(window.location.search);
       const incomingQuery = incoming
         ? buildShareQuery({
-            origins: incoming.origins,
+            origins: incoming.origins.map((origin) => ({
+              ...origin,
+              name: canonicalName(origin.name),
+            })),
             mode: incoming.mode ?? request.mode,
             fairnessWeight: incoming.fairnessWeight ?? request.weight ?? 0.6,
             fareWeight: incoming.fareWeight ?? request.fareWeight ?? 0,

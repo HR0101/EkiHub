@@ -19,7 +19,7 @@ interface Props {
  */
 const QUICK_STARTS: string[][] = [
   ["新宿", "横浜"],
-  ["渋谷", "大宮"],
+  ["渋谷", "大宮(埼玉)"],
   ["東京", "川崎", "船橋"],
 ];
 
@@ -110,6 +110,14 @@ export function ResultCard({ result, station, onQuickStart }: Props) {
           <h3 className="result-card__name">{station.name}</h3>
           <p className="result-card__kana">{stationSubtitle(station)}</p>
         </div>
+
+        {result.renamedOrigins && result.renamedOrigins.length > 0 && (
+          <ul className="result-card__renamed" role="status">
+            {result.renamedOrigins.map((entry) => (
+              <li key={entry.from}>{t("result.renamedOrigin", { from: entry.from, to: entry.to })}</li>
+            ))}
+          </ul>
+        )}
 
         <ul className="chips">
           {station.lines.map((line) => (

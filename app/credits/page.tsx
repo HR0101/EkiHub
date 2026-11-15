@@ -14,6 +14,9 @@ export const metadata: Metadata = {
 const RIDERSHIP_SOURCE_URL =
   "https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-2023.html";
 
+/** 駅マスタ（data/stations-master.json）の元データ。scripts/buildStationMaster.js で加工する */
+const STATION_DATABASE_URL = "https://github.com/Seo-4d696b75/station_database";
+
 /** 出典表示に載せる主なオープンソースソフトウェア（package.json の dependencies から） */
 const SOFTWARE_LICENSES = [
   { name: "Next.js", license: "MIT License" },
@@ -43,9 +46,37 @@ export default function CreditsPage() {
             EkiHub（以下「本サービス」といいます。）は、次のオープンデータ・外部サービス・ソフトウェアを利用しています。各データの権利は提供元に帰属し、それぞれのライセンスに従って利用しています。
           </p>
 
-          <h2>駅の位置情報・周辺スポット（OpenStreetMap）</h2>
+          <h2>駅の位置・路線・読み（station_database）</h2>
           <p>
-            駅の位置・路線の情報と周辺スポットの情報は、OpenStreetMap のデータを利用しています。駅の位置情報は、本サービスで読み仮名の補完や重複する駅の統合などの加工を行っています。
+            駅の名前・読み・位置・路線の情報は、次のデータを加工して作成しています。同名の駅を「日吉(神奈川)」のように区別する名前も、このデータの表記に従っています。本サービスでは、営業中の駅の抽出、副駅名の省略、読み仮名の補正、乗降客数・主要駅の情報の付与などの加工を行っています。
+          </p>
+          <ul>
+            <li>
+              出典：
+              <a
+                href={STATION_DATABASE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                station_database
+              </a>
+              （© Seo-4d696b75/station_database contributors）
+            </li>
+            <li>
+              ライセンス：
+              <a
+                href="https://creativecommons.org/licenses/by/4.0/deed.ja"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                クリエイティブ・コモンズ 表示 4.0 国際（CC BY 4.0）
+              </a>
+            </li>
+          </ul>
+
+          <h2>以前の駅データ（OpenStreetMap）</h2>
+          <p>
+            以前の版で使っていた OpenStreetMap 由来の駅名は、共有URLや保存済みのグループに残る駅名を新しい駅名へ読み替える対応表に使っています。
           </p>
           <ul>
             <li>出典：© OpenStreetMap contributors</li>
@@ -95,9 +126,9 @@ export default function CreditsPage() {
             </li>
           </ul>
 
-          <h2>鉄道の運行情報・駅データ（公共交通オープンデータセンター）</h2>
+          <h2>鉄道の運行情報（公共交通オープンデータセンター）</h2>
           <p>
-            鉄道の運行情報と一部の駅データは、
+            鉄道の運行情報は、
             <a href="https://www.odpt.org/" target="_blank" rel="noopener noreferrer">
               公共交通オープンデータセンター
             </a>

@@ -145,6 +145,7 @@ export const en: Messages = {
     sourceRouted: "(actual route data)",
     sourceGraph: "(rail network estimate)",
     sourceStraight: "(distance-based estimate)",
+    renamedOrigin: "“{from}” was calculated as “{to}”.",
   },
 
   travel: {
