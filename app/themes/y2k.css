@@ -1,0 +1,305 @@
+/* Y2K — palette, material and component styling. */
+html[data-design="y2k"] {
+  --brand-page: #c7ccdf;
+  --brand-surface: #edf0f8;
+  --brand-sunken: #e0e3ef;
+  --brand-line: #858da9;
+  --brand-ink: #34324e;
+  --brand-ink-sub: #575674;
+  --brand-ink-faint: #62617b;
+  --brand-accent: #7948cc;
+  --brand-accent-wash: #e4d9fa;
+  --design-radius: 18px;
+  --design-page-background: linear-gradient(
+    130deg,
+    #e3e8ef,
+    #abb1ca 35%,
+    #f7f8ff 65%,
+    #b1b8cd
+  );
+  --design-header: linear-gradient(120deg, #f9faff, #cbd0e2 55%, #f4eaff);
+  --design-shadow: 0 5px 16px #40405b26;
+  --design-button-shadow: inset 0 2px 0 #ffffff80, 0 3px 7px #4c327b33;
+}
+
+/* Polished chrome: narrow highlights, lilac glass and capsule controls. */
+html[data-design="y2k"] {
+  --design-border: 1px solid #8f98b8;
+  --design-radius: 22px;
+  --design-header: linear-gradient(
+    135deg,
+    #f9fbff 0%,
+    #d5dbec 27%,
+    #fdfdff 49%,
+    #c5c9df 51%,
+    #e6daf6 100%
+  );
+  --design-shadow: inset 0 1px 0 #fff, 0 8px 22px #41476122;
+}
+html[data-design="y2k"] .home-app .home-header {
+  border-radius: 32px 32px 14px 14px;
+}
+html[data-design="y2k"] .home-app .hero__badge {
+  letter-spacing: -0.05em;
+  font-weight: 900;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 3px 0 #858da94d;
+}
+html[data-design="y2k"] .home-app .hero__title {
+  letter-spacing: -0.065em;
+  text-shadow: 0 2px 0 #fff;
+}
+html[data-design="y2k"] .home-app .hero__title .accent {
+  color: #6341a0;
+  text-shadow:
+    1px 2px 0 #fff,
+    0 4px 10px #8c6bc13b;
+}
+html[data-design="y2k"] .home-app .hero__lead {
+  color: #4f4d69;
+  max-width: 40rem;
+}
+html[data-design="y2k"] .home-app :is(.tool-btn, .locale-toggle) {
+  background: linear-gradient(#fff, #d3d8e8);
+  border-color: #9199b2;
+  border-radius: 30px;
+  box-shadow:
+    inset 0 1px #fff,
+    0 2px 3px #555e7c20;
+}
+html[data-design="y2k"] .home-app .locale-toggle__option.is-active {
+  background: linear-gradient(#9a7bcb, #69459e);
+}
+html[data-design="y2k"] .home-app .panel {
+  background: linear-gradient(145deg, #f9faff, #e4e5f1);
+}
+html[data-design="y2k"] .home-app .panel__title {
+  color: #51466f;
+  border-bottom: 3px double #a7a6c1;
+  font-style: italic;
+}
+html[data-design="y2k"] .home-app .input-row input {
+  background: linear-gradient(#dddfee, #fafaff);
+  border: 1px solid #9b9fba;
+  box-shadow: inset 0 2px 3px #6a678b20;
+  border-radius: 9px;
+}
+html[data-design="y2k"] .home-app .input-row__index {
+  border: 1px solid #a598c0;
+  border-radius: 50%;
+  background: linear-gradient(#fff, #c6b6e3);
+  box-shadow: 0 1px 2px #5553;
+}
+html[data-design="y2k"] .home-app .toggle {
+  padding: 5px;
+  background: #d8daea;
+  border-color: #afb3cb;
+}
+html[data-design="y2k"] .home-app .toggle__slider {
+  background: linear-gradient(#fcf9ff, #d5c4f0);
+  border-radius: 7px;
+  box-shadow:
+    inset 0 1px #fff,
+    0 2px 4px #63548233;
+}
+html[data-design="y2k"] .home-app .btn--primary:enabled {
+  border: 1px solid #62418f;
+  text-shadow: 0 1px 2px #302044;
+  box-shadow:
+    inset 0 2px #ffffff66,
+    inset 0 -2px #45236d55,
+    0 4px 8px #5b458b30;
+}
+html[data-design="y2k"] .home-app .btn--primary:enabled:hover {
+  filter: brightness(1.03);
+}
+html[data-design="y2k"] .home-app .result-card__eyebrow {
+  padding: 5px 13px;
+  display: inline-block;
+  border: 1px solid #a49ab8;
+  background: linear-gradient(#fff, #dfd7ee);
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+html[data-design="y2k"] .home-app .result-card__name {
+  font-style: italic;
+  letter-spacing: -0.06em;
+}
+html[data-design="y2k"] .home-app .result-sheet .metric {
+  padding: 16px;
+  border: 1px solid #bdc2d6;
+  border-radius: 12px;
+  background: linear-gradient(#fafbff, #e9e5f4);
+  box-shadow: inset 0 1px #fff;
+}
+html[data-design="y2k"] .home-app .metric__value {
+  color: #51416f;
+}
+html[data-design="y2k"] .home-app .result-sheet .chips li {
+  padding: 4px 10px;
+  border: 1px solid #bac0d4;
+  border-radius: 20px;
+  background: #f3f1fa;
+  font-size: 0.85rem;
+}
+html[data-design="y2k"] .home-app .result-sheet .map {
+  border: 4px solid #d6dbea;
+  outline: 1px solid #9da6bd;
+  outline-offset: 0;
+  border-radius: 14px;
+}
+html[data-design="y2k"] .home-app .travel-item__fill {
+  background: linear-gradient(90deg, #7a5caf, #b69bdd);
+}
+html[data-design="y2k"] .home-app .result-card__icon {
+  background: linear-gradient(140deg, #fff, #c8cfe3 48%, #e8d7fc);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 2px #fff,
+    0 5px 10px #78668a33;
+}
+html[data-design="y2k"] .home-app .result-card__empty-title {
+  font-style: italic;
+}
+
+html[data-design="y2k"] .home-app .hero__badge {
+  border-radius: 50%;
+  padding: 8px 20px;
+  background: linear-gradient(#fff, #aab2cd, #fff);
+  border: 1px solid #828ba8;
+  font-style: italic;
+}
+html[data-design="y2k"] .home-app .hero__title {
+  font-style: italic;
+}
+html[data-design="y2k"] .home-app .btn--primary:enabled {
+  background: linear-gradient(#8264b8, #62409e 55%, #7948c5);
+  border-radius: 30px;
+}
+
+/* Composition: a chrome masthead above the workspace, not a generic card. */
+html[data-design="y2k"] .home-app .home-header {
+  grid-template-areas: "tools tools" "hero art";
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 30%);
+  gap: 28px 40px;
+  border-radius: 36px 36px 12px 12px;
+  background: linear-gradient(
+    120deg,
+    #fdfdff,
+    #d2d8ec 38%,
+    #e8d9f3 70%,
+    #f4f5fc
+  );
+}
+html[data-design="y2k"] .home-app .toolbar {
+  border-top: 0;
+  border-bottom: 1px solid #a8aec6;
+  padding: 0 0 16px;
+  justify-content: flex-end;
+}
+html[data-design="y2k"] .home-app .hero__title {
+  font-size: clamp(2.4rem, 4.8vw, 4.8rem);
+  line-height: 1.25;
+}
+html[data-design="y2k"] .home-app .hero__badge {
+  font-size: 1.15rem;
+  min-width: 145px;
+  justify-content: center;
+}
+html[data-design="y2k"] .home-app .result-card__identity {
+  text-align: center;
+  padding: 24px 18px;
+  border: 1px solid #b0b5cd;
+  border-radius: 28px;
+  background: linear-gradient(145deg, #fff9, #e1ddf1);
+  box-shadow:
+    inset 0 1px #fff,
+    inset 0 -2px #9da4c133;
+}
+html[data-design="y2k"] .home-app .result-card__name {
+  font-size: clamp(2.6rem, 5vw, 4rem);
+  margin-block: 8px 0;
+}
+html[data-design="y2k"] .home-app .result-navigation {
+  border: 1px solid #aab0c9;
+  border-radius: 30px;
+  padding: 5px;
+  background: linear-gradient(#fff, #d9dcec);
+  gap: 4px;
+}
+html[data-design="y2k"] .home-app .result-navigation :is(a, button) {
+  padding: 8px 16px;
+  border-radius: 24px;
+  font-size: 0.9rem;
+  color: #51416f;
+}
+html[data-design="y2k"] .home-app .result-navigation a:hover {
+  background: #ffffffb3;
+  text-decoration: none;
+}
+html[data-design="y2k"]
+  .home-app
+  :is(.travel-list__title, .ranking__title, .result-map__title) {
+  font-style: italic;
+  letter-spacing: -0.03em;
+}
+html[data-design="y2k"] .home-app .form-guide {
+  border-bottom: 3px double #b0b5cd;
+}
+html[data-design="y2k"] .home-app .search-preferences {
+  border-block: 3px double #b0b5cd;
+}
+html[data-design="y2k"] .home-app .result-card__empty {
+  text-align: center;
+  padding-top: 24px;
+}
+html[data-design="y2k"] .home-app .quick-start {
+  border-top: 3px double #b0b5cd;
+}
+html[data-design="y2k"] .home-app .btn__arrow {
+  background: #ffffff24;
+  border-radius: 50%;
+  padding: 3px;
+  width: 30px;
+  height: 30px;
+}
+html[data-design="y2k"] .home-app .suggest {
+  border-radius: 13px;
+  border-color: #9ca5c2;
+  box-shadow:
+    inset 0 1px #fff,
+    0 8px 18px #3c41632e;
+}
+@media (min-width: 1100px) {
+  html[data-design="y2k"] .home-app .layout {
+    grid-template-columns: 380px minmax(0, 1fr);
+    gap: 28px;
+  }
+}
+@media (max-width: 899px) {
+  html[data-design="y2k"] .home-app .home-header {
+    grid-template-columns: minmax(0, 1fr) 160px;
+    gap: 22px;
+  }
+}
+@media (max-width: 600px) {
+  html[data-design="y2k"] .home-app .home-header {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "hero" "tools";
+    border-radius: 25px 25px 10px 10px;
+  }
+  html[data-design="y2k"] .home-app .hero__title {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+  html[data-design="y2k"] .home-app .toolbar {
+    border-bottom: 0;
+    border-top: 1px solid #a8aec6;
+    padding: 14px 0 0;
+    justify-content: flex-start;
+  }
+  html[data-design="y2k"] .home-app .result-card__identity {
+    padding: 20px 12px;
+    border-radius: 20px;
+  }
+}

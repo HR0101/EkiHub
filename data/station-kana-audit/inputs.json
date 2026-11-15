@@ -1,0 +1,8 @@
+{
+  "data/stations-osm.json": "21b1ca41b9dab18808600d647ab15bc3e1629b82bdd4e5d444cd27178be2de4c",
+  "data/stations.js": "74d8268847a3809d415eb59ca323d0e7b429dce6c797ee493fd097ecb75027fb",
+  "scripts/auditStationKana.py": "4075f98f7145f0d58a17a665e4b17532c99c9c13ce715df18d25db3a78295c68",
+  "data/station-kana-audit/official-reference.json": "8dc7527e33f54f4c2e9d69a9b220927ded4c4ae955cbe267409023bdad2d4f64",
+  "data/station-kana-audit/manual-reviews.json": "b5bc00dadb0145ed218336be4222d74850cda027a69d822271e320334abdd024",
+  "data/station-kana-audit/verified.json": "926a5a88584cfb4bc34ce5883207bfe787c8570afb13e982bf6fffc682bb892d"
+}

@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="210" viewBox="693 -12 320 210"><!--Exported by Adobe Illustrator 2026; isolated from theme-icons-export.svg.--><defs>
+    <linearGradient id="_名称未設定グラデーション" data-name="名称未設定グラデーション" x1="-282.09" y1="774.46" x2="-281.09" y2="773.46" gradientTransform="translate(16256 43433) scale(56 -56)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a990dc" />
+      <stop offset="1" stop-color="#6745a3" />
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_2" data-name="名称未設定グラデーション 2" x1="-281.88" y1="774.35" x2="-281.08" y2="773.35" gradientTransform="translate(16323 41836) scale(54 -54)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe5d3" />
+      <stop offset="1" stop-color="#c99477" />
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_3" data-name="名称未設定グラデーション 3" x1="-281.62" y1="773.92" x2="-280.62" y2="772.92" gradientTransform="translate(15359 38774) scale(50 -50)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e7f0de" />
+      <stop offset="1" stop-color="#9fb48c" />
+    </linearGradient>
+    <radialGradient id="_名称未設定グラデーション_4" data-name="名称未設定グラデーション 4" cx="-283.05" cy="776.26" fx="-283.05" fy="776.26" r=".9" gradientTransform="translate(24401 77690) scale(82 -100)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f9edff" />
+      <stop offset=".45" stop-color="#d3b3e6" />
+      <stop offset="1" stop-color="#9771b0" />
+    </radialGradient>
+    <linearGradient id="_名称未設定グラデーション_5" data-name="名称未設定グラデーション 5" x1="-284.5" y1="777.3" x2="-283.75" y2="776.5" gradientTransform="translate(45019 123116) scale(158 -158)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f8fcff" />
+      <stop offset=".5" stop-color="#e4eaf0" />
+      <stop offset="1" stop-color="#bfccd9" />
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_6" data-name="名称未設定グラデーション 6" x1="-283.98" y1="776.8" x2="-283.23" y2="775.8" gradientTransform="translate(33028 90419) scale(116 -116)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#afbece" />
+      <stop offset=".45" stop-color="#dde5ee" />
+      <stop offset="1" stop-color="#f9fcff" />
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_7" data-name="名称未設定グラデーション 7" x1="-283.45" y1="776.05" x2="-282.45" y2="775.05" gradientTransform="translate(24898 67083) scale(86 -86)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a5dad6" />
+      <stop offset="1" stop-color="#6cb8bd" />
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_8" data-name="名称未設定グラデーション 8" x1="-283.96" y1="777.73" x2="-282.96" y2="776.73" gradientTransform="translate(-117631.4624 38352.5384) rotate(90) scale(134 -152)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity=".9" />
+      <stop offset=".5" stop-color="#f7f5ff" stop-opacity=".45" />
+      <stop offset="1" stop-color="#fff" stop-opacity=".16" />
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_9" data-name="名称未設定グラデーション 9" x1="-284.77" y1="777.15" x2="-283.77" y2="776.15" gradientTransform="translate(41413.7197 119982.5331) scale(144 -154)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity=".9" />
+      <stop offset=".5" stop-color="#f7f5ff" stop-opacity=".45" />
+      <stop offset="1" stop-color="#fff" stop-opacity=".16" />
+    </linearGradient>
+  </defs>
+  <g id="retro">
+    <g shape-rendering="crispEdges">
+      <path d="M745,33h221v137h-221V33Z" style="fill: #164d4d; isolation: isolate; opacity: .5;" />
+      <path d="M737,20h221v140h-221V20Z" style="fill: #c9c9c9;" />
+      <path d="M737,160V20h221" style="fill: none; stroke: #fff; stroke-width: 4px;" />
+      <path d="M958,20v140h-221" style="fill: none; stroke: #525252; stroke-width: 4px;" />
+      <path d="M742,25h211v22h-211v-22Z" style="fill: #222879;" />
+      <path d="M750,31h12v10h-12v-10Z" style="fill: #c9c9c9;" />
+      <path d="M770,34h41" style="stroke: #c9c9c9; stroke-width: 3px;" />
+      <path d="M934,30h13v12h-13v-12Z" style="fill: #c9c9c9; stroke: #fff;" />
+      <path d="M750,60h194v78h-194V60Z" style="fill: #f4f4f4;" />
+      <path d="M750,138V60h194" style="fill: none; stroke: #777; stroke-width: 2px;" />
+      <path d="M772,79h50v22h56v-23h46M772,122h30v-21h76v21h46" style="fill: none; stroke: #b6b6d1; stroke-width: 5px;" />
+      <path d="M772,79h50v22h56" style="fill: none; stroke: #222879; stroke-width: 5px;" />
+      <path d="M765,72h14v14h-14v-14ZM765,115h14v14h-14v-14Z" style="fill: #fff; stroke: #555; stroke-width: 2px;" />
+      <path d="M870,93h16v16h-16v-16Z" style="fill: #222879; stroke: #fff; stroke-width: 2px;" />
+      <path d="M753,148h89M848,148h35" style="stroke: #777; stroke-width: 3px;" />
+      <path d="M911,116v42l11-10,9,20,8-4-9-19h17l-36-29Z" style="fill: #fff; stroke: #171717; stroke-width: 2px;" />
+    </g>
+  </g>
+  </svg>

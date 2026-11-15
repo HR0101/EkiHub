@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_レイヤー_1" data-name="レイヤー 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1328 463.42">
+  <defs>
+    <linearGradient id="_名称未設定グラデーション" data-name="名称未設定グラデーション" x1="-282.09" y1="774.46" x2="-281.09" y2="773.46" gradientTransform="translate(16256 43433) scale(56 -56)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a990dc"/>
+      <stop offset="1" stop-color="#6745a3"/>
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_2" data-name="名称未設定グラデーション 2" x1="-281.88" y1="774.35" x2="-281.08" y2="773.35" gradientTransform="translate(16323 41836) scale(54 -54)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe5d3"/>
+      <stop offset="1" stop-color="#c99477"/>
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_3" data-name="名称未設定グラデーション 3" x1="-281.62" y1="773.92" x2="-280.62" y2="772.92" gradientTransform="translate(15359 38774) scale(50 -50)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e7f0de"/>
+      <stop offset="1" stop-color="#9fb48c"/>
+    </linearGradient>
+    <radialGradient id="_名称未設定グラデーション_4" data-name="名称未設定グラデーション 4" cx="-283.05" cy="776.26" fx="-283.05" fy="776.26" r=".9" gradientTransform="translate(24401 77690) scale(82 -100)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f9edff"/>
+      <stop offset=".45" stop-color="#d3b3e6"/>
+      <stop offset="1" stop-color="#9771b0"/>
+    </radialGradient>
+    <linearGradient id="_名称未設定グラデーション_5" data-name="名称未設定グラデーション 5" x1="-284.5" y1="777.3" x2="-283.75" y2="776.5" gradientTransform="translate(45019 123116) scale(158 -158)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f8fcff"/>
+      <stop offset=".5" stop-color="#e4eaf0"/>
+      <stop offset="1" stop-color="#bfccd9"/>
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_6" data-name="名称未設定グラデーション 6" x1="-283.98" y1="776.8" x2="-283.23" y2="775.8" gradientTransform="translate(33028 90419) scale(116 -116)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#afbece"/>
+      <stop offset=".45" stop-color="#dde5ee"/>
+      <stop offset="1" stop-color="#f9fcff"/>
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_7" data-name="名称未設定グラデーション 7" x1="-283.45" y1="776.05" x2="-282.45" y2="775.05" gradientTransform="translate(24898 67083) scale(86 -86)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a5dad6"/>
+      <stop offset="1" stop-color="#6cb8bd"/>
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_8" data-name="名称未設定グラデーション 8" x1="-283.96" y1="777.73" x2="-282.96" y2="776.73" gradientTransform="translate(-117631.4624 38352.5384) rotate(90) scale(134 -152)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity=".9"/>
+      <stop offset=".5" stop-color="#f7f5ff" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity=".16"/>
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_9" data-name="名称未設定グラデーション 9" x1="-284.77" y1="777.15" x2="-283.77" y2="776.15" gradientTransform="translate(41413.7197 119982.5331) scale(144 -154)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity=".9"/>
+      <stop offset=".5" stop-color="#f7f5ff" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#fff" stop-opacity=".16"/>
+    </linearGradient>
+  </defs>
+  <g id="terminal">
+    <path d="M15,32h233v138H15V32Z" style="fill: #050e09; isolation: isolate; opacity: .5;"/>
+    <rect x="8" y="18" width="240" height="146" rx="5" ry="5" style="fill: #102018; stroke: #497e58; stroke-width: 2px;"/>
+    <path d="M9,45h238" style="stroke: #497e58; stroke-width: 2px;"/>
+    <circle cx="23" cy="32" r="3" style="fill: #74ef9a;"/>
+    <circle cx="35" cy="32" r="3" style="fill: #74ef9a; isolation: isolate; opacity: .5;"/>
+    <circle cx="47" cy="32" r="3" style="fill: #74ef9a; isolation: isolate; opacity: .25;"/>
+    <path d="M28,72l9,7-9,7M45,87h19" style="fill: none; stroke: #a8f3bb; stroke-linecap: square; stroke-width: 3px;"/>
+    <path d="M41,125h58v-34h76v-22h43M99,125v18h119M175,91v34h43" style="fill: none; stroke: #4f8a61; stroke-width: 2px;"/>
+    <path d="M41,125h58v-34h76" style="fill: none; stroke: #8af3aa; stroke-width: 3px;"/>
+    <rect x="34" y="118" width="14" height="14" style="fill: #8af3aa;"/>
+    <rect x="165" y="81" width="20" height="20" style="fill: #102018; stroke: #8af3aa; stroke-width: 2px;"/>
+    <rect x="171" y="87" width="8" height="8" style="fill: #8af3aa;"/>
+    <rect x="213" y="64" width="10" height="10" style="fill: #74ef9a;"/>
+    <rect x="213" y="120" width="10" height="10" style="fill: #74ef9a; isolation: isolate; opacity: .65;"/>
+    <rect x="213" y="138" width="10" height="10" style="fill: #74ef9a; isolation: isolate; opacity: .35;"/>
+    <path d="M1,11h12M1,11v12M255,171h-12M255,171v-12" style="fill: none; stroke: #8af3aa; stroke-width: 2px;"/>
+  </g>
+  <g id="mobile">
+    <ellipse cx="497" cy="172" rx="78" ry="10" style="fill: #7255a0; isolation: isolate; opacity: .1;"/>
+    <rect x="422" y="9" width="146" height="160" rx="29" ry="29" style="fill: #cfc2e7;"/>
+    <rect x="414" y="1" width="146" height="160" rx="29" ry="29" style="fill: #fff; stroke: #e8e0f3; stroke-width: 2px;"/>
+    <path d="M435,18h38c1.66,0,3,1.34,3,3h0c0,1.66-1.34,3-3,3h-38c-1.66,0-3-1.34-3-3h0c0-1.66,1.34-3,3-3Z" style="fill: #e9e2f3;"/>
+    <path d="M444,53h30c14,0,22,10,22,24v29c0,13,11,22,25,22M444,128h12c13,0,22-11,22-22v-30c0-14,12-23,25-23h20" style="fill: none; stroke: #e6def2; stroke-linecap: round; stroke-width: 10px;"/>
+    <circle cx="444" cy="53" r="10" style="fill: #b89fdd;"/>
+    <circle cx="444" cy="128" r="10" style="fill: #e3b596;"/>
+    <circle cx="523" cy="53" r="10" style="fill: #a7c2ae;"/>
+    <circle cx="487" cy="91" r="28" style="fill: url(#_名称未設定グラデーション);"/>
+    <path d="M476,91l8,8,15-17" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 4px;"/>
+    <path d="M387,34h23c9.39,0,17,7.61,17,17h0c0,9.39-7.61,17-17,17h-23c-9.39,0-17-7.61-17-17h0c0-9.39,7.61-17,17-17Z" style="fill: #f4d6c1;"/>
+    <circle cx="387" cy="47" r="4" style="fill: #b17a57;"/>
+    <path d="M381,57c1-6,11-6,12,0" style="fill: none; stroke: #b17a57; stroke-linecap: round; stroke-width: 2px;"/>
+    <path d="M400,48h15M400,55h10" style="stroke: #bb8b6b; stroke-linecap: round; stroke-width: 2px;"/>
+    <rect x="544" y="114" width="63" height="35" rx="17" ry="17" style="fill: #dceadf;"/>
+    <path d="M559,131l4,4,9-10M581,128h13M581,134h8" style="fill: none; stroke: #6d9477; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.5px;"/>
+    <circle cx="588" cy="30" r="5" style="fill: #d8c6ef;"/>
+    <circle cx="388" cy="136" r="4" style="fill: #d8c6ef;"/>
+  </g>
+  <g id="retro">
+    <g shape-rendering="crispEdges">
+      <path d="M745,33h221v137h-221V33Z" style="fill: #164d4d; isolation: isolate; opacity: .5;"/>
+      <path d="M737,20h221v140h-221V20Z" style="fill: #c9c9c9;"/>
+      <path d="M737,160V20h221" style="fill: none; stroke: #fff; stroke-width: 4px;"/>
+      <path d="M958,20v140h-221" style="fill: none; stroke: #525252; stroke-width: 4px;"/>
+      <path d="M742,25h211v22h-211v-22Z" style="fill: #222879;"/>
+      <path d="M750,31h12v10h-12v-10Z" style="fill: #c9c9c9;"/>
+      <path d="M770,34h41" style="stroke: #c9c9c9; stroke-width: 3px;"/>
+      <path d="M934,30h13v12h-13v-12Z" style="fill: #c9c9c9; stroke: #fff;"/>
+      <path d="M750,60h194v78h-194V60Z" style="fill: #f4f4f4;"/>
+      <path d="M750,138V60h194" style="fill: none; stroke: #777; stroke-width: 2px;"/>
+      <path d="M772,79h50v22h56v-23h46M772,122h30v-21h76v21h46" style="fill: none; stroke: #b6b6d1; stroke-width: 5px;"/>
+      <path d="M772,79h50v22h56" style="fill: none; stroke: #222879; stroke-width: 5px;"/>
+      <path d="M765,72h14v14h-14v-14ZM765,115h14v14h-14v-14Z" style="fill: #fff; stroke: #555; stroke-width: 2px;"/>
+      <path d="M870,93h16v16h-16v-16Z" style="fill: #222879; stroke: #fff; stroke-width: 2px;"/>
+      <path d="M753,148h89M848,148h35" style="stroke: #777; stroke-width: 3px;"/>
+      <path d="M911,116v42l11-10,9,20,8-4-9-19h17l-36-29Z" style="fill: #fff; stroke: #171717; stroke-width: 2px;"/>
+    </g>
+  </g>
+  <g id="clay">
+    <ellipse cx="1215" cy="169" rx="109" ry="12" style="fill: #9972af; isolation: isolate; opacity: .16;"/>
+    <path d="M1123,53c35-36,114-18,94,38-18,49,49,62,88,16" style="fill: none; stroke: #b797cd; stroke-linecap: round; stroke-width: 27px;"/>
+    <path d="M1123,48c35-36,114-18,94,38-18,49,49,62,88,16" style="fill: none; stroke: #e8d6f2; stroke-linecap: round; stroke-width: 22px;"/>
+    <circle cx="1125" cy="51" r="27" style="fill: url(#_名称未設定グラデーション_2);"/>
+    <ellipse cx="1118" cy="42" rx="10" ry="5" transform="translate(128.78 564.63) rotate(-30)" style="fill: #fff6ee; isolation: isolate; opacity: .65;"/>
+    <circle cx="1303" cy="103" r="25" style="fill: url(#_名称未設定グラデーション_3);"/>
+    <ellipse cx="1295" cy="95" rx="9" ry="4" transform="translate(126 660.23) rotate(-30)" style="fill: #f7fff0; isolation: isolate; opacity: .7;"/>
+    <path d="M1213,51c-24,0-41,17-41,38,0,29,41,62,41,62,0,0,41-33,41-62,0-21-17-38-41-38Z" style="fill: #a582bd;"/>
+    <path d="M1209,44c-24,0-41,17-41,38,0,29,41,62,41,62,0,0,41-33,41-62,0-21-17-38-41-38Z" style="fill: url(#_名称未設定グラデーション_4);"/>
+    <circle cx="1209" cy="82" r="16" style="fill: #faf4fd;"/>
+    <path d="M1199,82l7,7,13-14" style="fill: none; stroke: #946bab; stroke-linecap: round; stroke-linejoin: round; stroke-width: 4px;"/>
+    <path d="M1181,70c2-8,8-14,17-16" style="fill: none; isolation: isolate; opacity: .5; stroke: #fff; stroke-linecap: round; stroke-width: 4px;"/>
+    <circle cx="1301" cy="31" r="9" style="fill: #dcc4ec;"/>
+    <circle cx="1100" cy="121" r="6" style="fill: #dec1aa;"/>
+  </g>
+  <g id="neumo">
+    <ellipse cx="136" cy="452" rx="83" ry="9" style="fill: #adbccb; isolation: isolate; opacity: .15;"/>
+    <circle cx="141" cy="378" r="79" style="fill: #beccd8; isolation: isolate; opacity: .5;"/>
+    <circle cx="129" cy="367" r="79" style="fill: url(#_名称未設定グラデーション_5); stroke: #f8fcff; stroke-width: 2px;"/>
+    <circle cx="129" cy="367" r="58" style="fill: url(#_名称未設定グラデーション_6);"/>
+    <circle cx="131" cy="369" r="53" style="fill: #e4ebf2;"/>
+    <path d="M86,342h28c11,0,18,8,18,18v20c0,12,8,20,20,20h24M86,400h14c12,0,18-7,18-19v-21c0-11,10-18,22-18h36" style="fill: none; stroke: #fafdff; stroke-linecap: round; stroke-width: 7px;"/>
+    <path d="M85,340h28c11,0,18,8,18,18v20c0,12,8,20,20,20h24M85,398h14c12,0,18-7,18-19v-21c0-11,10-18,22-18h36" style="fill: none; stroke: #90a4bd; stroke-linecap: round; stroke-width: 5px;"/>
+    <circle cx="129" cy="368" r="18" style="fill: #adc0d5;"/>
+    <circle cx="127" cy="366" r="16" style="fill: #5879ae; stroke: #f4f8ff; stroke-width: 3px;"/>
+    <circle cx="84" cy="340" r="6" style="fill: #eaf0f6; stroke: #9bafc6; stroke-width: 2px;"/>
+    <circle cx="175" cy="398" r="6" style="fill: #eaf0f6; stroke: #9bafc6; stroke-width: 2px;"/>
+    <path d="M129,297v6M129,432v6M59,367h6M194,367h6" style="stroke: #a7b8c9; stroke-linecap: round; stroke-width: 2px;"/>
+  </g>
+  <g id="glass">
+    <ellipse cx="500" cy="451" rx="92" ry="11" style="fill: #9d91c1; isolation: isolate; opacity: .12;"/>
+    <circle cx="437" cy="363" r="51" style="fill: #a49ddf; isolation: isolate; opacity: .65;"/>
+    <circle cx="564" cy="386" r="43" style="fill: url(#_名称未設定グラデーション_7); isolation: isolate; opacity: .8;"/>
+    <g>
+      <rect x="431.06" y="302.48" width="152" height="134" rx="23" ry="23" transform="translate(25.89 772.1) rotate(-76)" style="fill: url(#_名称未設定グラデーション_8); stroke: #fff; stroke-miterlimit: 4; stroke-width: 1.5px;"/>
+      <path d="M470.4,297.47l98.97,24.68" style="isolation: isolate; opacity: .7; stroke: #fff; stroke-linecap: round; stroke-miterlimit: 4; stroke-width: 2px;"/>
+    </g>
+    <g>
+      <rect x="406.29" y="301.66" width="144" height="154" rx="23" ry="23" transform="translate(-53.35 79.48) rotate(-9)" style="fill: url(#_名称未設定グラデーション_9); stroke: #fff; stroke-miterlimit: 4; stroke-width: 1.5px;"/>
+      <path d="M411.46,327.49l107.66-17.05" style="isolation: isolate; opacity: .7; stroke: #fff; stroke-linecap: round; stroke-miterlimit: 4; stroke-width: 2px;"/>
+      <path d="M432.94,354.46l23.7-3.75c10.86-1.72,20.02,4.93,21.74,15.79l3.44,21.73c1.72,10.86,11.86,17.36,22.73,15.64l22.72-3.6M442.33,413.72l12.84-2.03c10.86-1.72,16.53-10.72,14.81-21.58l-3.44-21.73c-1.72-10.86,5.92-20.17,16.78-21.89l34.57-5.48" style="fill: none; stroke: #8271ba; stroke-linecap: round; stroke-miterlimit: 4; stroke-width: 5px;"/>
+      <circle cx="474.18" cy="378.3" r="18" style="fill: rgba(255, 255, 255, .85); stroke: #8a7ac0; stroke-miterlimit: 4; stroke-width: 2px;"/>
+      <circle cx="474.18" cy="378.3" r="6" style="fill: #8a7ac0;"/>
+      <path d="M432.62,435.51l36.54-5.79" style="isolation: isolate; opacity: .8; stroke: #fff; stroke-linecap: round; stroke-miterlimit: 4; stroke-width: 3px;"/>
+    </g>
+    <circle cx="579" cy="310" r="6" style="fill: #fff; isolation: isolate; opacity: .8;"/>
+  </g>
+  <g id="violet">
+    <g>
+      <path d="M788,318l127-18,28,135-127,19-28-136Z" style="fill: #29223a; stroke: #29223a; stroke-linejoin: round; stroke-width: 3px;"/>
+      <path d="M783,311l127-18,28,135-127,19-28-136Z" style="fill: #d7c1f0; stroke: #29223a; stroke-linejoin: round; stroke-width: 3px;"/>
+      <path d="M791,317l113-16,8,32-113,16-8-32Z" style="fill: #fff; stroke: #29223a; stroke-linejoin: round; stroke-width: 3px;"/>
+      <path d="M806,326l20-3M836,322l34-5" style="stroke: #7350b5; stroke-linecap: round; stroke-linejoin: round; stroke-width: 4px;"/>
+      <path d="M804,377l34-5,6,29,34-5-6-29,40-6" style="fill: none; stroke: #29223a; stroke-linejoin: round; stroke-width: 5px;"/>
+      <circle cx="804" cy="377" r="9" style="fill: #fff; stroke: #29223a; stroke-linejoin: round; stroke-width: 3px;"/>
+      <circle cx="878" cy="396" r="9" style="fill: #fff; stroke: #29223a; stroke-linejoin: round; stroke-width: 3px;"/>
+      <path d="M872,344l12,12,18-5v17l16,10-14,10,3,18-18-2-10,14-12-13-18,5-1-18-16-9,13-12-3-18,18,2,12-11Z" style="fill: #fff; stroke: #29223a; stroke-linejoin: round; stroke-width: 3px;"/>
+      <circle cx="875" cy="381" r="15" style="fill: #9e78cd; stroke: #29223a; stroke-linejoin: round; stroke-width: 3px;"/>
+      <path d="M867,381l6,6,10-12" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 4px;"/>
+      <path d="M752,332l-17-13M746,372l-24-2M761,419l-19,11M941,309l18-16M957,359l24-5M957,421l19,12" style="stroke: #29223a; stroke-linecap: round; stroke-linejoin: round; stroke-width: 4px;"/>
+    </g>
+  </g>
+</svg>

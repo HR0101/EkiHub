@@ -1,0 +1,106 @@
+[
+  {
+    "name": "東多良木",
+    "lat": 32.272155,
+    "lng": 130.950445,
+    "current_kana": "ひがしたらき",
+    "verdict": "renamed",
+    "name_correction": "多良木青蓮寺",
+    "verified_kana": "たらぎしょうれんじ",
+    "source": "https://kumagawa-rail.com/2026/09/19/4880/",
+    "checked_on": "2026-10-20",
+    "note": "2026年9月20日に改称。川村は移転もあるため座標の別途修正が必要。"
+  },
+  {
+    "name": "川村",
+    "lat": 32.207248,
+    "lng": 130.795717,
+    "current_kana": "かわむら",
+    "verdict": "renamed",
+    "name_correction": "相良十島",
+    "verified_kana": "さがらとしま",
+    "source": "https://kumagawa-rail.com/2026/09/19/4880/",
+    "checked_on": "2026-10-20",
+    "note": "2026年9月20日に改称。川村は移転もあるため座標の別途修正が必要。"
+  },
+  {
+    "name": "京成電鉄本社",
+    "lat": 35.7236,
+    "lng": 139.927738,
+    "current_kana": "けいせいでんてつほんしゃ",
+    "checked_on": "2026-10-20",
+    "verdict": "non-station",
+    "source": "https://www.keisei.co.jp/keisei/corporate/profile/corporatedata/",
+    "note": "会社本社。公式会社概要は最寄駅を京成八幡駅・本八幡駅と区別。駅として登録された施設種別の誤り。"
+  },
+  {
+    "name": "5階のりば",
+    "lat": 32.732831,
+    "lng": 129.871144,
+    "current_kana": "5かいのりば",
+    "checked_on": "2026-10-20",
+    "verdict": "non-station",
+    "source": "https://www.city.nagasaki.lg.jp/page/1384.html",
+    "note": "南大浦地区グラバースカイロードの斜行エレベーター乗降口。一般鉄道駅の候補とは別の道路施設。読みの正誤はこの分類では確定しない。"
+  },
+  {
+    "name": "4階のりば",
+    "lat": 32.732867,
+    "lng": 129.871227,
+    "current_kana": "4かいのりば",
+    "checked_on": "2026-10-20",
+    "verdict": "non-station",
+    "source": "https://www.city.nagasaki.lg.jp/page/1384.html",
+    "note": "南大浦地区グラバースカイロードの斜行エレベーター乗降口。一般鉄道駅の候補とは別の道路施設。読みの正誤はこの分類では確定しない。"
+  },
+  {
+    "name": "３階のりば",
+    "lat": 32.732958,
+    "lng": 129.871431,
+    "current_kana": "さんかいのりば",
+    "checked_on": "2026-10-20",
+    "verdict": "non-station",
+    "source": "https://www.city.nagasaki.lg.jp/page/1384.html",
+    "note": "南大浦地区グラバースカイロードの斜行エレベーター乗降口。一般鉄道駅の候補とは別の道路施設。読みの正誤はこの分類では確定しない。"
+  },
+  {
+    "name": "２階のりば",
+    "lat": 32.733044,
+    "lng": 129.871625,
+    "current_kana": "にかいのりば",
+    "checked_on": "2026-10-20",
+    "verdict": "non-station",
+    "source": "https://www.city.nagasaki.lg.jp/page/1384.html",
+    "note": "南大浦地区グラバースカイロードの斜行エレベーター乗降口。一般鉄道駅の候補とは別の道路施設。読みの正誤はこの分類では確定しない。"
+  },
+  {
+    "name": "長野県駅（仮称）",
+    "lat": 35.527087,
+    "lng": 137.852073,
+    "current_kana": "ながのけんえき（かしょう）",
+    "checked_on": "2026-10-20",
+    "verdict": "planned",
+    "source": "https://company.jr-central.co.jp/chuoshinkansen/",
+    "note": "中央新幹線の建設中・計画駅。既存の近隣駅と同一視しない。営業中の駅の読みの正誤とは別扱い。"
+  },
+  {
+    "name": "岐阜県駅、仮称",
+    "lat": 35.480492,
+    "lng": 137.448705,
+    "current_kana": "ぎふけんえき、かしょう",
+    "checked_on": "2026-10-20",
+    "verdict": "planned",
+    "source": "https://company.jr-central.co.jp/chuoshinkansen/",
+    "note": "中央新幹線の建設中・計画駅。既存の近隣駅と同一視しない。営業中の駅の読みの正誤とは別扱い。"
+  },
+  {
+    "name": "山梨県駅、仮称",
+    "lat": 35.605526,
+    "lng": 138.56243,
+    "current_kana": "やまなしけんえき、かしょう",
+    "checked_on": "2026-10-20",
+    "verdict": "planned",
+    "source": "https://company.jr-central.co.jp/chuoshinkansen/",
+    "note": "中央新幹線の建設中・計画駅。既存の近隣駅と同一視しない。営業中の駅の読みの正誤とは別扱い。"
+  }
+]

@@ -1,0 +1,328 @@
+/**
+ * 日本語の文言（この言語がマスター）。
+ *
+ * 画面に出す文字はすべてここに集め、コンポーネントからはキーで引く。
+ * 他の言語ファイルはこの型に合わせるので、キーを足すと
+ * 翻訳漏れがコンパイルエラーとして出る。
+ */
+export const ja = {
+  member: {
+    export: "保存データを書き出す",
+    nav: "マイグループ",
+    title: "いつものメンバーで、次の集合も。",
+    lead: "出発駅・人数・検索条件を保存して、次回はワンタップで検索。",
+    login: "Googleでログイン",
+    logout: "ログアウト",
+    loginTitle: "グループをアカウントに保存",
+    loginDescription:
+      "Googleアカウントでログインすると、保存したグループをスマホ・PCから呼び出せます。",
+    loginNote:
+      "初回ログインでアカウントが作成されます。GoogleのパスワードをEkiHubが取得することはありません。",
+    unavailable:
+      "Googleログインは現在準備中です。駅の検索はログインなしで使えます。",
+    authError: "ログインできませんでした。もう一度お試しください。",
+    groupsTitle: "保存したグループ",
+    manage: "管理する",
+    loading: "読み込み中…",
+    loadFailed: "保存した内容を取得できませんでした。",
+    retry: "再試行",
+    search: "このグループで検索",
+    empty: "まだ保存したグループはありません。",
+    saveCurrent: "今の入力条件を保存",
+    name: "グループ名",
+    namePlaceholder: "例：大学の友達",
+    save: "グループを保存",
+    saving: "保存中…",
+    update: "変更を保存",
+    saved: "保存しました。次回からこのグループを呼び出せます。",
+    edit: "編集",
+    delete: "削除",
+    deleteConfirm: "このグループを削除しますか？",
+    cancel: "キャンセル",
+    editing: "グループを編集中",
+    newGroup: "新しいグループ",
+    add: "グループを追加",
+    conditions: "保存する検索条件",
+    back: "駅の検索に戻る",
+    signedIn: "ログイン中",
+    privacy: "ログインと保存データについて",
+    limit: "グループは30件まで保存できます。",
+    createHint:
+      "検索画面の条件を引き継いでいます。必要に応じて変更して保存できます。",
+    error: "処理できませんでした。時間をおいてもう一度お試しください。",
+    loginBusy: "接続中…",
+    deleteBusy: "削除中…",
+  },
+  hero: {
+    badge: "EkiHub",
+    titleBefore: "みんなの",
+    titleAccent: "中心駅",
+    titleAfter: "を探す",
+    lead: "複数人の最寄駅を入力すると、全員が集まりやすい駅を提案します。",
+  },
+
+  notFound: {
+    title: "ページが見つかりません",
+    description: "URLが変更されたか、ページが削除された可能性があります。ホームから駅を検索できます。",
+  },
+
+  nav: {
+    howto: "使い方",
+    home: "← ホームに戻る",
+  },
+
+  form: {
+    inputStep: "1. 最寄駅と条件を入力",
+    conditions: "検索条件",
+    editConditions: "条件を変更",
+    closeConditions: "閉じる",
+    preferences: "こだわり条件",
+    panelTitle: "最寄駅を入力",
+    placeholder: "例：新宿",
+    stationLabel: "最寄駅",
+    peopleLabel: "人数",
+    peopleCount: "{count}人",
+    remove: "この駅を削除",
+    addStation: "＋ 駅を追加",
+    modeTitle: "候補にする駅",
+    modeAMain: "主要駅だけ",
+    modeASub: "新宿・渋谷など、乗降客の多い駅から探す",
+    modeBMain: "すべての駅",
+    modeBSub: "駅の規模を問わず、集まりやすい駅を探す",
+    weightTitle: "重視ポイント",
+    weightAriaLabel: "重視ポイント（全員の公平さと近さのバランス）",
+    weightNear: "近さ重視",
+    weightFair: "公平さ重視",
+    weightLabels: {
+      nearest: "近さ最優先",
+      nearer: "やや近さ重視",
+      balanced: "バランス",
+      fairer: "やや公平さ重視",
+      fairest: "公平さ最優先",
+    },
+    fareTitle: "運賃の重視度",
+    fareLabels: {
+      low: "重視しない",
+      mid: "やや重視",
+      high: "重視",
+    },
+    submit: "中心駅を検索する",
+    computing: "検索中…",
+    stationsError:
+      "駅データを読み込めませんでした。ページを再読み込みしてください。",
+  },
+
+  steps: {
+    ariaLabel: "操作の手順",
+    origins: "最寄駅",
+    originsHint: "集まる人それぞれの最寄駅を、2駅以上入力してください。",
+    compute: "検索",
+    computeHint: "駅が揃いました。「中心駅を検索する」を押してください。",
+    tune: "調整",
+    tuneHint: "候補の絞り込みや重視ポイントを変えると、結果を選び直せます。",
+  },
+
+  result: {
+    pageTitle: "集合駅の候補",
+    returnToResults: "結果に戻る",
+    failedTitle: "結果を表示できませんでした",
+    navigation: "結果のナビゲーション",
+    overview: "おすすめ・地図",
+    detailsLabel: "できることを見る",
+    emptyLine1: "最寄駅を2駅以上入力して",
+    emptyLine2: "「検索する」を押してください。",
+    emptyTitle: "最寄駅を2駅以上入力",
+    emptyLead: "「中心駅を検索する」で候補を表示",
+    emptyPoint1: "遠い人が出ないよう、移動時間のばらつきを抑えます",
+    emptyPoint2: "運賃の概算と、直通で行けるかどうかも表示します",
+    emptyPoint3: "決まった駅の周辺から、集まれる場所を探せます",
+    quickStartLabel: "例で試す",
+    eyebrowBest: "提案された中心駅",
+    eyebrowSelected: "選択中の候補駅",
+    majorStation: "主要ターミナル駅",
+    ridership: "乗降 約{man}万人/日",
+    avgMinutes: "平均所要時間(分)",
+    fairness: "時間のばらつき",
+    avgFare: "平均運賃(概算)",
+    distance: "重心までの距離(km)",
+    range: "各メンバー {min}〜{max}分{transfers} {source}",
+    transfers: " ・平均乗換 {count}回",
+    sourceRouted: "（実経路データ）",
+    sourceGraph: "（鉄道網ルート概算）",
+    sourceStraight: "（距離からの概算）",
+  },
+
+  travel: {
+    title: "各最寄駅からの所要時間（推定）",
+    minutes: "{count}分",
+    direct: "直通",
+    transfer: "乗換{count}回",
+  },
+
+  ranking: {
+    comparisonTitle: "候補駅の比較",
+    rank: "順位",
+    station: "候補駅",
+    minutes: "平均所要時間",
+    fairness: "時間のばらつき",
+    fare: "平均運賃",
+
+    title: "候補駅ランキング（クリックで詳細を表示）",
+    meta: "平均{minutes}分 / ±{fairness}",
+  },
+
+  actions: {
+    more: "その他",
+    copyUrl: "URLをコピー",
+    copied: "コピーしました",
+    copyFailed: "コピーできません",
+    share: "共有",
+    shareTitle: "EkiHub — みんなの中心駅",
+    shareText: "集合駅の候補: {name}",
+    qr: "QR",
+    qrAlt: "この条件を開く共有リンクのQRコード",
+    qrPreparing: "QRコードを準備しています…",
+    qrNote: "スマートフォンで読み取ると、同じ条件で開けます。",
+    copySummary: "結果をコピー",
+    print: "印刷",
+  },
+
+  spots: {
+    title: "周辺スポット",
+    categories: {
+      cafe: "カフェ",
+      restaurant: "レストラン",
+      fastfood: "ファストフード",
+      izakaya: "居酒屋・バー",
+      karaoke: "カラオケ",
+      convenience: "コンビニ",
+      park: "公園",
+    },
+    radiusLabel: "範囲",
+    chooseCategory: "カテゴリを選んでください",
+    searching: "探しています…",
+    failed:
+      "周辺スポットの検索サービスに接続できませんでした。再試行するか、Googleマップで探せます。",
+    openMap: "Googleマップで探す",
+    mapHint:
+      "{station}駅の近くのお店や公園をGoogleマップで探せます。カテゴリを選ぶと検索を絞れます。",
+    mapQuery: "{station}駅 周辺 {category}",
+    retry: "もう一度探す",
+    empty: "この範囲では見つかりませんでした。",
+    more: "ほか {count} 件（上位{limit}件のみ表示）",
+  },
+
+  meetingPoints: {
+    title: "待ち合わせスポット",
+    types: {
+      statue: "像・モニュメント",
+      plaza: "広場",
+      gate: "改札・出入口",
+      building: "建物・施設",
+      landmark: "ランドマーク",
+    },
+    exit: "最寄り: {exit}",
+    distance: "約{meters}m（徒歩約{minutes}分）",
+    source: "出典",
+  },
+
+  trainInfo: {
+    detailsLabel: "提供元・お問い合わせ",
+    title: "鉄道の運行情報",
+    coverage: "首都圏のODPT提供路線のみ（全路線を網羅していません）",
+    refresh: "運行情報を更新",
+    loading: "最新情報を確認しています",
+    preparing: "運行情報は現在準備中です。",
+    failed: "運行情報を取得できませんでした。時間をおいて更新してください。",
+    none: "提供中の路線に運行情報はありません。",
+    normalSummary: "他{count}路線は平常運転",
+    allNormal: "提供中の{count}路線はすべて平常運転",
+    updated: "更新: {time}",
+    creditProvider: "公共交通オープンデータセンター",
+    creditBefore: "公共交通データは ",
+    creditAfter: " 提供。正確性・完全性は保証されません。",
+    contactBefore: "内容について交通事業者へ直接問い合わせず、",
+    contactLink: "EkiHubへお問い合わせください",
+    contactAfter: "。",
+  },
+
+  history: {
+    button: "履歴",
+    dialogLabel: "検索履歴",
+    empty: "検索するとここに履歴が残ります。",
+    addFavorite: "お気に入りに追加",
+    removeFavorite: "お気に入りから外す",
+    remove: "この履歴を削除",
+  },
+
+  theme: {
+    randomHint:
+      "ページを開くたびにランダムで選びます。ここから切り替えられます。",
+    button: "テーマ",
+    dialogLabel: "テーマ設定",
+    brightness: "明るさ",
+    color: "色",
+    modes: {
+      light: "ライト",
+      dark: "ダーク",
+      auto: "端末に合わせる",
+    },
+    colors: {
+      default: "そら",
+      sakura: "さくら",
+      forest: "もり",
+      ocean: "うみ",
+      sunset: "ゆうやけ",
+      autumn: "こうよう",
+      "high-contrast": "高コントラスト",
+    },
+  },
+
+  locale: {
+    button: "言語",
+    dialogLabel: "言語設定",
+  },
+
+  loading: {
+    text: "ちょうどいい駅をさがしています",
+  },
+
+  map: {
+    ariaLabel: "位置関係マップ",
+    loading: "地図を読み込み中",
+    origin: "最寄駅 {index}",
+    originPeople: " ・{count}人",
+    centerBest: "提案された中心駅",
+    centerSelected: "選択中の候補駅",
+    centroid: "入力駅の地理的重心",
+    pinCenter: "中心",
+    pinCandidate: "候補",
+  },
+
+  footer: {
+    text: "EkiHub — 重心＋移動時間補正アルゴリズムによる中心駅提案 / 地図データ © OpenStreetMap contributors",
+  },
+
+  // 規約ページの名前はフッターのリンクとページ見出しで共用する
+  legal: {
+    terms: "利用規約",
+    privacy: "プライバシーポリシー",
+    credits: "データ出典・ライセンス",
+    linksLabel: "規約とデータ出典",
+    // 本文は日本語のみ。日本語表示中は出さないが、他言語の型の基準として置く
+    japaneseOnly: "このページは日本語のみで提供しています。",
+  },
+} as const;
+
+/**
+ * 他の言語ファイルが従う形。
+ *
+ * ja は `as const` で書いてあるため、そのまま型にすると
+ * 値まで日本語のリテラルとして固定されてしまう。
+ * ここで文字列へ緩めることで「キーの構造は同じ・中身は自由」にしている。
+ */
+type DeepString<T> = {
+  [K in keyof T]: T[K] extends string ? string : DeepString<T[K]>;
+};
+
+export type Messages = DeepString<typeof ja>;

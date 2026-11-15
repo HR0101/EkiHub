@@ -122,8 +122,8 @@ const CONTENT_SECURITY_POLICY = [
   // injectStyle と style 属性のため inline を許可。CSSは Leaflet(unpkg)/Google Fonts
   "style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
-  // 地図タイル(CARTO/OpenRailwayMap) と Leaflet のマーカー画像(unpkg)
-  "img-src 'self' data: blob: https://*.basemaps.cartocdn.com https://*.tiles.openrailwaymap.org https://unpkg.com",
+  // 地図タイル(国土地理院/OpenRailwayMap) と Leaflet のマーカー画像(unpkg)
+  "img-src 'self' data: blob: https://cyberjapandata.gsi.go.jp https://*.tiles.openrailwaymap.org https://unpkg.com",
   // 自API と、ブラウザから直接叩く Overpass ミラー
   "connect-src 'self' https://overpass-api.de https://overpass.private.coffee https://overpass.kumi.systems",
   "object-src 'none'",
@@ -141,7 +141,8 @@ app.use((_req, res, next) => {
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   res.setHeader(
     "Permissions-Policy",
-    "geolocation=(self), camera=(), microphone=(), payment=()"
+    // 現在地の取得機能を廃止したため geolocation も閉じている
+    "geolocation=(), camera=(), microphone=(), payment=()"
   );
   // HTTPS接続を強制（本番HTTPS前提。HTTPでは各ブラウザが無視する）
   res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="280" viewBox="0 0 28 28">
+  <g id="hub-mark" fill="none" stroke="#16121f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 5L11.17 11.17M23 5L16.83 11.17M14 18V24"/>
+    <circle cx="14" cy="14" r="4"/>
+    <circle cx="5" cy="5" r="2.5" fill="#16121f" stroke="none"/>
+    <circle cx="23" cy="5" r="2.5" fill="#16121f" stroke="none"/>
+    <circle cx="14" cy="24" r="2.5" fill="#16121f" stroke="none"/>
+  </g>
+</svg>

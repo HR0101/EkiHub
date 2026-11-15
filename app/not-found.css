@@ -1,0 +1,35 @@
+.not-found-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 24px 64px;
+}
+.not-found-page__locale { display: flex; justify-content: flex-end; margin-bottom: 48px; }
+.not-found-card {
+  padding: clamp(24px, 5vw, 56px);
+  border: 2px solid var(--text-main);
+  border-radius: 16px 16px 40px 16px;
+  background: radial-gradient(circle, #7350b526 1px, transparent 1.5px) 0 0 / 12px 12px, #fff;
+  box-shadow: 5px 5px 0 var(--text-main);
+}
+.not-found-card__code {
+  display: inline-block;
+  padding: 4px 16px;
+  border: 2px solid var(--text-main);
+  border-radius: 6px;
+  background: var(--accent);
+  color: white;
+  box-shadow: 3px 3px 0 var(--text-main);
+  transform: rotate(-2deg);
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+.not-found-card h1 { margin-top: 24px; font-size: clamp(1.5rem, 4vw, 2.5rem); line-height: 1.5; font-weight: 900; }
+.not-found-card p { margin-top: 16px; line-height: 1.9; color: var(--text-sub); }
+.not-found-card__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 24px; margin-top: 32px; }
+.not-found-card__actions a { color: var(--text-main); text-underline-offset: 4px; }
+.not-found-card__actions .not-found-card__home { display: inline-flex; align-items: center; min-height: 48px; padding: 12px 20px; border: 2px solid var(--text-main); border-radius: 6px; color: white; background: var(--text-main); text-decoration: none; }
+.not-found-page :is(a, button):focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+@media (max-width: 480px) {
+  .not-found-page { padding: 20px 16px 40px; }
+  .not-found-page__locale { justify-content: center; margin-bottom: 32px; }
+}

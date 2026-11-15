@@ -1,48 +1,29 @@
-// OSMデータのkana未登録駅に対してkuromijiで読みを自動生成するスクリプト
-// 使用法: node scripts/generateKana.js
+// Apply reviewed kana and normalize existing notation. Do not publish kuromoji
+// guesses as station readings: general dictionaries misread proper names.
+// Usage: node scripts/generateKana.js [--check]
+import { readFileSync, writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { findStationKanaOverride, normalizeStationKana } from "../lib/stationKana.js";
 
-import kuromoji from 'kuromoji';
-import { readFileSync, writeFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const osmPath = join(__dirname, '../data/stations-osm.json');
-
-const osm = JSON.parse(readFileSync(osmPath, 'utf-8'));
-
-// カタカナ→ひらがな変換
-const katakanaToHiragana = (str) =>
-  str.replace(/[ァ-ヶ]/g, (ch) =>
-    String.fromCharCode(ch.charCodeAt(0) - 0x60)
-  );
-
-kuromoji
-  .builder({ dicPath: join(__dirname, '../node_modules/kuromoji/dict') })
-  .build((err, tokenizer) => {
-    if (err) {
-      console.error('kuromijiビルドに失敗:', err);
-      process.exit(1);
-    }
-
-    let count = 0;
-    for (const station of osm) {
-      if (!station.name) continue;
-      if (station.kana && station.kana !== '') continue; // すでにkanaがある駅はスキップ
-
-      const tokens = tokenizer.tokenize(station.name);
-      const reading = tokens
-        .map((t) => {
-          // readingがあればそれを使い、なければsurface_form（カタカナ等をそのまま）
-          const r = t.reading || t.surface_form;
-          return katakanaToHiragana(r);
-        })
-        .join('');
-
-      station.kana = reading;
-      count++;
-    }
-
-    writeFileSync(osmPath, JSON.stringify(osm, null, 2), 'utf-8');
-    console.log(`完了: ${count}件のkanaを生成しました`);
-  });
+const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+const path = join(root, "data/stations-osm.json");
+const stations = JSON.parse(readFileSync(path, "utf8"));
+const overrides = JSON.parse(readFileSync(join(root, "data/station-kana-overrides.json"), "utf8"));
+const check = process.argv.includes("--check");
+let changed = 0;
+const needsReview = [];
+for (const station of stations) {
+  const override = findStationKanaOverride(station, overrides);
+  const reading = override?.kana ?? normalizeStationKana(station.kana);
+  // Keep unresolved data intact; do not replace unknown kanji/ヶ with guesses.
+  if (!/^[ぁ-ゔー]+$/.test(reading) || /[ゕゖ]/.test(reading)) {
+    needsReview.push({ name: station.name, kana: station.kana });
+    continue;
+  }
+  if (reading !== station.kana) { station.kana = reading; changed++; }
+}
+if (!check && changed) writeFileSync(path, JSON.stringify(stations, null, 2) + "\n");
+console.log(`${check ? "変更予定" : "修正"}: ${changed}件 / 要確認: ${needsReview.length}件`);
+if (needsReview.length) console.log(JSON.stringify(needsReview, null, 2));
+if (check && changed) process.exitCode = 1;

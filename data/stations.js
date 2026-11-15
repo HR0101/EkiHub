@@ -119,7 +119,7 @@ export const stations = [
   { name: "赤羽",       kana: "あかばね",       lat: 35.778053, lng: 139.721156, lines: ["JR各線"], ridership: 240000 },
   { name: "西船橋",     kana: "にしふなばし",   lat: 35.707763, lng: 139.96094,  lines: ["JR総武線", "東西線", "東葉高速線", "武蔵野線"], ridership: 280000 },
   { name: "船橋",       kana: "ふなばし",       lat: 35.701736, lng: 139.985281, lines: ["JR総武線", "東武野田線", "京成本線"], ridership: 280000 },
-  { name: "馬込沢",     kana: "まごさわ",       lat: 35.741571, lng: 139.992256, lines: ["東武アーバンパークライン"], ridership: 25000 },
+  { name: "馬込沢",     kana: "まごめざわ",       lat: 35.741571, lng: 139.992256, lines: ["東武アーバンパークライン"], ridership: 25000 },
   { name: "千葉",       kana: "ちば",           lat: 35.613165, lng: 140.113287, lines: ["JR各線", "千葉都市モノレール"], ridership: 200000 },
   { name: "柏",         kana: "かしわ",         lat: 35.862096, lng: 139.970917, lines: ["JR常磐線", "東武野田線"], ridership: 240000 },
   { name: "町田",       kana: "まちだ",         lat: 35.544046, lng: 139.445125, lines: ["JR横浜線", "小田急"], ridership: 290000 },
@@ -165,7 +165,7 @@ export const stations = [
 
   // ─── 多摩・東京西部（拡張） ───────────────────────────────
   { name: "八王子",     kana: "はちおうじ",     lat: 35.65557,  lng: 139.338998, lines: ["JR中央線", "JR横浜線", "JR八高線"], ridership: 240000 },
-  { name: "多摩センター", kana: "たません",     lat: 35.624858, lng: 139.42064,  lines: ["京王相模原線", "小田急多摩線", "多摩モノレール"], ridership: 150000 },
+  { name: "多摩センター", kana: "たませんたー",     lat: 35.624858, lng: 139.42064,  lines: ["京王相模原線", "小田急多摩線", "多摩モノレール"], ridership: 150000 },
   { name: "府中",       kana: "ふちゅう",       lat: 35.671988, lng: 139.480257, lines: ["京王線"], ridership: 110000 },
   { name: "分倍河原",   kana: "ぶばいがわら",   lat: 35.668448, lng: 139.468995, lines: ["京王線", "JR南武線"], ridership: 100000 },
   { name: "拝島",       kana: "はいじま",       lat: 35.721133,  lng: 139.343626, lines: ["JR青梅線", "JR五日市線", "西武拝島線"], ridership: 80000 },

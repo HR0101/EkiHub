@@ -1,0 +1,324 @@
+/* CLAY — palette, material and component styling. */
+html[data-design="clay"] {
+  --brand-page: #f3e8f4;
+  --brand-surface: #f8f0fa;
+  --brand-sunken: #eee1f2;
+  --brand-line: #ba9cc9;
+  --brand-ink: #51365f;
+  --brand-ink-sub: #725b7e;
+  --brand-ink-faint: #7c6488;
+  --brand-accent: #81549e;
+  --brand-accent-wash: #e9d7f3;
+  --design-radius: 27px;
+  --design-border: 0;
+  --design-shadow:
+    inset -5px -5px 12px #baa0d044, inset 5px 5px 12px #fff,
+    8px 10px 18px #78528a22;
+  --design-input-shadow: inset 2px 3px 5px #78528a22;
+  --design-button-shadow:
+    inset -3px -3px 5px #553a7333, inset 3px 3px 5px #ffffff55,
+    0 4px 5px #78528a33;
+}
+
+/* Sculpted clay: peach, pistachio and lilac objects with a consistent top light. */
+html[data-design="clay"] {
+  --brand-page: #f2eaf2;
+  --design-radius: 32px;
+  --design-header: linear-gradient(140deg, #fcf5fb, #eddfef);
+  --design-shadow:
+    inset 3px 3px 7px #ffffff, inset -4px -5px 10px #bfa2cc44,
+    8px 12px 24px #7454861a;
+}
+html[data-design="clay"] .home-app .hero__badge {
+  padding: 9px 16px;
+  border-radius: 18px;
+  background: #e6c9b6;
+  color: #6c4536;
+  box-shadow:
+    inset 2px 2px 4px #fff9,
+    inset -3px -3px 5px #b78f7455,
+    0 4px 8px #78528a12;
+}
+html[data-design="clay"] .home-app .hero__title {
+  font-family: var(--font-rounded), sans-serif;
+  font-weight: 800;
+  line-height: 1.55;
+  letter-spacing: -0.045em;
+}
+html[data-design="clay"] .home-app .hero__title .accent {
+  color: #81549e;
+  text-shadow: 0 2px 0 #fff;
+}
+html[data-design="clay"] .home-app .toolbar {
+  border-top: 0;
+  padding-top: 0;
+}
+html[data-design="clay"] .home-app :is(.tool-btn, .locale-toggle, .btn--ghost) {
+  background: #f3e8f5;
+  border: 0;
+  border-radius: 18px;
+  box-shadow:
+    inset 2px 2px 4px #fff,
+    inset -2px -3px 5px #b99acb30,
+    0 3px 5px #78528a12;
+}
+html[data-design="clay"] .home-app .locale-toggle__option.is-active {
+  background: #81549e;
+  border-radius: 12px;
+  box-shadow:
+    inset 2px 2px 4px #fff3,
+    inset -2px -2px 4px #412e6355;
+}
+html[data-design="clay"] .home-app .panel {
+  padding: 30px;
+}
+html[data-design="clay"] .home-app .panel__title {
+  border-bottom: 0;
+  font-family: var(--font-rounded), sans-serif;
+  font-size: 1.25rem;
+}
+html[data-design="clay"] .home-app .input-row input {
+  border-color: #d2bbdd;
+  background: #eee2f1;
+  box-shadow:
+    inset 3px 3px 6px #b797c32b,
+    inset -3px -3px 6px #fff9;
+  border-radius: 14px;
+}
+html[data-design="clay"] .home-app .input-row__index {
+  border-radius: 10px;
+  background: #d7e1cd;
+  color: #46583d;
+  box-shadow:
+    inset 1px 1px 3px #fff9,
+    inset -2px -2px 3px #99ac8b55;
+  transform: rotate(-5deg);
+}
+html[data-design="clay"] .home-app .toggle {
+  background: #e7d8ed;
+  border-radius: 20px;
+  box-shadow:
+    inset 3px 3px 5px #b89dc12b,
+    inset -2px -2px 5px #fff9;
+  padding: 6px;
+}
+html[data-design="clay"] .home-app .toggle__slider {
+  background: #faf2fc;
+  border-radius: 15px;
+  box-shadow:
+    inset 2px 2px 4px #fff,
+    inset -2px -2px 5px #c4a5d033,
+    0 3px 5px #78528a1f;
+}
+html[data-design="clay"] .home-app .btn--primary:enabled {
+  min-height: 60px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #8a5aa7, #795097);
+  box-shadow:
+    inset 2px 3px 5px #e2bdfd66,
+    inset -3px -4px 5px #45266355,
+    0 7px 12px #78528a33;
+}
+html[data-design="clay"] .home-app .btn--primary:enabled:active {
+  box-shadow:
+    inset 3px 4px 6px #45266355,
+    inset -2px -2px 5px #e2bdfd44;
+}
+html[data-design="clay"] .home-app .result-card__eyebrow {
+  display: inline-block;
+  background: #d7e1cd;
+  color: #46583d;
+  padding: 7px 13px;
+  border-radius: 12px;
+  box-shadow: inset 1px 1px 2px #fff9;
+  font-size: 0.85rem;
+}
+html[data-design="clay"] .home-app .result-card__name {
+  font-family: var(--font-rounded), sans-serif;
+  font-weight: 800;
+}
+html[data-design="clay"] .home-app .result-sheet .metric {
+  padding: 18px;
+  border-radius: 22px;
+  background: #edddf4;
+  box-shadow:
+    inset 2px 2px 4px #fff9,
+    inset -3px -3px 6px #c7a8d244;
+}
+html[data-design="clay"] .home-app .result-sheet .metric:nth-child(2n) {
+  background: #f0dfd3;
+}
+html[data-design="clay"] .home-app .metric__value {
+  font-family: var(--font-rounded), sans-serif;
+  font-size: 1.9rem;
+}
+html[data-design="clay"] .home-app .metric__label {
+  font-size: 0.85rem;
+}
+html[data-design="clay"] .home-app .result-sheet .chips li {
+  padding: 5px 10px;
+  border-radius: 9px;
+  background: #eee2f1;
+  box-shadow: inset 1px 1px 2px #fff;
+  font-size: 0.85rem;
+}
+html[data-design="clay"] .home-app .result-sheet .map {
+  border: 6px solid #eadcee;
+  border-radius: 24px;
+  box-shadow: 0 0 0 1px #cdb6d7;
+}
+html[data-design="clay"] .home-app .ranking-mobile__row.is-selected {
+  border-radius: 14px;
+  box-shadow:
+    inset 2px 2px 4px #b797c330,
+    inset -2px -2px 5px #fff9;
+}
+html[data-design="clay"] .home-app .travel-item__bar {
+  height: 10px;
+  border-radius: 10px;
+  background: #dfcce7;
+}
+html[data-design="clay"] .home-app .travel-item__fill {
+  background: linear-gradient(#a67dbf, #7a5296);
+  border-radius: 10px;
+}
+html[data-design="clay"] .home-app .result-card__icon {
+  width: 84px;
+  height: 84px;
+  color: #6c4536;
+  background: radial-gradient(circle at 30% 20%, #fff0e5, #deb69b);
+  box-shadow:
+    inset 2px 2px 5px #fff9,
+    inset -3px -4px 8px #a8744e44,
+    0 7px 12px #78528a22;
+}
+html[data-design="clay"] .home-app .result-card__empty-title {
+  font-family: var(--font-rounded), sans-serif;
+  font-weight: 800;
+}
+@media (max-width: 600px) {
+  html[data-design="clay"] .home-app .panel {
+    padding: 24px 20px;
+  }
+}
+
+/* Composition: sculpted, asymmetric objects instead of identical rounded cards. */
+html[data-design="clay"] .home-app .home-header {
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 31%);
+  border-radius: 42px 42px 42px 14px;
+  padding: clamp(24px, 3.5vw, 44px);
+}
+html[data-design="clay"] .home-app .hero__title {
+  font-size: clamp(2.2rem, 4vw, 3.8rem);
+  line-height: 1.4;
+}
+html[data-design="clay"] .home-app .panel {
+  border-radius: 32px 32px 32px 10px;
+}
+html[data-design="clay"] .home-app .result-sheet {
+  border-radius: 32px 12px 32px 32px;
+}
+html[data-design="clay"] .home-app .result-card__identity {
+  padding: 24px;
+  border-radius: 28px 28px 10px 28px;
+  background: #e0e6d9;
+  box-shadow:
+    inset 3px 3px 6px #ffffffb3,
+    inset -4px -4px 8px #a8b59b55;
+}
+html[data-design="clay"]
+  .home-app
+  .result-card__identity
+  .result-card__eyebrow {
+  background: #ffffff66;
+  box-shadow: inset 1px 1px 2px #ffffff99;
+}
+html[data-design="clay"] .home-app .result-card__name {
+  color: #46583d;
+  margin-top: 10px;
+  font-size: clamp(2.5rem, 5vw, 3.8rem);
+}
+html[data-design="clay"] .home-app .result-card__kana {
+  color: #58694e;
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+html[data-design="clay"] .home-app .inputs {
+  position: relative;
+}
+html[data-design="clay"] .home-app .inputs::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  bottom: 30px;
+  left: 11px;
+  width: 3px;
+  border-radius: 3px;
+  background: #c7d2bc;
+}
+html[data-design="clay"] .home-app .input-row__index {
+  position: relative;
+  z-index: 1;
+}
+html[data-design="clay"] .home-app .result-navigation {
+  gap: 10px;
+  padding-bottom: 0;
+  border: 0;
+}
+html[data-design="clay"] .home-app .result-navigation :is(a, button) {
+  padding: 10px 15px;
+  border-radius: 14px;
+  background: #eddfef;
+  color: #6f4c84;
+  font-size: 0.85rem;
+  box-shadow:
+    inset 2px 2px 3px #fff,
+    inset -2px -3px 5px #baa0c433,
+    0 3px 4px #78528a12;
+}
+html[data-design="clay"] .home-app .result-navigation a:hover {
+  text-decoration: none;
+  background: #e9d8ed;
+}
+html[data-design="clay"] .home-app .result-navigation a:active {
+  box-shadow:
+    inset 2px 3px 5px #baa0c433,
+    inset -2px -2px 3px #fff;
+}
+html[data-design="clay"]
+  .home-app
+  :is(.travel-list__title, .ranking__title, .result-map__title) {
+  font-family: var(--font-rounded), sans-serif;
+  font-weight: 800;
+}
+html[data-design="clay"] .home-app .suggest {
+  border: 1px solid #cbb4d5;
+  border-radius: 20px;
+  background: #f8f0fa;
+  padding: 6px;
+}
+html[data-design="clay"] .home-app .suggest__item {
+  border: 0;
+  border-radius: 14px;
+}
+html[data-design="clay"] .home-app .suggest__item.is-active {
+  background: #e8d9ef;
+  box-shadow:
+    inset 2px 2px 4px #b797c330,
+    inset -2px -2px 4px #fff9;
+}
+@media (max-width: 899px) {
+  html[data-design="clay"] .home-app .home-header {
+    grid-template-columns: minmax(0, 1fr) 160px;
+  }
+}
+@media (max-width: 600px) {
+  html[data-design="clay"] .home-app .home-header {
+    grid-template-columns: minmax(0, 1fr);
+    border-radius: 30px 30px 30px 10px;
+    padding: 24px 20px;
+  }
+  html[data-design="clay"] .home-app .result-card__identity {
+    padding: 20px;
+  }
+}

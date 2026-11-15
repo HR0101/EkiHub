@@ -1,0 +1,81 @@
+[
+  {
+    "station": "渋谷",
+    "stationHint": "JR山手線",
+    "meetingPoints": [
+      {
+        "name": "忠犬ハチ公像",
+        "kana": "ちゅうけんはちこうぞう",
+        "lat": 35.659082,
+        "lng": 139.700464,
+        "type": "statue",
+        "description": "ハチ公口を出てすぐの広場にある銅像。定番の待ち合わせ場所。",
+        "exit": "ハチ公口",
+        "confidence": "high",
+        "sourceUrl": "https://www.city.shibuya.tokyo.jp/shisetsu/koen/shinko/hachiko.html"
+      },
+      {
+        "name": "モヤイ像",
+        "kana": "もやいぞう",
+        "lat": 35.65825,
+        "lng": 139.7011,
+        "type": "statue",
+        "description": "南改札・西口側のモヤイ像前。ハチ公前より比較的空いている。",
+        "exit": "西口",
+        "confidence": "high",
+        "sourceUrl": "https://www.city.shibuya.tokyo.jp/"
+      }
+    ]
+  },
+  {
+    "station": "新宿",
+    "stationHint": "JR山手線",
+    "meetingPoints": [
+      {
+        "name": "新宿駅東口広場（ライオン口）",
+        "kana": "しんじゅくえきひがしぐちひろば",
+        "lat": 35.6917,
+        "lng": 139.7008,
+        "type": "plaza",
+        "description": "東口改札を出てすぐの東口広場。みどりの窓口横。",
+        "exit": "東口",
+        "confidence": "high",
+        "sourceUrl": "https://www.jreast.co.jp/estation/stations/866.html"
+      }
+    ]
+  },
+  {
+    "station": "東京",
+    "stationHint": "JR東海道本線",
+    "meetingPoints": [
+      {
+        "name": "銀の鈴",
+        "kana": "ぎんのすず",
+        "lat": 35.68115,
+        "lng": 139.76705,
+        "type": "landmark",
+        "description": "八重洲地下中央口改札内の地下1階にある待ち合わせスポット。",
+        "exit": "八重洲地下中央口",
+        "confidence": "high",
+        "sourceUrl": "https://www.gransta.jp/guide/ginnosuzu/"
+      }
+    ]
+  },
+  {
+    "station": "府中",
+    "stationHint": "京王線",
+    "meetingPoints": [
+      {
+        "name": "府中駅南口ペデストリアンデッキ",
+        "kana": "ふちゅうえきみなみぐちぺですとりあんでっき",
+        "lat": 35.6714,
+        "lng": 139.4803,
+        "type": "plaza",
+        "description": "南口改札を出て直結のペデストリアンデッキ広場。",
+        "exit": "南口",
+        "confidence": "high",
+        "sourceUrl": "https://www.keio.co.jp/"
+      }
+    ]
+  }
+]

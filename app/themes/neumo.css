@@ -1,0 +1,314 @@
+/* NEUMO — palette, material and component styling. */
+html[data-design="neumo"] {
+  --brand-page: #e4e9ee;
+  --brand-surface: #e4e9ee;
+  --brand-sunken: #dce3ea;
+  --brand-line: #aab7c4;
+  --brand-ink: #354557;
+  --brand-ink-sub: #536579;
+  --brand-ink-faint: #566878;
+  --brand-accent: #4667ad;
+  --brand-accent-wash: #d2dced;
+  --design-radius: 17px;
+  --design-border: 0;
+  --design-shadow: 7px 7px 16px #bbc4ce, -7px -7px 16px #fff;
+  --design-input-shadow: inset 3px 3px 6px #bbc4ce, inset -3px -3px 6px #fff;
+}
+
+/* Quiet instrument panel: recessed wells and raised, softly lit controls. */
+html[data-design="neumo"] {
+  --design-header: #e4e9ee;
+  --design-radius: 22px;
+}
+html[data-design="neumo"] .home-app .hero__badge {
+  padding: 9px 15px;
+  border-radius: 12px;
+  box-shadow:
+    inset 2px 2px 4px #bbc4ce,
+    inset -2px -2px 4px #fff;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+html[data-design="neumo"] .home-app .hero__title {
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+}
+html[data-design="neumo"] .home-app .hero__title .accent {
+  font-weight: 800;
+  color: #4667ad;
+}
+html[data-design="neumo"] .home-app .hero__lead {
+  font-size: 0.95rem;
+}
+html[data-design="neumo"] .home-app .toolbar {
+  border-top: 0;
+  padding-top: 8px;
+  gap: 12px;
+}
+html[data-design="neumo"] .home-app .locale-toggle {
+  padding: 5px;
+  box-shadow:
+    inset 3px 3px 6px #bbc4ce,
+    inset -3px -3px 6px #fff;
+}
+html[data-design="neumo"] .home-app .locale-toggle__option.is-active {
+  background: #e4e9ee;
+  color: #4667ad;
+  box-shadow:
+    2px 2px 4px #bbc4ce,
+    -2px -2px 4px #fff;
+}
+html[data-design="neumo"] .home-app :is(.tool-btn, .btn--ghost) {
+  border-radius: 12px;
+  border: 1px solid #e4e9ee;
+}
+html[data-design="neumo"] .home-app .tool-btn:active {
+  box-shadow:
+    inset 2px 2px 4px #bbc4ce,
+    inset -2px -2px 4px #fff;
+  transform: none;
+}
+html[data-design="neumo"] .home-app .panel__title {
+  border-bottom: 0;
+  font-weight: 600;
+  font-size: 1.15rem;
+}
+html[data-design="neumo"] .home-app .input-row input {
+  border: 1px solid #aab7c4;
+  background: #e4e9ee;
+  padding-block: 15px;
+  border-radius: 12px;
+}
+html[data-design="neumo"] .home-app .input-row__index {
+  background: #e4e9ee;
+  color: #536579;
+  box-shadow:
+    2px 2px 4px #bbc4ce,
+    -2px -2px 4px #fff;
+  border-radius: 50%;
+}
+html[data-design="neumo"] .home-app .toggle {
+  background: #e4e9ee;
+  border-radius: 14px;
+  padding: 6px;
+  box-shadow:
+    inset 3px 3px 6px #bbc4ce,
+    inset -3px -3px 6px #fff;
+}
+html[data-design="neumo"] .home-app .toggle__slider {
+  background: #e4e9ee;
+  border-radius: 10px;
+  box-shadow:
+    3px 3px 5px #bbc4ce,
+    -3px -3px 5px #fff;
+}
+html[data-design="neumo"] .home-app .btn--primary:enabled {
+  background: linear-gradient(135deg, #4c6fb3, #42619b);
+  border-radius: 13px;
+  box-shadow:
+    inset 1px 1px 2px #8da9df,
+    4px 4px 8px #b6c1cf,
+    -4px -4px 8px #fff;
+}
+html[data-design="neumo"] .home-app .result-card__eyebrow {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 8px;
+  box-shadow:
+    inset 2px 2px 4px #bbc4ce,
+    inset -2px -2px 4px #fff;
+  font-size: 0.85rem;
+}
+html[data-design="neumo"] .home-app .result-card__name {
+  font-weight: 600;
+  letter-spacing: -0.05em;
+}
+html[data-design="neumo"] .home-app .result-sheet .metric {
+  padding: 18px;
+  border-radius: 16px;
+  background: #e4e9ee;
+  box-shadow:
+    inset 3px 3px 7px #bbc4ce,
+    inset -3px -3px 7px #fff;
+}
+html[data-design="neumo"] .home-app .metric__value {
+  color: #4667ad;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+html[data-design="neumo"] .home-app .metric__label {
+  font-size: 0.85rem;
+}
+html[data-design="neumo"] .home-app .result-sheet .map {
+  border: 6px solid #e4e9ee;
+  border-radius: 16px;
+  box-shadow:
+    3px 3px 7px #bbc4ce,
+    -3px -3px 7px #fff;
+}
+html[data-design="neumo"] .home-app .ranking-mobile__row.is-selected {
+  border-radius: 12px;
+  box-shadow:
+    inset 3px 3px 6px #bbc4ce,
+    inset -3px -3px 6px #fff;
+  background: #e4e9ee;
+}
+html[data-design="neumo"] .home-app .ranking-table tbody tr.is-selected {
+  background: #d9e2ee;
+}
+html[data-design="neumo"] .home-app .travel-item__bar {
+  height: 8px;
+  background: #d2dbe5;
+  border-radius: 10px;
+  box-shadow:
+    inset 1px 2px 3px #adbac8,
+    inset -1px -1px 3px #fff;
+}
+html[data-design="neumo"] .home-app .travel-item__fill {
+  background: linear-gradient(#6d8bc0, #4667ad);
+  border-radius: 10px;
+}
+html[data-design="neumo"] .home-app .result-card__icon {
+  border: 0;
+  border-radius: 50%;
+  width: 88px;
+  height: 88px;
+  background: #e4e9ee;
+  box-shadow:
+    5px 5px 10px #bbc4ce,
+    -5px -5px 10px #fff;
+}
+html[data-design="neumo"] .home-app .result-card__empty-title {
+  font-weight: 600;
+}
+
+/* Composition: a calm instrument console with a separate control dock. */
+html[data-design="neumo"] .home-app .home-header {
+  background: transparent;
+  box-shadow: none;
+  padding-top: 12px;
+  border-radius: 0;
+}
+html[data-design="neumo"] .home-app .hero__title {
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.4;
+}
+html[data-design="neumo"] .home-app .hero__lead {
+  max-width: 36rem;
+}
+html[data-design="neumo"] .home-app .toolbar {
+  border-radius: 18px;
+  padding: 14px;
+  width: fit-content;
+  background: #e4e9ee;
+  box-shadow:
+    5px 5px 12px #bbc4ce,
+    -5px -5px 12px #fff;
+  gap: 12px;
+}
+html[data-design="neumo"] .home-app .result-card__identity {
+  padding: 24px;
+  border-radius: 18px;
+  background: #e4e9ee;
+  box-shadow:
+    4px 4px 10px #bbc4ce,
+    -4px -4px 10px #fff;
+}
+html[data-design="neumo"] .home-app .result-card__name {
+  color: #354557;
+  font-size: clamp(2.5rem, 5vw, 3.8rem);
+  margin-top: 12px;
+  font-weight: 500;
+}
+html[data-design="neumo"] .home-app .result-card__kana {
+  font-size: 0.85rem;
+  color: #536579;
+}
+html[data-design="neumo"]
+  .home-app
+  .result-card__identity
+  .result-card__eyebrow {
+  box-shadow: none;
+  padding: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+}
+html[data-design="neumo"] .home-app .result-navigation {
+  gap: 12px;
+  padding: 12px;
+  border: 0;
+  border-radius: 14px;
+  box-shadow:
+    inset 3px 3px 6px #bbc4ce,
+    inset -3px -3px 6px #fff;
+}
+html[data-design="neumo"] .home-app .result-navigation :is(a, button) {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  color: #4667ad;
+}
+html[data-design="neumo"] .home-app .result-navigation a:hover {
+  text-decoration: none;
+  background: #e4e9ee;
+  box-shadow:
+    2px 2px 5px #bbc4ce,
+    -2px -2px 5px #fff;
+}
+html[data-design="neumo"] .home-app .form-guide {
+  border-bottom: 0;
+  padding: 7px 12px;
+  border-radius: 12px;
+  box-shadow:
+    inset 2px 2px 5px #bbc4ce,
+    inset -2px -2px 5px #fff;
+}
+html[data-design="neumo"] .home-app .result-card__empty {
+  padding: 26px 0;
+}
+html[data-design="neumo"] .home-app .quick-start {
+  border-top: 0;
+}
+html[data-design="neumo"] .home-app .quick-start__items {
+  gap: 12px;
+}
+html[data-design="neumo"] .home-app .suggest {
+  border: 1px solid #aab7c4;
+  border-radius: 14px;
+  box-shadow:
+    5px 6px 12px #acb8c9aa,
+    -2px -2px 6px #fff;
+  padding: 5px;
+}
+html[data-design="neumo"] .home-app .suggest__item {
+  border: 0;
+  border-radius: 10px;
+}
+html[data-design="neumo"] .home-app .suggest__item.is-active {
+  background: #d9e2ee;
+  box-shadow:
+    inset 2px 2px 4px #bbc4ce,
+    inset -2px -2px 4px #fff;
+}
+html[data-design="neumo"] .home-app .result-card__range {
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow:
+    inset 2px 2px 5px #bbc4ce,
+    inset -2px -2px 5px #fff;
+  font-size: 0.85rem;
+}
+@media (min-width: 1100px) {
+  html[data-design="neumo"] .home-app .layout {
+    gap: 32px;
+  }
+}
+@media (max-width: 600px) {
+  html[data-design="neumo"] .home-app .toolbar {
+    gap: 8px;
+    padding: 10px;
+    width: 100%;
+  }
+}

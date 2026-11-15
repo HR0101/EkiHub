@@ -1,0 +1,10 @@
+[
+  {
+    "name": "浜山公園北口",
+    "source": "https://railway.ichibata.co.jp/fare/futsu/list/",
+    "observed_kana": "はまやまこうえんまええき",
+    "verified_kana": "はまやまこうえんきたぐち",
+    "preferred_source": "https://railway.ichibata.co.jp/operate/route/浜山公園北口/",
+    "note": "運賃一覧の誤記を採用しない。駅紹介と時刻表一覧はきたぐちと記載。"
+  }
+]

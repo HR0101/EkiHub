@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="210" viewBox="333 -12 320 210"><!--Exported by Adobe Illustrator 2026; isolated from theme-icons-export.svg.--><defs>
+    <linearGradient id="_名称未設定グラデーション" data-name="名称未設定グラデーション" x1="-282.09" y1="774.46" x2="-281.09" y2="773.46" gradientTransform="translate(16256 43433) scale(56 -56)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a990dc" />
+      <stop offset="1" stop-color="#6745a3" />
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_2" data-name="名称未設定グラデーション 2" x1="-281.88" y1="774.35" x2="-281.08" y2="773.35" gradientTransform="translate(16323 41836) scale(54 -54)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe5d3" />
+      <stop offset="1" stop-color="#c99477" />
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_3" data-name="名称未設定グラデーション 3" x1="-281.62" y1="773.92" x2="-280.62" y2="772.92" gradientTransform="translate(15359 38774) scale(50 -50)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e7f0de" />
+      <stop offset="1" stop-color="#9fb48c" />
+    </linearGradient>
+    <radialGradient id="_名称未設定グラデーション_4" data-name="名称未設定グラデーション 4" cx="-283.05" cy="776.26" fx="-283.05" fy="776.26" r=".9" gradientTransform="translate(24401 77690) scale(82 -100)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f9edff" />
+      <stop offset=".45" stop-color="#d3b3e6" />
+      <stop offset="1" stop-color="#9771b0" />
+    </radialGradient>
+    <linearGradient id="_名称未設定グラデーション_5" data-name="名称未設定グラデーション 5" x1="-284.5" y1="777.3" x2="-283.75" y2="776.5" gradientTransform="translate(45019 123116) scale(158 -158)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f8fcff" />
+      <stop offset=".5" stop-color="#e4eaf0" />
+      <stop offset="1" stop-color="#bfccd9" />
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_6" data-name="名称未設定グラデーション 6" x1="-283.98" y1="776.8" x2="-283.23" y2="775.8" gradientTransform="translate(33028 90419) scale(116 -116)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#afbece" />
+      <stop offset=".45" stop-color="#dde5ee" />
+      <stop offset="1" stop-color="#f9fcff" />
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_7" data-name="名称未設定グラデーション 7" x1="-283.45" y1="776.05" x2="-282.45" y2="775.05" gradientTransform="translate(24898 67083) scale(86 -86)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a5dad6" />
+      <stop offset="1" stop-color="#6cb8bd" />
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_8" data-name="名称未設定グラデーション 8" x1="-283.96" y1="777.73" x2="-282.96" y2="776.73" gradientTransform="translate(-117631.4624 38352.5384) rotate(90) scale(134 -152)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity=".9" />
+      <stop offset=".5" stop-color="#f7f5ff" stop-opacity=".45" />
+      <stop offset="1" stop-color="#fff" stop-opacity=".16" />
+    </linearGradient>
+    <linearGradient id="_名称未設定グラデーション_9" data-name="名称未設定グラデーション 9" x1="-284.77" y1="777.15" x2="-283.77" y2="776.15" gradientTransform="translate(41413.7197 119982.5331) scale(144 -154)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity=".9" />
+      <stop offset=".5" stop-color="#f7f5ff" stop-opacity=".45" />
+      <stop offset="1" stop-color="#fff" stop-opacity=".16" />
+    </linearGradient>
+  </defs>
+  <g id="mobile">
+    <ellipse cx="497" cy="172" rx="78" ry="10" style="fill: #7255a0; isolation: isolate; opacity: .1;" />
+    <rect x="422" y="9" width="146" height="160" rx="29" ry="29" style="fill: #cfc2e7;" />
+    <rect x="414" y="1" width="146" height="160" rx="29" ry="29" style="fill: #fff; stroke: #e8e0f3; stroke-width: 2px;" />
+    <path d="M435,18h38c1.66,0,3,1.34,3,3h0c0,1.66-1.34,3-3,3h-38c-1.66,0-3-1.34-3-3h0c0-1.66,1.34-3,3-3Z" style="fill: #e9e2f3;" />
+    <path d="M444,53h30c14,0,22,10,22,24v29c0,13,11,22,25,22M444,128h12c13,0,22-11,22-22v-30c0-14,12-23,25-23h20" style="fill: none; stroke: #e6def2; stroke-linecap: round; stroke-width: 10px;" />
+    <circle cx="444" cy="53" r="10" style="fill: #b89fdd;" />
+    <circle cx="444" cy="128" r="10" style="fill: #e3b596;" />
+    <circle cx="523" cy="53" r="10" style="fill: #a7c2ae;" />
+    <circle cx="487" cy="91" r="28" style="fill: url(#_名称未設定グラデーション);" />
+    <path d="M476,91l8,8,15-17" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 4px;" />
+    <path d="M387,34h23c9.39,0,17,7.61,17,17h0c0,9.39-7.61,17-17,17h-23c-9.39,0-17-7.61-17-17h0c0-9.39,7.61-17,17-17Z" style="fill: #f4d6c1;" />
+    <circle cx="387" cy="47" r="4" style="fill: #b17a57;" />
+    <path d="M381,57c1-6,11-6,12,0" style="fill: none; stroke: #b17a57; stroke-linecap: round; stroke-width: 2px;" />
+    <path d="M400,48h15M400,55h10" style="stroke: #bb8b6b; stroke-linecap: round; stroke-width: 2px;" />
+    <rect x="544" y="114" width="63" height="35" rx="17" ry="17" style="fill: #dceadf;" />
+    <path d="M559,131l4,4,9-10M581,128h13M581,134h8" style="fill: none; stroke: #6d9477; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.5px;" />
+    <circle cx="588" cy="30" r="5" style="fill: #d8c6ef;" />
+    <circle cx="388" cy="136" r="4" style="fill: #d8c6ef;" />
+  </g>
+  </svg>
