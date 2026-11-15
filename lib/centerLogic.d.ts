@@ -24,3 +24,6 @@ export interface ComputeCenterOptions {
 export function computeCenterStation(
   options: ComputeCenterOptions
 ): Promise<ComputeCenterResult>;
+
+/** Great-circle distance in metres. */
+export function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number;
