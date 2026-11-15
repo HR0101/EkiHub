@@ -1,10 +1,12 @@
-// 駅マスタ（data/stations-master.json）と旧駅名の読み替え表（data/station-aliases.json）を作るビルドスクリプト.
+// 駅マスタ（data/stations-master.json）・旧駅名の読み替え表（data/station-aliases.json）・
+// 路線ごとの駅の並び（data/rail-lines.json）を作るビルドスクリプト.
 //
 // 元データ: station_database（https://github.com/Seo-4d696b75/station_database, CC BY 4.0）
-//   リリースタグを固定して out/main/station.json と out/main/line.json を取得し、そのディレクトリを渡す.
+//   リリースタグを固定して out/main/ の station.json・line.json・register.csv を取得し、そのディレクトリを渡す.
 //   例: TAG=v20260930
 //       curl -sSLO https://raw.githubusercontent.com/Seo-4d696b75/station_database/$TAG/out/main/station.json
 //       curl -sSLO https://raw.githubusercontent.com/Seo-4d696b75/station_database/$TAG/out/main/line.json
+//       curl -sSLO https://raw.githubusercontent.com/Seo-4d696b75/station_database/$TAG/out/main/register.csv
 //       node scripts/buildStationMaster.js <取得したディレクトリ> $TAG
 //
 // 方針:
@@ -26,6 +28,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, "..", "data");
 const MASTER_PATH = join(DATA_DIR, "stations-master.json");
 const ALIASES_PATH = join(DATA_DIR, "station-aliases.json");
+const RAIL_LINES_PATH = join(DATA_DIR, "rail-lines.json");
 const LEGACY_OSM_PATH = join(DATA_DIR, "stations-osm.json");
 const RIDERSHIP_PATH = join(DATA_DIR, "ridership.json");
 const KANA_OVERRIDES_PATH = join(DATA_DIR, "station-kana-overrides.json");
@@ -324,11 +327,45 @@ function toOutputStation(station) {
   return output;
 }
 
+// register.csv（駅コード, 路線コード, 路線内の順番, 駅ナンバリング）を読む.
+// 引用符を含まない単純な CSV なので、カンマで分割する.
+function readRegister(path) {
+  if (!existsSync(path)) throw new Error(`register.csv が見つかりません: ${path}`);
+  const [header, ...rows] = readFileSync(path, "utf-8").trim().split(/\r?\n/);
+  if (header !== "station_code,line_code,index,numbering") {
+    throw new Error(`register.csv の列が想定と違います: ${header}`);
+  }
+  return rows.map((row) => {
+    const [stationCode, lineCode, index] = row.split(",");
+    return { stationCode: Number(stationCode), lineCode: Number(lineCode), index: Number(index) };
+  });
+}
+
+// 路線ごとの駅の並び（data/rail-lines.json）を作る. 営業中の路線・駅だけを残す.
+function buildRailLines(rawLines, registerRows, stations) {
+  const nameByCode = new Map(stations.map((station) => [station.code, station.name]));
+  const rowsByLine = new Map();
+  for (const row of registerRows) {
+    if (!rowsByLine.has(row.lineCode)) rowsByLine.set(row.lineCode, []);
+    rowsByLine.get(row.lineCode).push(row);
+  }
+  return rawLines
+    .filter((line) => line.closed === false)
+    .map((line) => ({
+      name: line.name,
+      stations: (rowsByLine.get(line.code) ?? [])
+        .sort((a, b) => a.index - b.index)
+        .map((row) => nameByCode.get(row.stationCode))
+        .filter(Boolean),
+    }))
+    .filter((line) => line.stations.length >= 2);
+}
+
 function main() {
   const sourceDir = process.argv[2];
   const sourceTag = process.argv[3] ?? "unknown";
   if (!sourceDir) {
-    console.error("使い方: node scripts/buildStationMaster.js <station.json と line.json のディレクトリ> [リリースタグ]");
+    console.error("使い方: node scripts/buildStationMaster.js <station.json・line.json・register.csv のディレクトリ> [リリースタグ]");
     process.exit(1);
   }
 
@@ -350,10 +387,13 @@ function main() {
   const legacyStations = [...curatedStations, ...readJson(LEGACY_OSM_PATH, "stations-osm.json")];
   const { aliases, unresolved } = buildAliases(converted, extraAliases, matchIndex, legacyStations);
 
+  const railLines = buildRailLines(rawLines, readRegister(join(sourceDir, "register.csv")), converted);
+
   const master = converted.map(toOutputStation);
   const aliasObject = Object.fromEntries([...aliases].sort(([a], [b]) => a.localeCompare(b, "ja")));
   writeFileSync(MASTER_PATH, JSON.stringify(master) + "\n", "utf-8");
   writeFileSync(ALIASES_PATH, JSON.stringify(aliasObject, null, 2) + "\n", "utf-8");
+  writeFileSync(RAIL_LINES_PATH, JSON.stringify(railLines) + "\n", "utf-8");
 
   const disambiguated = master.filter((station) => station.originalName).length;
   console.log(`元データ: station_database ${sourceTag}（営業中 ${master.length} 駅）`);
@@ -361,8 +401,10 @@ function main() {
   console.log(`読みの補正: ${kanaApplied} 件 / 読み替え表: ${aliases.size} 件`);
   console.log(`旧データで対応する駅が無い駅名（廃止・休止など）: ${unresolved.length} 件`);
   for (const warning of warnings) console.warn("注意:", warning);
+  console.log(`路線: ${railLines.length} 路線`);
   console.log(`出力: ${MASTER_PATH}`);
   console.log(`出力: ${ALIASES_PATH}`);
+  console.log(`出力: ${RAIL_LINES_PATH}`);
 }
 
 try {
