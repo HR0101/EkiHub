@@ -1,4 +1,4 @@
-import type { CenterResult, Mode, Station } from "../src/types/ekihub";
+import type { CenterResult, Mode, RailLine, Station } from "../src/types/ekihub";
 import type { RouteProvider } from "./routeProvider";
 
 /** computeCenterStation の戻り値。origins と routingUsed は API 層で付け足す */
@@ -19,6 +19,8 @@ export interface ComputeCenterOptions {
   fareWeight?: number;
   /** 経路APIで精緻化する上位件数 */
   refineCount?: number;
+  /** 路線ごとの駅の並び（data/rail-lines.json）。新快速の区間の所要時間を補正する */
+  railLines?: RailLine[] | null;
 }
 
 export function computeCenterStation(
