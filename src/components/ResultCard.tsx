@@ -155,6 +155,7 @@ export function ResultCard({ result, station, onQuickStart }: Props) {
             source: t(routingSourceKey(result, station)),
           })}
         </p>
+        <p className="result-card__estimate-note">{t("result.estimateNote")}</p>
 
         <ResultActions station={station} />
       </div>

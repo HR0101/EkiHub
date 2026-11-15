@@ -146,6 +146,7 @@ export const ja = {
     avgFare: "平均運賃(概算)",
     distance: "重心までの距離(km)",
     range: "各メンバー {min}〜{max}分{transfers} {source}",
+    estimateNote: "所要時間・運賃は、駅の位置と路線から計算した推定値です。実際の時刻・経路・運賃は乗換案内などでご確認ください。",
     transfers: " ・平均乗換 {count}回",
     sourceRouted: "（実経路データ）",
     sourceGraph: "（鉄道網ルート概算）",

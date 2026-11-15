@@ -313,6 +313,10 @@ describe("responsive search workflow", () => {
     expect(within(more).getByRole("button", { name: "QR" })).toBeDefined();
     fireEvent.click(within(more).getByRole("button", { name: "結果をコピー" }));
     await waitFor(() => expect(writeText).toHaveBeenCalledWith(expect.stringContaining("東京")));
+    // 共有した相手が正確な値と誤解しないよう、推定値である旨を添える
+    expect(writeText).toHaveBeenLastCalledWith(expect.stringContaining("※所要時間・運賃は推定値です"));
+    // 結果カードにも推定値である旨を表示する
+    expect(screen.getAllByText(/所要時間・運賃は、駅の位置と路線から計算した推定値です/).length).toBeGreaterThan(0);
     fireEvent.click(within(more).getByRole("button", { name: "印刷" }));
     expect(print).toHaveBeenCalledOnce();
   });

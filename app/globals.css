@@ -1190,6 +1190,13 @@ body {
   color: var(--text-sub);
 }
 
+/* 所要時間・運賃が推定値であることの注記 */
+.result-card__estimate-note {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--text-sub);
+}
+
 /* ===== バッジ・運賃 ===== */
 .badge {
   font-size: 0.66rem;

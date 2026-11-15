@@ -141,6 +141,7 @@ export const en: Messages = {
     avgFare: "Average fare (est.)",
     distance: "Distance to centroid (km)",
     range: "Each member {min}–{max} min{transfers} {source}",
+    estimateNote: "Travel times and fares are estimates calculated from station locations and lines. Check a journey planner for actual times, routes and fares.",
     transfers: " · avg. {count} transfers",
     sourceRouted: "(actual route data)",
     sourceGraph: "(rail network estimate)",
