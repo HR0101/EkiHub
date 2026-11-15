@@ -1,4 +1,5 @@
 import { computeCenterStation } from "../../../lib/centerLogic.js";
+import { getOrBuildGraph } from "../../../lib/stationGraph.js";
 import { makeProviderFromEnv } from "../../../lib/routeProvider.js";
 import { loadStations } from "@/server/stationRepository";
 import type {
@@ -32,6 +33,17 @@ function clampWeight(value: unknown, fallback: number): number {
 function normalizePeople(value: unknown): number {
   const parsed = Number(value);
   return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 1;
+}
+
+/** 入力中の先行準備。POST と同じモジュールでグラフのキャッシュを温める。 */
+export async function GET(): Promise<Response> {
+  try {
+    getOrBuildGraph(await loadStations());
+    return new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } });
+  } catch (error) {
+    console.error("検索の先行準備に失敗:", error);
+    return new Response(null, { status: 503, headers: { "Cache-Control": "no-store" } });
+  }
 }
 
 /** 中心駅算出API */

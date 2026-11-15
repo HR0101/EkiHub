@@ -55,6 +55,13 @@ export async function fetchStations(signal?: AbortSignal): Promise<Station[]> {
   return data.stations;
 }
 
+/** 検索APIの初回読み込みとグラフ構築を、入力中に済ませる。 */
+export async function prepareCenterSearch(signal?: AbortSignal): Promise<boolean> {
+  const response = await fetch("/api/center", { method: "GET", cache: "no-store", signal });
+  if (!response.ok) throw new Error("検索の先行準備に失敗しました。");
+  return true;
+}
+
 /** 中心駅を算出する */
 export async function fetchCenterStation(
   request: CenterRequest,
