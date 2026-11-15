@@ -8,6 +8,7 @@ import type { Station } from "@/types/ekihub";
 vi.mock("@/server/stationRepository", () => ({
   loadStations: vi.fn(),
   loadStationIndex: vi.fn(),
+  loadRailLines: vi.fn().mockResolvedValue([]),
 }));
 vi.mock("../lib/centerLogic.js", () => ({ computeCenterStation: vi.fn() }));
 

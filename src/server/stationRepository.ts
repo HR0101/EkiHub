@@ -17,7 +17,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 import { stations as embeddedStations } from "../../data/stations.js";
-import type { Station } from "../types/ekihub";
+import type { RailLine, Station } from "../types/ekihub";
 
 /** data/ 以下の生成物を読む。無い・壊れている場合は既定値で続行する */
 function readJsonFile<T>(fileName: string, fallback: T): T {
@@ -68,4 +68,17 @@ export async function loadStationIndex(): Promise<Map<string, Station>> {
   }
   indexCache = index;
   return indexCache;
+}
+
+let railLinesCache: RailLine[] | null = null;
+
+/**
+ * 路線ごとの駅の並び（data/rail-lines.json）を返す。
+ * 新快速の区間の所要時間の補正に使う。無ければ空配列（補正なし）で続行する。
+ */
+export async function loadRailLines(): Promise<RailLine[]> {
+  if (railLinesCache) return railLinesCache;
+  const railLines = readJsonFile<RailLine[]>("rail-lines.json", []);
+  railLinesCache = Array.isArray(railLines) ? railLines : [];
+  return railLinesCache;
 }

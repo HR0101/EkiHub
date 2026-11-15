@@ -1,7 +1,7 @@
 import { computeCenterStation } from "../../../lib/centerLogic.js";
 import { getOrBuildGraph } from "../../../lib/stationGraph.js";
 import { makeProviderFromEnv } from "../../../lib/routeProvider.js";
-import { loadStationIndex, loadStations } from "@/server/stationRepository";
+import { loadRailLines, loadStationIndex, loadStations } from "@/server/stationRepository";
 import type {
   ApiError,
   CenterRequest,
@@ -115,6 +115,7 @@ export async function POST(request: Request): Promise<Response> {
       fairnessWeight,
       fareWeight: safeFareWeight,
       refineCount: REFINE_COUNT,
+      railLines: await loadRailLines(),
     });
 
     const payload: CenterResult = {

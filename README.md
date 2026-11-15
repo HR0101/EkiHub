@@ -209,13 +209,14 @@ EkiHub/
 │   ├── stations.js            # 埋め込み主要駅（乗降客数つき・手動キュレーション）
 │   ├── stations-master.json   # 全国の営業中の駅 約9,000駅（station_database から生成・コミット対象）
 │   ├── station-aliases.json   # 旧駅名→新しい駅名の読み替え表（例: 日吉 → 日吉(神奈川)）
+│   ├── rail-lines.json        # 路線ごとの駅の並び（新快速の区間の所要時間補正に使う）
 │   ├── stations-osm.json      # 以前の駅データ（OSM 由来）．読み替え表を作るときだけ使う
 │   ├── ridership.json         # 駅名→乗降客数マップ（S12から生成・コミット対象）
 │   ├── station-kana-overrides.json # 駅名の読みの手動補正
 │   └── meetingPoints.json     # 待ち合わせスポット（未収集のため空）
 ├── tests/                     # Vitest のテスト（npm test）
 ├── scripts/
-│   ├── buildStationMaster.js  # station_database から駅マスタと読み替え表を生成
+│   ├── buildStationMaster.js  # station_database から駅マスタ・読み替え表・路線の駅の並びを生成
 │   ├── fetchKantoStations.js  # 以前の駅データ（OSM）の取得．現在の駅マスタには使わない
 │   ├── buildRidership.js      # S12のGeoJSONから乗降客数マップを生成
 │   ├── generateKana.js        # kuromojiでkana未登録駅の読みを補完
@@ -265,7 +266,7 @@ npm run dev        # ファイル監視つき起動（開発用）
 `lib/centerLogic.js` の `computeCenterStation` が中核です．
 
 1. **重心算出**：入力駅群の緯度経度を人数で重み付け平均し，地理的重心を求める（地図表示・参考指標用）．
-2. **駅グラフ構築**（`lib/stationGraph.js`）：約9,000駅から近接グラフを構築（各駅から最寄りK=6駅を接続，エッジ上限12km）．ダイクストラ法で各入力駅から全駅への所要時間を算出．
+2. **駅グラフ構築**（`lib/stationGraph.js`）：約9,000駅から近接グラフを構築（各駅から最寄りK=6駅を接続，エッジ上限12km）．ダイクストラ法で各入力駅から全駅への所要時間を算出．新快速が走る関西・名古屋の区間（JR京都線・神戸線・琵琶湖線・湖西線，名古屋地区の東海道本線など）では，`data/rail-lines.json` の駅の並びから停車駅（主要駅・乗換駅）どうしを直接結ぶ「快速の辺」（表定速度 90km/h，乗車ごとに2分）を足し，各停を辿るより速い経路を表す．
 3. **候補絞り込み（モード分岐）**
    - 主要駅限定 … 乗降客数20万人/日以上，または主要駅フラグを持つ駅のみ．
    - 規模不問 … 全駅を候補にする．
@@ -395,9 +396,10 @@ TAG=v20260930   # 取り込むリリースタグ
 mkdir -p /tmp/station_database && cd /tmp/station_database
 curl -sSLO https://raw.githubusercontent.com/Seo-4d696b75/station_database/$TAG/out/main/station.json
 curl -sSLO https://raw.githubusercontent.com/Seo-4d696b75/station_database/$TAG/out/main/line.json
+curl -sSLO https://raw.githubusercontent.com/Seo-4d696b75/station_database/$TAG/out/main/register.csv
 cd -
 node scripts/buildStationMaster.js /tmp/station_database $TAG
-# -> data/stations-master.json と data/station-aliases.json を再生成
+# -> data/stations-master.json・data/station-aliases.json・data/rail-lines.json を再生成
 ```
 
 - 手動キュレーションの主要駅（`data/stations.js`），乗降客数（`data/ridership.json`），読みの確認済み補正（`data/station-kana-overrides.json`）は，元の駅名と座標で対応付けて当て直します．

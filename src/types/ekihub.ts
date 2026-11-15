@@ -46,6 +46,12 @@ export interface Station {
   prefecture?: number;
 }
 
+/** 路線ごとの駅の並び（data/rail-lines.json）。駅は路線上の順に並ぶ */
+export interface RailLine {
+  name: string;
+  stations: string[];
+}
+
 /** 旧駅名を新しい駅名へ読み替えた記録（例: 日吉 → 日吉(神奈川)） */
 export interface RenamedOrigin {
   from: string;
