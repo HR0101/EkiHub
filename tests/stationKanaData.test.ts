@@ -1,19 +1,37 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import osm from "../data/stations-osm.json";
+import master from "../data/stations-master.json";
 import overrides from "../data/station-kana-overrides.json";
 import { stations as curated } from "../data/stations.js";
 import { findStationKanaOverride, normalizeStationKana } from "../lib/stationKana.js";
 import { searchStations } from "@/lib/stationSearch";
 import type { Station } from "@/types/ekihub";
 
+const stations = master as Station[];
+
+/** 補正はあるが、station_database に独立した駅として無いもの（理由つき） */
+const OVERRIDES_WITHOUT_STATION: Record<string, string> = {
+  "美女平": "立山ケーブルカーの駅は station_database に含まれない",
+  "新線新宿": "京王新線の駅は「新宿」にまとめられている（旧駅名は新宿へ読み替える）",
+  "西鉄福岡（天神）": "副駅名を省いて「西鉄福岡」になり、読みも「にしてつふくおか」になった",
+};
+
 describe("reviewed station readings", () => {
-  it.each(overrides)("keeps $name readable and searchable as $kana", (entry) => {
-    const station = osm.find(s => s.name === entry.name && Math.abs(s.lat-entry.lat)<0.005 && Math.abs(s.lng-entry.lng)<0.005);
+  const applicable = overrides.filter((entry) => !(entry.name in OVERRIDES_WITHOUT_STATION));
+
+  // 補正は区別前の駅名（例: 春日）で書かれているので、座標で駅マスタの駅（春日(福岡)）を引く
+  it.each(applicable)("keeps $name readable and searchable as $kana", (entry) => {
+    const station = stations.find((s) => findStationKanaOverride(s, [entry]));
     expect(station?.kana).toBe(entry.kana);
     expect(entry.kana).toMatch(/^[ぁ-ゔー]+$/);
     expect(entry.kana).not.toMatch(/[ゕゖ]/);
-    expect(searchStations(osm as Station[], entry.kana).some(s => s.name === entry.name)).toBe(true);
+    expect(searchStations(stations, entry.kana).some((s) => s.name === station?.name)).toBe(true);
+  });
+
+  it.each(Object.keys(OVERRIDES_WITHOUT_STATION))("has no separate station for %s", (name) => {
+    const entry = overrides.find((override) => override.name === name);
+    expect(entry).toBeDefined();
+    expect(stations.find((s) => entry && findStationKanaOverride(s, [entry]))).toBeUndefined();
   });
   it("corrects the curated values that override OSM during merging", () => {
     expect(curated.find(s => s.name === "馬込沢")?.kana).toBe("まごめざわ");

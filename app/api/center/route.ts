@@ -1,11 +1,13 @@
 import { computeCenterStation } from "../../../lib/centerLogic.js";
+import { getOrBuildGraph } from "../../../lib/stationGraph.js";
 import { makeProviderFromEnv } from "../../../lib/routeProvider.js";
-import { loadStations } from "@/server/stationRepository";
+import { loadRailLines, loadStationIndex, loadStations } from "@/server/stationRepository";
 import type {
   ApiError,
   CenterRequest,
   CenterResult,
   Mode,
+  RenamedOrigin,
   Station,
 } from "@/types/ekihub";
 
@@ -34,6 +36,17 @@ function normalizePeople(value: unknown): number {
   return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 1;
 }
 
+/** 入力中の先行準備。POST と同じモジュールでグラフのキャッシュを温める。 */
+export async function GET(): Promise<Response> {
+  try {
+    getOrBuildGraph(await loadStations());
+    return new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } });
+  } catch (error) {
+    console.error("検索の先行準備に失敗:", error);
+    return new Response(null, { status: 503, headers: { "Cache-Control": "no-store" } });
+  }
+}
+
 /** 中心駅算出API */
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -52,10 +65,12 @@ export async function POST(request: Request): Promise<Response> {
     const safeFareWeight = clampWeight(fareWeight, DEFAULT_FARE_WEIGHT);
 
     const allStations = await loadStations();
-    const stationByName = new Map(allStations.map((s) => [s.name, s]));
+    // 旧駅名（例:「日吉」）も読み替え先の駅を指す
+    const stationByName = await loadStationIndex();
 
     // 入力された駅名を駅マスタへ解決する（人数の重みを付ける）
     const originStations: (Station & { people: number })[] = [];
+    const renamedOrigins: RenamedOrigin[] = [];
     const unknown: string[] = [];
     origins.forEach((name, index) => {
       const trimmed = typeof name === "string" ? name.trim() : "";
@@ -66,6 +81,10 @@ export async function POST(request: Request): Promise<Response> {
           Array.isArray(peopleCounts) ? peopleCounts[index] : 1
         );
         originStations.push({ ...found, people });
+        const alreadyNoted = renamedOrigins.some((entry) => entry.from === trimmed);
+        if (found.name !== trimmed && !alreadyNoted) {
+          renamedOrigins.push({ from: trimmed, to: found.name });
+        }
       } else if (trimmed.length > 0) {
         unknown.push(trimmed);
       }
@@ -96,6 +115,7 @@ export async function POST(request: Request): Promise<Response> {
       fairnessWeight,
       fareWeight: safeFareWeight,
       refineCount: REFINE_COUNT,
+      railLines: await loadRailLines(),
     });
 
     const payload: CenterResult = {
@@ -108,6 +128,7 @@ export async function POST(request: Request): Promise<Response> {
         people,
       })),
       routingUsed: ROUTING_ENABLED,
+      ...(renamedOrigins.length > 0 ? { renamedOrigins } : {}),
     };
     return Response.json(payload);
   } catch (error) {
