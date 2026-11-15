@@ -35,9 +35,11 @@ export async function body(request: Request): Promise<Record<string, unknown>> {
 }
 export async function station(value: unknown, optional = false) {
   const name = text(value, 120, !optional);
-  if (name && !(await loadStationIndex()).has(name))
-    throw new MemberApiError("登録されている駅を選択してください。", 400);
-  return name;
+  if (!name) return name;
+  const found = (await loadStationIndex()).get(name);
+  if (!found) throw new MemberApiError("登録されている駅を選択してください。", 400);
+  // 旧駅名（例:「日吉」）は新しい駅名（「日吉(神奈川)」）に直して保存する
+  return found.name ?? name;
 }
 export async function actionInput(request: Request) {
   const a = await body(request);

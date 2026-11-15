@@ -888,6 +888,15 @@ body {
   margin-bottom: 14px;
 }
 
+/* 旧駅名を読み替えたことの知らせ（例: 日吉 → 日吉(神奈川)） */
+.result-card__renamed {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+  color: var(--text-sub);
+  font-size: 0.85rem;
+}
+
 .chips {
   list-style: none;
   display: flex;

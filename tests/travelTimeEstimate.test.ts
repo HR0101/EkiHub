@@ -38,7 +38,7 @@ const REFERENCE_ROUTES: ReferenceRoute[] = [
   { from: "船橋", to: "新木場", minutes: 28 },
   // 快速・直通の1本で行ける区間（係数を湾岸部だけに合わせないための対照）
   { from: "池袋", to: "横浜", minutes: 36 },
-  { from: "大宮", to: "新宿", minutes: 33 },
+  { from: "大宮(埼玉)", to: "新宿", minutes: 33 },
   { from: "立川", to: "新宿", minutes: 27 },
   { from: "柏", to: "上野", minutes: 28 },
   { from: "町田", to: "新宿", minutes: 32 },

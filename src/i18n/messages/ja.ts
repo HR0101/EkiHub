@@ -150,6 +150,7 @@ export const ja = {
     sourceRouted: "（実経路データ）",
     sourceGraph: "（鉄道網ルート概算）",
     sourceStraight: "（距離からの概算）",
+    renamedOrigin: "「{from}」は「{to}」として計算しました。",
   },
 
   travel: {

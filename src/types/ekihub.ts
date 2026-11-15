@@ -40,6 +40,16 @@ export interface Station {
   isMajor: boolean;
   /** 1日あたり乗降客数。データがない駅では未定義 */
   ridership?: number;
+  /** 同名駅を区別する前の駅名（例:「日吉(神奈川)」の「日吉」）。区別していない駅では未定義 */
+  originalName?: string;
+  /** 都道府県コード（1〜47）。手動データだけで動いているときは未定義 */
+  prefecture?: number;
+}
+
+/** 旧駅名を新しい駅名へ読み替えた記録（例: 日吉 → 日吉(神奈川)） */
+export interface RenamedOrigin {
+  from: string;
+  to: string;
 }
 
 /** 入力された最寄駅（人数の重み付き） */
@@ -120,6 +130,8 @@ export interface CenterResult {
   origins: OriginStation[];
   /** 経路プロバイダが設定されているか */
   routingUsed: boolean;
+  /** 旧駅名を新しい駅名へ読み替えた入力。読み替えが無ければ省略される */
+  renamedOrigins?: RenamedOrigin[];
 }
 
 /** POST /api/center のリクエスト */
