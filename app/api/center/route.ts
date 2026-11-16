@@ -36,10 +36,14 @@ function normalizePeople(value: unknown): number {
   return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 1;
 }
 
-/** 入力中の先行準備。POST と同じモジュールでグラフのキャッシュを温める。 */
+/**
+ * 入力中の先行準備。POST と同じモジュールでグラフのキャッシュを温める。
+ * グラフのキャッシュは駅配列と路線データの組ごとなので、POST（computeCenterStation）と
+ * 同じ路線データを渡す。渡さないと快速の辺が無い別のグラフができ、先行準備が無駄になる。
+ */
 export async function GET(): Promise<Response> {
   try {
-    getOrBuildGraph(await loadStations());
+    getOrBuildGraph(await loadStations(), { railLines: await loadRailLines() });
     return new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("検索の先行準備に失敗:", error);
