@@ -1,8 +1,8 @@
 # EkiHub 🗾
 
-複数人の最寄駅を入力すると，**全員が集まりやすい「中心となる駅」**を算出・提案するWebアプリケーションです．日本全国の鉄道駅（約8,200駅）に対応し，地理的重心ではなく**鉄道ネットワーク上の移動時間の公平性**でランキングします．
+複数人の最寄駅を入力すると，**全員が集まりやすい「中心となる駅」**を算出・提案するWebアプリケーションです．日本全国の鉄道駅（約9,000駅）に対応し，地理的重心ではなく**鉄道ネットワーク上の移動時間の公平性**でランキングします．
 
-8つのデザインテーマからページを開くたびに1つを選んで表示し，地図上に各駅からの位置関係と所要時間を可視化します．
+公開テーマを VIOLET / SOFT POP に統一し，地図上に各駅からの位置関係と所要時間を可視化します．他の7テーマの定義・CSS・画像は保持しています．
 
 ## 🌐 今すぐ使う（インストール不要）
 
@@ -18,7 +18,7 @@
 
 - **複数駅の入力**：2駅以上を任意の数だけ追加でき，駅名のオートコンプリート付き．
 - **中心駅の算出**：鉄道ネットワーク上の移動時間の公平性と近接性を組み合わせた複合スコアで最適駅を提案．
-- **駅ネットワークグラフ**：約8,200駅から近接グラフを構築し，ダイクストラ法で実際の鉄道経路に沿った所要時間を算出．
+- **駅ネットワークグラフ**：約9,000駅から近接グラフを構築し，ダイクストラ法で実際の鉄道経路に沿った所要時間を算出．
 - **規模による絞り込み（トグル切替）**
   - **主要駅限定**：乗降客数20万人/日以上のターミナル駅のみを候補にする．
   - **規模不問**：規模を問わず，純粋に時間の中心駅を候補にする．
@@ -30,7 +30,8 @@
 | 機能 | 概要 |
 |---|---|
 | 手順ガイド | 入力欄の先頭に「最寄駅 → 検索 → 調整」の3手順を示し，今どこまで進んだかを表示． |
-| デザインテーマ | Y2K / CHROME・TERMINAL / MONO・MOBILE / FRIENDLY・RETRO / DESKTOP・CLAY / TOY・SOFT / NEUMORPHIC・GLASS / AURORA・VIOLET / SOFT POP の8種．ページを開くたびにランダムで1つを選び，「テーマ」ボタンから切り替えられる（選んだテーマは保存しない）． |
+| デザインテーマ | VIOLET / SOFT POP のみ公開．他の7テーマは削除せず保持し，複数テーマを再公開するとテーマ選択メニューを表示する． |
+| 使い方ガイド・アニメーション | 入力から候補比較・共有までを5段階の操作デモで説明．ページの見出し・カード・路線図にも動きを付け，動きを減らす設定に対応． |
 | 多言語対応 | 日本語・英語・中国語・韓国語の切替 |
 | メンバー名・人数 | 各駅にメンバー名と人数を設定．人数で重心・平均を重み付け． |
 | 重視ポイント | 「こだわり条件」で「近さ ⇄ 公平さ」と**運賃の重視度**を調整． |
@@ -55,7 +56,7 @@
 | 画面・API | Next.js（App Router）+ React + TypeScript | 画面と `/api/*` を1プロセスで配信．算出ロジック（`lib/`）はフレームワーク非依存のまま利用 |
 | 状態管理 | Zustand + TanStack Query | 入力・結果の状態と，駅マスタ・算出APIの取得とキャッシュを分担 |
 | 地図 | Leaflet（react-leaflet）+ 地理院タイル（淡色地図）+ OpenRailwayMap | APIキー不要・無料．白基調の画面に馴染む淡い背景地図に鉄道路線を重ねる |
-| 駅データ | OpenStreetMap（Overpass API）+ 手動拡張 | キー不要で日本全国の駅位置情報を取得 |
+| 駅データ | [station_database](https://github.com/Seo-4d696b75/station_database)（CC BY 4.0）+ 手動キュレーション | 全国の営業中の駅・路線・読みをまとめて取得．同名駅は「日吉(神奈川)」のように駅名で区別 |
 | 乗降客数 | 国土数値情報 S12（駅別乗降客数） | 国土交通省の公式オープンデータ．主要駅判定に利用 |
 | 経路（任意） | OpenTripPlanner（差し替え式） | `routeProvider` で実所要時間に置換可能．未設定時は距離推定にフォールバック |
 | 周辺スポット | Google マップの検索リンク | APIキー不要．利用者がリンクを開いたときだけ Google へ移動する |
@@ -98,10 +99,10 @@ flowchart LR
     end
   end
 
-  D["同梱データ data/<br/>stations.js（主要駅・手動）<br/>stations-osm.json（約8,200駅）<br/>ridership.json（乗降客数 S12）"]
+  D["同梱データ data/<br/>stations.js（主要駅・手動）<br/>stations-master.json（約9,000駅）<br/>station-aliases.json（旧駅名の読み替え）<br/>ridership.json（乗降客数 S12）"]
 
   subgraph EX["外部API（すべて任意）"]
-    E1["ODPT<br/>駅データ拡張・運行情報"]
+    E1["ODPT<br/>運行情報"]
     E3["OpenTripPlanner<br/>所要時間・運賃"]
   end
 
@@ -160,7 +161,7 @@ app/page.tsx・app/results/page.tsx（ページ）
 状態   … src/stores/useEkiHubStore.ts（Zustand：入力・選択中の候補・結果）
 取得   … src/hooks/（TanStack Query：駅マスタ・中心駅の算出・履歴）→ src/lib/api.ts → /api/*
 文言   … src/i18n/（日本語がマスター．キーを足すと他言語の翻訳漏れが型エラーになる）
-テーマ … app/themes/*.css（8種のデザイン）と src/lib/designTheme.ts（ページを開くたびに選ぶ）
+テーマ … app/themes/*.css（全8種の定義を保持）と src/lib/designTheme.ts（公開テーマは SOFT POP のみ）
 ```
 
 スマートフォン幅では，入力（`/`）と結果（`/results`）を別ページに分けて表示します．
@@ -197,13 +198,17 @@ EkiHub/
 │   └── stationKana.js         # 駅名の読みの補正
 ├── data/
 │   ├── stations.js            # 埋め込み主要駅（乗降客数つき・手動キュレーション）
-│   ├── stations-osm.json      # 日本全国約8,200駅（OSM + 手動拡張・コミット対象）
+│   ├── stations-master.json   # 全国の営業中の駅 約9,000駅（station_database から生成・コミット対象）
+│   ├── station-aliases.json   # 旧駅名→新しい駅名の読み替え表（例: 日吉 → 日吉(神奈川)）
+│   ├── rail-lines.json        # 路線ごとの駅の並び（新快速の区間の所要時間補正に使う）
+│   ├── stations-osm.json      # 以前の駅データ（OSM 由来）．読み替え表を作るときだけ使う
 │   ├── ridership.json         # 駅名→乗降客数マップ（S12から生成・コミット対象）
 │   ├── station-kana-overrides.json # 駅名の読みの手動補正
 │   └── meetingPoints.json     # 待ち合わせスポット（未収集のため空）
 ├── tests/                     # Vitest のテスト（npm test）
 ├── scripts/
-│   ├── fetchKantoStations.js  # OSMから駅データを取得
+│   ├── buildStationMaster.js  # station_database から駅マスタ・読み替え表・路線の駅の並びを生成
+│   ├── fetchKantoStations.js  # 以前の駅データ（OSM）の取得．現在の駅マスタには使わない
 │   ├── buildRidership.js      # S12のGeoJSONから乗降客数マップを生成
 │   ├── generateKana.js        # kuromojiでkana未登録駅の読みを補完
 │   ├── testRouting.js         # 経路精緻化ロジックの単体テスト
@@ -243,7 +248,7 @@ npm run dev        # ファイル監視つき起動（開発用）
 # -> http://localhost:3000
 ```
 
-> `data/stations-osm.json` と `data/ridership.json` はリポジトリに同梱済みのため，クローン後すぐに動作します．
+> `data/stations-master.json` と `data/ridership.json` はリポジトリに同梱済みのため，クローン後すぐに動作します．
 
 ---
 
@@ -252,7 +257,7 @@ npm run dev        # ファイル監視つき起動（開発用）
 `lib/centerLogic.js` の `computeCenterStation` が中核です．
 
 1. **重心算出**：入力駅群の緯度経度を人数で重み付け平均し，地理的重心を求める（地図表示・参考指標用）．
-2. **駅グラフ構築**（`lib/stationGraph.js`）：約8,200駅から近接グラフを構築（各駅から最寄りK=6駅を接続，エッジ上限12km）．ダイクストラ法で各入力駅から全駅への所要時間を算出．
+2. **駅グラフ構築**（`lib/stationGraph.js`）：約9,000駅から近接グラフを構築（各駅から最寄りK=6駅を接続，エッジ上限12km）．ダイクストラ法で各入力駅から全駅への所要時間を算出．新快速が走る関西・名古屋の区間（JR京都線・神戸線・琵琶湖線・湖西線，名古屋地区の東海道本線など）では，`data/rail-lines.json` の駅の並びから停車駅（主要駅・乗換駅）どうしを直接結ぶ「快速の辺」（表定速度 90km/h，乗車ごとに2分）を足し，各停を辿るより速い経路を表す．
 3. **候補絞り込み（モード分岐）**
    - 主要駅限定 … 乗降客数20万人/日以上，または主要駅フラグを持つ駅のみ．
    - 規模不問 … 全駅を候補にする．
@@ -335,7 +340,7 @@ SSHポートは通常自宅IPのみに制限しており，デプロイ時のみ
 | 変数 | 用途 |
 |---|---|
 | `PORT` | 待受ポート（既定：3000） |
-| `ODPT_TOKEN` | 公共交通オープンデータセンターのアクセストークン．駅データ拡張と鉄道運行情報カードに使用 |
+| `ODPT_TOKEN` | 公共交通オープンデータセンターのアクセストークン．鉄道運行情報カードに使用 |
 | `ROUTING_PROVIDER` | 経路APIの種別（現在は `otp` に対応） |
 | `ROUTING_OTP_URL` | OTP2 の GraphQL エンドポイント |
 | `ROUTING_TIMEOUT_MS` | 経路APIのタイムアウト（既定：8000） |
@@ -348,7 +353,7 @@ SSHポートは通常自宅IPのみに制限しており，デプロイ時のみ
 
 ### 仕組み（2段階方式）
 
-約8,200駅すべてを経路APIで叩くことはしません．距離概算で上位8駅に絞ってから実APIで精緻化することで，呼び出しは「8駅 × メンバー数」程度に抑えます．経路APIが未設定・到達不可・タイムアウトの場合は，自動的に距離概算へフォールバックします．
+約9,000駅すべてを経路APIで叩くことはしません．距離概算で上位8駅に絞ってから実APIで精緻化することで，呼び出しは「8駅 × メンバー数」程度に抑えます．経路APIが未設定・到達不可・タイムアウトの場合は，自動的に距離概算へフォールバックします．
 
 ### OTPの起動例
 
@@ -372,12 +377,23 @@ npm start
 
 外部データを最新化したい場合の手順です．
 
-### 駅データ（OSM）
+### 駅データ（station_database）
+
+[station_database](https://github.com/Seo-4d696b75/station_database) のリリースタグを固定して取得し，駅マスタと旧駅名の読み替え表を作り直します．
 
 ```bash
-node scripts/fetchKantoStations.js
-# -> data/stations-osm.json を再生成
+TAG=v20260930   # 取り込むリリースタグ
+mkdir -p /tmp/station_database && cd /tmp/station_database
+curl -sSLO https://raw.githubusercontent.com/Seo-4d696b75/station_database/$TAG/out/main/station.json
+curl -sSLO https://raw.githubusercontent.com/Seo-4d696b75/station_database/$TAG/out/main/line.json
+curl -sSLO https://raw.githubusercontent.com/Seo-4d696b75/station_database/$TAG/out/main/register.csv
+cd -
+node scripts/buildStationMaster.js /tmp/station_database $TAG
+# -> data/stations-master.json・data/station-aliases.json・data/rail-lines.json を再生成
 ```
+
+- 手動キュレーションの主要駅（`data/stations.js`），乗降客数（`data/ridership.json`），読みの確認済み補正（`data/station-kana-overrides.json`）は，元の駅名と座標で対応付けて当て直します．
+- 同名駅の元の名前（例：「日吉」）は，主要駅・乗降客数の多い駅へ読み替えます．共有URL・履歴・保存済みグループの旧駅名はこの表で引き続き使えます．
 
 ### 乗降客数データ（国土数値情報 S12）
 
@@ -398,7 +414,7 @@ node scripts/generateKana.js
 
 更新後はサーバーを再起動すると反映されます．
 
-> `stations-osm.json`（1.4MB）と `ridership.json` は生成物を含みますが，外部APIの可用性が保証されないこと，手動で追加・修正したデータが多く含まれること，クローン後すぐに動作させることを重視して，あえてGitにコミットしています．
+> `stations-master.json`（1.4MB）と `ridership.json` は生成物を含みますが，外部APIの可用性が保証されないこと，手動で追加・修正したデータが多く含まれること，クローン後すぐに動作させることを重視して，あえてGitにコミットしています．
 
 ---
 

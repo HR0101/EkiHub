@@ -1,0 +1,52 @@
+/* Soft Pop motion: a short arrival, then a still, usable screen. */
+.meeting-journey { width: min(100%, 320px); margin: 0 auto 20px; }
+.meeting-journey svg { display: block; width: 100%; height: auto; overflow: visible; }
+.journey-grid { stroke: var(--accent); stroke-opacity: .09; }
+.journey-rails path { stroke: var(--accent-soft); stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+.journey-routes path { stroke: var(--accent); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.journey-origin circle { fill: #fff; stroke: var(--text-main); stroke-width: 2; }
+.journey-origin text { fill: var(--text-main); font: 700 11px var(--font-noto-sans-jp), sans-serif; }
+.journey-pin__shadow { fill: var(--text-main); }
+.journey-pin__body { fill: var(--accent); stroke: var(--text-main); stroke-width: 2; }
+.journey-pin circle { fill: #fff; }
+.journey-pin > path:last-child { stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.journey-arrival { stroke: var(--accent); stroke-width: 2; opacity: 0; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .meeting-journey[data-motion="visible"] .journey-routes path {
+    animation: eki-route-draw 1000ms cubic-bezier(.22,1,.36,1) both;
+    animation-delay: 240ms;
+  }
+  .meeting-journey[data-motion="visible"] .journey-routes path:nth-child(2) { animation-delay: 440ms; }
+  .meeting-journey[data-motion="visible"] .journey-routes path:nth-child(3) { animation-delay: 640ms; }
+  .meeting-journey[data-motion="visible"] .journey-origin {
+    transform-box: fill-box; transform-origin: center;
+    animation: eki-station-arrive 500ms cubic-bezier(.22,1,.36,1) backwards;
+  }
+  .meeting-journey[data-motion="visible"] .journey-origin--1 { animation-delay: 140ms; }
+  .meeting-journey[data-motion="visible"] .journey-origin--2 { animation-delay: 280ms; }
+  .meeting-journey[data-motion="visible"] .journey-pin {
+    animation: eki-pin-arrive 600ms 1100ms cubic-bezier(.22,1,.36,1) backwards;
+  }
+  .meeting-journey[data-motion="visible"] .journey-arrival { animation: eki-arrival 800ms 1500ms ease-out both; }
+
+  .home-app .result-card__identity { animation: eki-station-arrive 420ms cubic-bezier(.22,1,.36,1) backwards; }
+  .home-app .travel-item[data-motion="visible"] .travel-item__fill { transform-origin: left; animation: eki-bar-arrive 700ms 100ms cubic-bezier(.22,1,.36,1) backwards; }
+  :is(.home-app, .member-page, .howto-app) :is(.btn, .tool-btn, .nav-link, .tour-control, .howto-start__link) {
+    transition: background-color 160ms, color 160ms, border-color 160ms, box-shadow 160ms, transform 160ms;
+  }
+  :is(.home-app, .howto-app) :is(.btn__arrow, .howto-start__link > span) { transition: translate 180ms; }
+  .home-app .btn:hover .btn__arrow, .howto-app .howto-start__link:hover > span { translate: 3px 0; }
+  .locale-toggle__option { transition: background-color 160ms, color 160ms; }
+  .history__panel, .qr-panel { transform-origin: top; }
+}
+
+@keyframes eki-route-draw { from { stroke-dasharray: 1; stroke-dashoffset: 1; } to { stroke-dasharray: 1; stroke-dashoffset: 0; } }
+@keyframes eki-station-arrive { from { opacity: 0; translate: 0 12px; } to { opacity: 1; translate: 0 0; } }
+@keyframes eki-pin-arrive { from { opacity: 0; translate: 0 -20px; } to { opacity: 1; translate: 0 0; } }
+@keyframes eki-arrival { from { opacity: .6; scale: .6; } to { opacity: 0; scale: 1.5; } }
+@keyframes eki-bar-arrive { from { scale: 0 1; } to { scale: 1 1; } }
+
+@media (prefers-reduced-motion: reduce), print {
+  .meeting-journey *, .home-app .result-card__identity, .home-app .travel-item__fill { animation: none !important; }
+}

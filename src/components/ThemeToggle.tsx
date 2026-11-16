@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
-  DESIGN_THEMES,
+  PUBLIC_DESIGN_THEMES,
   applyDesignTheme,
   readDesignTheme,
   type DesignTheme,
@@ -44,6 +44,8 @@ export function ThemeToggle() {
     };
   }, [isOpen]);
 
+  if (PUBLIC_DESIGN_THEMES.length < 2) return null;
+
   return (
     <div className="theme-toggle" ref={wrapperRef}>
       <button
@@ -60,7 +62,7 @@ export function ThemeToggle() {
         {design && (
           <span className="design-picker__current" aria-hidden="true">
             {
-              DESIGN_THEMES.find((theme) => theme.id === design)?.name.split(
+              PUBLIC_DESIGN_THEMES.find((theme) => theme.id === design)?.name.split(
                 " / ",
               )[0]
             }
@@ -76,7 +78,7 @@ export function ThemeToggle() {
         >
           <p className="design-picker__note">{t("theme.randomHint")}</p>
           <div className="design-picker__options">
-            {DESIGN_THEMES.map((theme) => (
+            {PUBLIC_DESIGN_THEMES.map((theme) => (
               <button
                 key={theme.id}
                 type="button"

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { HowToContent } from "@/components/HowToContent";
+import "./howto.css";
 
 export const metadata: Metadata = {
   title: "使い方 - EkiHub",
@@ -16,7 +17,7 @@ export default function HowToPage() {
     <>
       <div className="aurora" aria-hidden="true" />
 
-      <main className="app">
+      <main className="app howto-app">
         <HowToContent />
       </main>
     </>

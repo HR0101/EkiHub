@@ -127,7 +127,7 @@ export function WorkspacePage({ token }: { token: string }) {
         })
       : null;
   return (
-    <main className="app member-page">
+    <main className="app home-app member-page">
       <Link className="nav-link" href="/account">
         ← マイグループ
       </Link>

@@ -22,9 +22,25 @@ interface Props {
 const PEOPLE_MIN = 1;
 const PEOPLE_MAX = 10;
 
+/** IME が打鍵を処理している間の keyCode（Safari は isComposing を立てないことがある） */
+const IME_PROCESS_KEY_CODE = 229;
+
+/** IME の変換中か。変換確定の Enter で候補を選ばないために使う */
+function isComposingKey(event: React.KeyboardEvent<HTMLInputElement>): boolean {
+  return event.nativeEvent.isComposing || event.keyCode === IME_PROCESS_KEY_CODE;
+}
+
+/** 入力値が駅名と一字一句同じか（前後の空白は無視する） */
+function isExactStationName(stations: readonly Station[], value: string): boolean {
+  const trimmed = value.trim();
+  return trimmed.length > 0 && stations.some((station) => station.name === trimmed);
+}
+
 /**
  * 駅名の入力欄1行。
- * 打鍵に合わせて候補を出し、↑↓で選んで Enter か Escape で閉じる。
+ * 打鍵に合わせて候補を出し、先頭の候補を選択中として強調する。
+ * ↑↓で選び直し、Enter で選択中の候補（既定は先頭）を確定、Escape で閉じる。
+ * 駅名と一字一句同じになったら、その時点で選択済みとして候補を閉じる。
  */
 export function StationInputRow({ row, index, stations }: Props) {
   const { t } = useTranslation();
@@ -34,7 +50,7 @@ export function StationInputRow({ row, index, stations }: Props) {
   const removeRow = useEkiHubStore((state) => state.removeRow);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(-1);
+  const [activeIndex, setActiveIndex] = useState(0);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const query = row.name.trim();
@@ -42,11 +58,16 @@ export function StationInputRow({ row, index, stations }: Props) {
     () => (isOpen && query ? searchStations(stations, query) : []),
     [isOpen, query, stations]
   );
+  const isListVisible = isOpen && matches.length > 0;
+  // 候補の数が減って選択位置がはみ出したら先頭へ戻す
+  const highlightedIndex =
+    activeIndex >= 0 && activeIndex < matches.length ? activeIndex : 0;
+  const optionId = (optionIndex: number) => `${listId}-option-${optionIndex}`;
 
   /** 入力値がそのまま駅マスタにあるか（枠線の色で伝える） */
   const validity = useMemo(() => {
     if (!query) return "empty" as const;
-    return stations.some((station) => station.name === query)
+    return isExactStationName(stations, query)
       ? ("valid" as const)
       : ("invalid" as const);
   }, [query, stations]);
@@ -61,32 +82,46 @@ export function StationInputRow({ row, index, stations }: Props) {
     return () => document.removeEventListener("mousedown", handlePointerDown);
   }, [isOpen]);
 
+  function closeSuggestions() {
+    setIsOpen(false);
+    setActiveIndex(0);
+  }
+
   function commit(station: Station) {
     updateRow(row.id, { name: station.name });
-    setIsOpen(false);
-    setActiveIndex(-1);
+    closeSuggestions();
+  }
+
+  /** 入力値の変化に合わせて、候補を開くか選択済みとして閉じるかを決める */
+  function syncSuggestions(value: string, isComposing: boolean) {
+    // IME の変換中は確定させない（変換候補を選んでいる途中のため）
+    if (!isComposing && isExactStationName(stations, value)) {
+      closeSuggestions();
+      return;
+    }
+    setIsOpen(true);
+    setActiveIndex(0);
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Escape") {
-      setIsOpen(false);
-      setActiveIndex(-1);
+      closeSuggestions();
       return;
     }
-    if (!isOpen || matches.length === 0) return;
+    if (!isListVisible) return;
 
     if (event.key === "ArrowDown") {
       event.preventDefault();
-      setActiveIndex((current) => (current + 1) % matches.length);
+      setActiveIndex((highlightedIndex + 1) % matches.length);
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
-      setActiveIndex(
-        (current) => (current - 1 + matches.length) % matches.length
-      );
+      setActiveIndex((highlightedIndex - 1 + matches.length) % matches.length);
     } else if (event.key === "Enter") {
-      const picked = matches[activeIndex];
+      // 変換確定の Enter は IME に任せる
+      if (isComposingKey(event)) return;
+      const picked = matches[highlightedIndex];
       if (picked) {
-        // 候補を選んでいる間はフォーム送信させない
+        // 候補を確定する Enter ではフォームを送信しない
         event.preventDefault();
         commit(picked);
       }
@@ -112,22 +147,30 @@ export function StationInputRow({ row, index, stations }: Props) {
           placeholder={t("form.placeholder")}
           aria-label={`${t("form.stationLabel")} ${index}`}
           role="combobox"
-          aria-expanded={isOpen && matches.length > 0}
+          aria-expanded={isListVisible}
           aria-controls={listId}
           aria-autocomplete="list"
+          aria-activedescendant={isListVisible ? optionId(highlightedIndex) : undefined}
           autoComplete="off"
           onChange={(event) => {
-            updateRow(row.id, { name: event.target.value });
-            setIsOpen(true);
-            setActiveIndex(-1);
+            const { value } = event.target;
+            updateRow(row.id, { name: value });
+            syncSuggestions(value, (event.nativeEvent as InputEvent).isComposing ?? false);
           }}
-          onFocus={() => setIsOpen(true)}
+          onCompositionEnd={(event) => {
+            // 変換を確定した時点で、駅名と一致していれば選択済みにする
+            syncSuggestions(event.currentTarget.value, false);
+          }}
+          onFocus={(event) => {
+            // 選択済みの欄に戻っただけなら候補は開かない
+            if (!isExactStationName(stations, event.currentTarget.value)) setIsOpen(true);
+          }}
           onKeyDown={handleKeyDown}
         />
 
         <div
           id={listId}
-          className={`suggest ${isOpen && matches.length > 0 ? "is-open" : ""}`}
+          className={`suggest ${isListVisible ? "is-open" : ""}`}
           role="listbox"
         >
           {matches.map((station, i) => {
@@ -135,9 +178,10 @@ export function StationInputRow({ row, index, stations }: Props) {
             return (
               <div
                 key={station.name}
-                className={`suggest__item ${i === activeIndex ? "is-active" : ""}`}
+                id={optionId(i)}
+                className={`suggest__item ${i === highlightedIndex ? "is-active" : ""}`}
                 role="option"
-                aria-selected={i === activeIndex}
+                aria-selected={i === highlightedIndex}
                 onMouseEnter={() => setActiveIndex(i)}
                 // input の blur より先に確定させるため mousedown で拾う
                 onMouseDown={(event) => {

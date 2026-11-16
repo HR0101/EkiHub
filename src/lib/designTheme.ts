@@ -1,6 +1,6 @@
 import { cssVar } from "@/lib/cssVar";
 
-/** No default: each document load chooses from these eight designs. */
+/** Full theme catalog, including designs currently withheld from the public UI. */
 export const DESIGN_THEMES = [
   { id: "y2k", name: "Y2K / CHROME", dark: false },
   { id: "terminal", name: "TERMINAL / MONO", dark: true },
@@ -13,12 +13,19 @@ export const DESIGN_THEMES = [
 ] as const;
 export type DesignTheme = (typeof DESIGN_THEMES)[number]["id"];
 
+/** Only these designs appear in the picker and can be chosen on page load. */
+export const PUBLIC_DESIGN_THEMES = DESIGN_THEMES.filter(
+  (theme) => theme.id === "violet",
+);
+
 export function isDesignTheme(value: unknown): value is DesignTheme {
   return DESIGN_THEMES.some((theme) => theme.id === value);
 }
 
 export function randomDesignTheme(): DesignTheme {
-  return DESIGN_THEMES[Math.floor(Math.random() * DESIGN_THEMES.length)]!.id;
+  return PUBLIC_DESIGN_THEMES[
+    Math.floor(Math.random() * PUBLIC_DESIGN_THEMES.length)
+  ]!.id;
 }
 
 export function applyDesignTheme(id: DesignTheme) {
@@ -39,7 +46,8 @@ export function applyDesignTheme(id: DesignTheme) {
 /** Reuse the boot choice across client-side route changes; never persist it. */
 export function readDesignTheme(): DesignTheme {
   const current = document.documentElement.dataset.design;
-  if (isDesignTheme(current)) return current;
+  const published = PUBLIC_DESIGN_THEMES.find((theme) => theme.id === current);
+  if (published) return published.id;
   const id = randomDesignTheme();
   applyDesignTheme(id);
   return id;
@@ -48,7 +56,7 @@ export function readDesignTheme(): DesignTheme {
 /** Runs before paint, independently of localStorage availability. */
 export const DESIGN_BOOT_SCRIPT = `
 (function () {
-  var themes = ${JSON.stringify(DESIGN_THEMES)};
+  var themes = ${JSON.stringify(PUBLIC_DESIGN_THEMES)};
   var theme = themes[Math.floor(Math.random() * themes.length)];
   var root = document.documentElement;
   root.removeAttribute("data-color");

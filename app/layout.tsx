@@ -8,6 +8,7 @@ import { DESIGN_BOOT_SCRIPT } from "@/lib/designTheme";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import "./themes/index.css";
+import "./motion.css";
 
 /**
  * 本文フォント。next/font が自ホストするので、
@@ -85,7 +86,7 @@ export default function RootLayout({
     <html lang="ja" className={`${notoSansJp.variable} ${roundedJp.variable}`} suppressHydrationWarning>
       <head>
         {/*
-          ランダムに選んだデザインを描画前に当てる。React のマウントを待つと
+          公開中のデザインを描画前に当てる。React のマウントを待つと
           一瞬ライトで表示されてちらつくため、同期スクリプトで先に流す。
         */}
         <script dangerouslySetInnerHTML={{ __html: DESIGN_BOOT_SCRIPT }} />

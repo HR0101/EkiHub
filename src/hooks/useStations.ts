@@ -2,15 +2,30 @@
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { fetchCenterStation, fetchStations } from "@/lib/api";
+import { fetchCenterStation, fetchStations, prepareCenterSearch } from "@/lib/api";
 import type { CenterRequest, CenterResult, Station } from "@/types/ekihub";
 
 /** 駅マスタ。約8,000件あるので1度取ったら使い回す */
 export function useStations() {
-  return useQuery<Station[]>({
+  const stations = useQuery<Station[]>({
     queryKey: ["stations"],
     queryFn: ({ signal }) => fetchStations(signal),
   });
+  // 入力候補の取得は妨げない。複数の画面・再マウントでも同じ準備を共有する。
+  // 失敗しても通常の検索には影響させず、入力のたびのリトライもしない。
+  useQuery({
+    queryKey: ["center-search-preparation"],
+    queryFn: ({ signal }) => prepareCenterSearch(signal),
+    enabled: stations.isSuccess,
+    staleTime: Infinity,
+    gcTime: Infinity,
+    retry: false,
+    retryOnMount: false,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+  return stations;
 }
 
 /**

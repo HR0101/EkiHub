@@ -1313,7 +1313,7 @@ html[data-design] .home-app select.input-row__people:focus-visible {
   margin: 0.25rem;
   white-space: normal;
 }
-.member-page [aria-pressed="true"] {
+.member-page .tool-btn[aria-pressed="true"] {
   outline: 3px solid currentColor;
   outline-offset: 2px;
 }

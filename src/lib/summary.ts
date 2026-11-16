@@ -4,7 +4,11 @@
  *   集合駅: 武蔵小杉(平均37分 / ¥320)
  *   ・新宿→ 39分 ¥320
  *   ・横浜→ 35分 ¥320 直通
+ *   ※所要時間・運賃は推定値です
  */
+
+/** 共有文の末尾に添える注記。受け取った人が正確な値と誤解しないようにする */
+const ESTIMATE_NOTE = "※所要時間・運賃は推定値です";
 
 import type { RankingEntry } from "@/types/ekihub";
 
@@ -28,5 +32,6 @@ export function buildSummaryText(station: RankingEntry): string {
     lines.push(`・${travel.from}→${parts.length > 0 ? ` ${parts.join(" ")}` : ""}`);
   }
 
+  lines.push(ESTIMATE_NOTE);
   return lines.join("\n");
 }

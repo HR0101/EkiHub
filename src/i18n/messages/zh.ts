@@ -53,6 +53,11 @@ export const zh: Messages = {
     lead: "输入每个人最近的车站，为大家推荐容易集合的地点。",
   },
 
+  notFound: {
+    title: "找不到页面",
+    description: "页面可能已移动或删除。请返回首页搜索集合车站。",
+  },
+
   nav: {
     howto: "使用方法",
     home: "← 返回首页",
@@ -65,7 +70,7 @@ export const zh: Messages = {
     closeConditions: "收起",
     preferences: "偏好设置",
     panelTitle: "输入最近的车站",
-    placeholder: "例）新宿、横滨、大宫…",
+    placeholder: "例：新宿",
     stationLabel: "最近的车站",
     peopleLabel: "人数",
     peopleCount: "{count}人",
@@ -117,8 +122,8 @@ export const zh: Messages = {
     detailsLabel: "查看功能",
     emptyLine1: "输入两个以上的车站后，",
     emptyLine2: "请点击「搜索」。",
-    emptyTitle: "为大家找出中心车站",
-    emptyLead: "根据全员的移动时间与票价，推荐容易集合的车站。",
+    emptyTitle: "输入至少两个车站",
+    emptyLead: "点击「搜索中心车站」查看候选车站",
     emptyPoint1: "抑制移动时间的差距，避免某个人特别远",
     emptyPoint2: "显示票价估算，以及能否直达",
     emptyPoint3: "可在选定的车站周边寻找集合地点",
@@ -132,10 +137,12 @@ export const zh: Messages = {
     avgFare: "平均票价(估算)",
     distance: "到重心的距离(km)",
     range: "各成员 {min}〜{max} 分钟{transfers} {source}",
+    estimateNote: "所需时间和票价是根据车站位置和线路计算的估算值。实际时刻、路线和票价请通过换乘查询等确认。",
     transfers: " ・平均换乘 {count} 次",
     sourceRouted: "（实际路线数据）",
     sourceGraph: "（铁路网路线估算）",
     sourceStraight: "（按距离估算）",
+    renamedOrigin: "已将「{from}」按「{to}」计算。",
   },
 
   travel: {
@@ -158,6 +165,7 @@ export const zh: Messages = {
   },
 
   actions: {
+    more: "更多操作",
     copyUrl: "复制链接",
     copied: "已复制",
     copyFailed: "无法复制",

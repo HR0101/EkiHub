@@ -20,6 +20,8 @@ html .app.member-page .member-page__header .toolbar {
   margin: 0;
   justify-content: flex-end;
   gap: 8px;
+  border-top: 0;
+  padding-top: 0;
 }
 
 .member-page__header > .nav-link {
@@ -93,4 +95,56 @@ html .app.member-page .member-login {
   .member-page__actions .btn {
     width: 100%;
   }
+}
+
+/* Shared-group forms must be as usable as the saved-group editor. */
+.member-page > h1 {
+  margin: 16px 0 24px;
+  font-size: clamp(1.5rem, 3vw, 2.3rem);
+  line-height: 1.45;
+}
+.member-page form fieldset {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  margin: 20px 0 0;
+  padding: 0;
+  border: 0;
+}
+.member-page form fieldset label { margin: 0; }
+.member-page form label :is(input:not([type="range"]):not([type="checkbox"]):not([type="radio"]), select) {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 2px solid var(--text-main);
+  border-radius: 6px;
+  background: var(--nm-surface);
+  color: var(--text-main);
+  font: inherit;
+}
+.member-page form textarea {
+  border: 2px solid var(--text-main);
+  border-radius: 6px;
+  line-height: 1.7;
+}
+.member-page form fieldset:disabled :is(input, select, textarea) {
+  color: var(--text-sub);
+  background: var(--nm-surface-sunken);
+}
+.member-collaboration ul {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+}
+.member-collaboration li + li { border-top: 1px solid var(--border-soft); }
+.member-collaboration li a {
+  display: block;
+  padding: 12px 0;
+  color: var(--accent);
+  text-underline-offset: 3px;
+}
+
+.member-page .panel:not(.member-collaboration) > ul:not([class]) {
+  padding-left: 20px;
+  margin: 12px 0;
 }
